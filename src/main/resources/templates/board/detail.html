@@ -31,7 +31,7 @@
 
       <hr>
 
-      <div class="post-content" th:utext="${post.content}">내용</div>
+      <div class="post-content toastui-editor-contents" th:utext="${post.content}">내용</div>
 
       <div class="post-like-wrapper">
         <form th:action="@{/board/like/{id}(id=${post.postId}, boardCode=${boardCode})}" method="post">
