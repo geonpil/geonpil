@@ -59,36 +59,9 @@
 </div>
 
 <th:block layout:fragment="script">
+  <!-- 공통 toast editor 초기화 -->
   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const form = document.getElementById("postForm");
-      const hiddenContent = document.getElementById("content-hidden");
-
-      const editor = new toastui.Editor({
-        el: document.querySelector('#editor'),
-        height: '400px',
-        initialEditType: 'wysiwyg',
-        previewStyle: 'vertical',
-        toolbarItems: [
-        ['heading', 'bold', 'italic', 'strike'],
-        ['hr', 'quote'],                        // ✅ 따옴표(인용구)
-        ['ul', 'ol', 'task'],                   // ✅ 순서/비순서/체크박스 목록
-        ['table', 'link'],                      // ✅ 표, 링크
-        ['code', 'codeblock']                   // ✅ 코드/코드블럭
-        ]
-        });
-
-        // 기존 content를 에디터에 세팅
-      const content = document.getElementById("original-content").value;
-      editor.setHTML(content);  // 또는 editor.setMarkdown(content);
-
-      form.addEventListener('submit', function () {
-        hiddenContent.value = editor.getHTML(); // 🔥 반드시 이 시점에 넣어야 함
-        console.log("📤 전송할 content:", hiddenContent.value); // 디버깅용
-      });
-    });
-  </script>
+  <script src="/js/toast-editor.js"></script>
 </th:block>
 </body>
 </html>
