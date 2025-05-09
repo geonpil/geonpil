@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<!-- Toast UI Editor CSS -->
+
+<!-- Toast UI Editor Script -->
+
+
+<head>
+  <meta charset="UTF-8">
+  <title>커뮤니티</title>
+
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="/css/board.css"/>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="write-wrapper">
+    <div class="write-card">
+    <h2 class="form-title">✍ 글쓰기</h2>
+
+    <form id="postForm" action="/board/write/save" method="post">
+
+      <!-- 분류 선택 -->
+        <div class="form-group">
+          <select id="categoryId" name="categoryId" required class="form-select">
+            <option value="">-- 분류 선택 --</option>
+            <th:block th:each="cat : ${categories}">
+              <option th:value="${cat.id}" th:text="${cat.categoryName}"></option>
+            </th:block>
+          </select>
+        </div>
+
+        <!-- 제목 -->
+        <div class="form-group">
+          <input type="text" id="title" name="title" class="form-input" placeholder="제목을 입력하세요" required />
+        </div>
+
+        <!-- 내용 -->
+        <div class="form-group">
+          <div id="editor" class="form-editor"></div>
+        </div>
+
+        <!-- 버튼 -->
+        <div class="form-buttons">
+          <button type="submit" class="basic-btn">등록</button>
+          <button type="button" class="cancel-btn" onclick="history.back()">취소</button>
+        </div>
+
+        <input type="hidden" name="boardCode" th:value="${boardCode}" />
+        <input type="hidden" name="content" id="content-hidden" />
+      </form>
+  </div>
+</div>
+</div>
+
+<th:block layout:fragment="script">
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("postForm");
+      const hiddenContent = document.getElementById("content-hidden");
+
+      const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        height: '400px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        placeholder: '내용을 입력하세요...'
+      });
+
+      form.addEventListener('submit', function () {
+        hiddenContent.value = editor.getHTML(); // 🔥 반드시 이 시점에 넣어야 함
+        console.log("📤 전송할 content:", hiddenContent.value); // 디버깅용
+      });
+    });
+  </script>
+</th:block>
+</body>
+</html>

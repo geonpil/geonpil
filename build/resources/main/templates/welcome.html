@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+</head>
+<body>
+<h1>네이버 로그인 성공 🎉</h1>
+<p><strong>이름:</strong> <span th:text="${name}"></span></p>
+<p><strong>이메일:</strong> <span th:text="${email}"></span></p>
+<hr>
+<h2>전체 사용자 정보 (attributes)</h2>
+<pre th:text="${attributes}"></pre>
+</body>
+</html>

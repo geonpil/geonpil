@@ -1,0 +1,157 @@
+/* 로그인 및 회원가입 공통 카드 스타일 */
+.form-card {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.form-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 요소 간 여백 */
+  flex-wrap: wrap; /* 모바일 대응 */
+}
+
+.form-flex input[type="text"],
+.form-flex select {
+  flex: 1;
+  min-width: 0;
+}
+
+
+.form-title {
+  font-size: 1.8rem;
+  color: #1F4EB2;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+
+
+.error-message {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+
+.logo-center {
+  display: block;
+  margin: 0 auto 5px auto;
+  width: 60px;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: white;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--main-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(31, 78, 178, 0.1);
+}
+
+.form-hint,
+.validation-text {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 6px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+
+.form-editor {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 400px;
+  margin-top: 10px;
+}
+
+.basic-btn {
+  padding: 10px 20px;
+  background-color: #1F4EB2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.basic-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  padding: 10px 20px;
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+.email-row input[type="text"],
+.email-row select {
+  height: 40px;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.email-at {
+  white-space: nowrap;
+}
+
+.email-domain-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 120px;
+}
+
+#email-domain-input {
+  margin-top: 5px;
+}

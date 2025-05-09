@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="form-card" style ="text-align: center;">
+
+        <img class = "logo-center" src="/images/logo.png" alt="건필 로고" style="width: 60px;"> <!-- 로고 이미지 경로 필요 -->
+
+        <h2 style="margin-bottom: 30px; color: #1F4EB2;">로그인</h2>
+
+        <form th:action="@{/do-login}" method="post">
+            <div style="margin-bottom: 15px;">
+                <input type="email" id="email" name="email" placeholder="이메일" required>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <input type="password" id="password" name="password" placeholder="비밀번호" required>
+            </div>
+
+            <button class = "basic-btn" type="submit" style="width: 100%;">로그인</button>
+
+            <div th:if="${error}" style="margin-top: 10px; color: red;">
+                <p th:text="${error}"></p>
+            </div>
+        </form>
+
+        <div style="margin-top: 20px; font-size: 0.9rem;">
+            <a href="/verify/find-password">비밀번호 재설정</a> &nbsp;|&nbsp;
+            <a href="/signup">회원가입</a>
+        </div>
+
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        window.onload = function() {
+          const urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.get('resetSuccess') === 'true') {
+            alert("✅ 비밀번호가 성공적으로 변경되었습니다! 이제 로그인해주세요.");
+          }
+        }
+    </script>
+</th:block>
+</body>
+</html>

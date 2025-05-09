@@ -1,0 +1,25 @@
+package com.geonpil.mapper;
+
+import com.geonpil.domain.BoardDTO;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+@Mapper
+public interface BoardMapper {
+    void insertBoard(BoardDTO boardDTO);
+
+    List<BoardDTO> findAll(int boardCode);
+
+    BoardDTO findById(Long postNo);
+
+    void softDeleteById(Long postId);
+
+    void incrementViewCount(Long postId);
+
+    void updatePost(BoardDTO boardDTO);
+
+    List<BoardDTO> findLatestByBoardCode(@Param("boardCode") int boardCode, @Param("limit") int limit);
+
+}

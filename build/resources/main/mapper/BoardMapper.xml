@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geonpil.mapper.BoardMapper">
+
+    <insert id="insertBoard"
+            parameterType="com.geonpil.domain.BoardDTO"
+            useGeneratedKeys="true"
+            keyProperty="postId">
+        INSERT INTO board (
+        user_id,
+        board_code,
+        category_id,
+        title,
+        content,
+        view_count,
+        like_count,
+        created_at,
+        updated_at
+        )
+        VALUES (
+        #{userId},
+        #{boardCode},
+        #{categoryId},
+        #{title},
+        #{content},
+        0,
+        0,
+        NOW(),
+        NOW()
+        )
+    </insert>
+
+
+    <select id="findAll" resultType="com.geonpil.domain.BoardDTO">
+        SELECT
+        b.post_id AS postId,
+        b.category_id AS categoryId,
+        c.category_name AS categoryName,
+        b.title,
+        b.content,
+        b.view_count AS viewCount,
+        b.like_count AS likeCount,
+        b.created_at AS createdAt,
+        b.updated_at AS updatedAt,
+        u.nickname,
+        COUNT(cm.comment_id) AS commentCount
+        FROM board b
+        JOIN users u ON b.user_id = u.id
+        JOIN category c ON b.category_id = c.category_id
+        LEFT JOIN comments cm ON b.post_id = cm.post_id AND cm.is_deleted = FALSE
+        WHERE b.is_deleted = FALSE
+         AND b.board_code = #{boardCode}
+        GROUP BY
+        b.post_id, b.category_id, c.category_name, b.title, b.content,
+        b.view_count, b.like_count, b.created_at, b.updated_at, u.nickname
+        ORDER BY b.created_at DESC
+    </select>
+
+
+    <select id="findById" parameterType="long" resultType="com.geonpil.domain.BoardDTO">
+        SELECT
+        b.post_id AS postId,
+        b.category_id AS categoryId,
+        c.category_name AS categoryName,
+        b.title,
+        b.content,
+        b.view_count AS viewCount,
+        b.like_count AS likeCount,
+        b.created_at AS createdAt,
+        b.updated_at AS updatedAt,
+        u.nickname,
+        u.id AS userId
+        FROM board b
+        JOIN users u ON b.user_id = u.id
+        JOIN category c ON b.category_id = c.category_id
+        WHERE b.post_id = #{postId}
+    </select>
+
+
+    <update id="softDeleteById" parameterType="long">
+        UPDATE board
+        SET is_deleted = true,
+        updated_at = NOW()
+        WHERE post_id = #{postId}
+    </update>
+
+
+    <update id="incrementViewCount" parameterType="long">
+        UPDATE board
+        SET view_count = view_count + 1
+        WHERE post_id = #{postId}
+    </update>
+
+
+    <update id="updatePost" parameterType="com.geonpil.domain.BoardDTO">
+        UPDATE board
+        SET title = #{title},
+        content = #{content},
+        category_id = #{categoryId},
+        updated_at = NOW()
+        WHERE post_id = #{postId}
+    </update>
+
+
+    <select id="findLatestByBoardCode" resultType="com.geonpil.domain.BoardDTO">
+        SELECT
+        b.post_id AS postId,
+        b.board_code AS boardCode,
+        u.nickname,
+        c.category_name AS categoryName,
+        b.title,
+        b.content,
+        b.view_count AS viewCount,
+        b.like_count AS likeCount,
+        b.created_at AS createdAt,
+        b.updated_at AS updatedAt,
+        (SELECT COUNT(*) FROM COMMENTS c WHERE b.post_Id =  c.post_id AND c.is_deleted = false) AS commentCount
+        FROM board b
+        JOIN category c ON b.category_id = c.category_id
+        JOIN users u on b.user_id = u.id
+        WHERE b.board_code = #{boardCode}
+        ORDER BY b.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

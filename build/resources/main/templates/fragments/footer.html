@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<th:block th:fragment="footer">
+  <div th:if="${requestUri != '/signup'}">
+    <div class="footer-banner">
+      <img src="" alt="하단 배너" />
+    </div>
+  </div>
+
+  <footer>
+    <div style="text-align: center; font-size: 0.8rem; color: #aaa; padding: 20px 0;">
+      © 2025 건필. 문화를 만들다.
+    </div>
+  </footer>
+</th:block>
+</body>
+</html>
