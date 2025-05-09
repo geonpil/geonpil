@@ -15,6 +15,7 @@
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
         <result property="parentId" column="parent_id"/>
+        <result property="replyCount" column="reply_count"/>
     </resultMap>
 
 
@@ -49,9 +50,10 @@
     <!-- 2. 댓글 목록 조회 -->
     <!-- 대댓글 기능 -->
     <select id="getCommentsByPostId" parameterType="long" resultMap="CommentResultMap">
-        SELECT * FROM comments
+        SELECT c.*
+             ,  (SELECT COUNT(*) FROM comments r WHERE r.parent_id = c.comment_id AND r.is_deleted = false) AS reply_count
+        FROM comments c
         WHERE post_id = #{postId}
-        AND is_deleted = false
         ORDER BY
         CASE WHEN parent_id IS NULL THEN comment_id ELSE parent_id END,
         created_at
