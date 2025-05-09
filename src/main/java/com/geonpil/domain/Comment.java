@@ -16,4 +16,10 @@ public class Comment {
     private Date  createdAt;
     private Date  updatedAt;
     private Long parentId;
+    private int replyCount;
+    private boolean hasReplies;
+
+    public boolean isHasReplies() {
+        return replyCount > 0;
+    }
 }

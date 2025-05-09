@@ -1,0 +1,33 @@
+# Java
+*.class
+*.jar
+*.war
+*.log
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build
+/build/
+/target/
+/out/
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.bak
+*.swp
+
+# Others
+node_modules/

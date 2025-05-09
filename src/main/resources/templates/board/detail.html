@@ -54,12 +54,14 @@
         </div>
 
         <!-- 부모 댓글 -->
-        <div th:each="comment : ${comments}" th:if="${comment.parentId == null}" class="comment parent-comment" th:attr="id='comment-' + ${comment.commentId}">
-          <div class="comment-meta">
-            <span class="comment-nickname" th:text="${comment.nickname}">작성자</span>
-            <span class="comment-date" th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
-          </div>
-          <div class="comment-content" th:attr="id='content-' + ${comment.commentId}" th:text="${comment.content}">댓글 내용</div>
+        <div th:each="comment : ${comments}" th:if="${comment.parentId == null}"  th:attr="id='comment-' + ${comment.commentId}">
+          <div th:if="${!comment.isDeleted or comment.hasReplies}" class="comment parent-comment">
+            <div class="comment-meta">
+              <span class="comment-nickname" th:text="${comment.nickname}">작성자</span>
+              <span class="comment-date" th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
+            </div>
+            <div class="comment-content" th:id="'content-' + ${comment.commentId}"  th:text="${comment.isDeleted} ? '[삭제된 댓글입니다.]' : ${comment.content}">댓글 내용</div>
+
 
           <!-- 수정 폼: 처음엔 숨김 -->
           <div class="edit-form" th:attr="id='edit-form-' + ${comment.commentId}" style="display: none;">
@@ -104,10 +106,11 @@
               </button>
             </div>
           </th:block>
+          </div>
 
           <!-- 대댓글 목록 -->
           <div class="reply-list">
-            <div th:each="reply : ${comments}" th:if="${reply.parentId == comment.commentId}" class="comment reply" th:attr="id='comment-' + ${reply.commentId}">
+            <div th:each="reply : ${comments}" th:if="${reply.parentId == comment.commentId and !reply.isDeleted}" class="comment reply" th:attr="id='comment-' + ${reply.commentId}">
               <div class="comment-meta">
                 <span class="comment-nickname" th:text="${reply.nickname}">작성자</span>
                 <span class="comment-date" th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span>
@@ -284,17 +287,25 @@ function submitReply(postId, parentId) {
   fetch(`/comments/delete/${commentId}`, {
     method: "POST"
   })
-  .then(res => {
-    if (!res.ok) throw new Error("삭제 실패");
-    // DOM에서 해당 댓글 제거
-    const commentEl = document.getElementById(`comment-${commentId}`);
-    if (commentEl) commentEl.remove();
-    alert("✅ 댓글이 삭제되었습니다.");
+  .then(response => {
+    if (!response.ok) throw new Error("삭제 실패");
+    return response.text();
   })
-  .catch(err => {
-    console.error(err);
-    alert("❌ 댓글 삭제 중 오류가 발생했습니다.");
-  });
+  .then(result => {
+  const el = document.getElementById(`comment-${commentId}`);
+  const hasReply = el.querySelector('.reply-list')?.children.length > 0;
+
+    if (hasReply) {
+    const contentEl = el.querySelector('.comment-content');
+    contentEl.textContent = '[삭제된 댓글입니다.]';
+    el.classList.add('deleted');
+  } else {
+    el.remove();
+  }
+   alert("✅ 댓글이 삭제되었습니다.");
+   })
+
+
 }
 
 
