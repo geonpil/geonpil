@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}"
+      layout:decorate="layout.html"
       th:inline="text">
 
-<head>
-  <meta charset="UTF-8">
-  <title>커뮤니티</title>
-  <link rel="stylesheet" href="/css/style.css"/>
-</head>
+<th:block layout:fragment="meta">
+  <title>건필 - 글 상세</title>
+</th:block>
+
+
+<th:block layout:fragment="css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+</th:block>
 
 <body>
 <div layout:fragment="content">

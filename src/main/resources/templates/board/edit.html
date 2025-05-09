@@ -6,16 +6,13 @@
 <!-- Toast UI Editor CSS -->
 
 <!-- Toast UI Editor Script -->
+  <th:block layout:fragment="meta">
+    <title>건필 - 글 수정</title>
+  </th:block>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  </th:block>
 
-
-<head>
-  <meta charset="UTF-8">
-  <title>커뮤니티</title>
-
-  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-  <link rel="stylesheet" href="/css/style.css"/>
-  <link rel="stylesheet" href="/css/board.css"/>
-</head>
 <body>
 <div layout:fragment="content">
   <div class="write-wrapper">
@@ -73,7 +70,14 @@
         height: '400px',
         initialEditType: 'wysiwyg',
         previewStyle: 'vertical',
-      });
+        toolbarItems: [
+        ['heading', 'bold', 'italic', 'strike'],
+        ['hr', 'quote'],                        // ✅ 따옴표(인용구)
+        ['ul', 'ol', 'task'],                   // ✅ 순서/비순서/체크박스 목록
+        ['table', 'link'],                      // ✅ 표, 링크
+        ['code', 'codeblock']                   // ✅ 코드/코드블럭
+        ]
+        });
 
         // 기존 content를 에디터에 세팅
       const content = document.getElementById("original-content").value;

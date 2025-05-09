@@ -4,12 +4,10 @@
       layout:decorate="~{layout}"
       th:inline="text">
 
-<head>
-    <meta charset="UTF-8">
-    <title>커뮤니티</title>
-    <link rel="stylesheet" href="/css/style.css"/>
-    <link rel="stylesheet" href="/css/board.css"/>
-</head>
+<th:block layout:fragment="meta">
+    <title>건필 - 글 목록</title>
+</th:block>
+
 <body>
 <div layout:fragment="content">
     <div class="board-header">📚 커뮤니티 게시판</div>
