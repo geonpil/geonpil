@@ -126,4 +126,33 @@
         LIMIT #{limit}
     </select>
 
+    <select id="findByPage" resultType="com.geonpil.domain.BoardDTO">
+        SELECT
+        b.post_id AS postId,
+        b.category_id AS categoryId,
+        c.category_name AS categoryName,
+        b.title,
+        b.content,
+        b.view_count AS viewCount,
+        b.like_count AS likeCount,
+        b.created_at AS createdAt,
+        b.updated_at AS updatedAt,
+        u.nickname,
+        (SELECT COUNT(*) FROM COMMENTS cm WHERE b.post_Id =  cm.post_id AND cm.is_deleted = false) AS commentCount
+        FROM board b
+        JOIN category c ON b.category_id = c.category_id
+        JOIN users u ON b.user_id = u.id
+        WHERE b.board_code = #{boardCode}
+        AND b.is_deleted = 0
+        ORDER BY b.created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        WHERE board_code = #{boardCode}
+        AND is_deleted = 0
+    </select>
 </mapper>

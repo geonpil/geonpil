@@ -43,9 +43,17 @@
 
             <div class="board-footer">
                 <div class="pagination">
-                    <a href="#">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
+                    <a th:if="${page > 1}"
+                       th:href="@{/board/list(page=${page - 1}, boardCode=${boardCode})}">◀ 이전</a>
+
+                    <a th:each = "i : ${#numbers.sequence(1,totalPages)}"
+                       th:href = "@{/board/list(page=${i}, boardCode = ${boardCode})}"
+                       th:classappend = "${i == page} ? 'active'"
+                       th:text="${i}">1</a>
+
+
+                    <a th:if="${page < totalPages}"
+                       th:href="@{/board/list(page=${page + 1}, boardCode=${boardCode})}">다음 ▶</a>
                 </div>
                 <div class="write-btn">
                     <a th:href="@{/board/write(boardCode=${boardCode})}" class="basic-btn">✍ 글쓰기</a>

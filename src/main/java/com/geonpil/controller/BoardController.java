@@ -3,6 +3,7 @@ package com.geonpil.controller;
 import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Category;
 import com.geonpil.domain.Comment;
+import com.geonpil.domain.PageResult;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
@@ -34,11 +35,17 @@ public class BoardController {
 
 
     @GetMapping("/list")
-    public String list(@RequestParam("boardCode") int boardCode, Model model) {
-        List<BoardDTO> posts = boardService.findAll(boardCode);
+    public String list(@RequestParam("boardCode") int boardCode,
+                       @RequestParam(value = "page", defaultValue = "1") int page,
+                                                        Model model) {
 
-        model.addAttribute("posts", posts);
-        model.addAttribute("boardCode", boardCode); // ✅ 이거 중요
+        int size = 10;
+        PageResult<BoardDTO> pageResult= boardService.findByPage(boardCode,page,size);
+
+        model.addAttribute("posts", pageResult.getPosts());
+        model.addAttribute("boardCode", boardCode);
+        model.addAttribute("page", pageResult.getPage());
+        model.addAttribute("totalPages", pageResult.getTotalPages());
         return "board/list"; // templates/board/list.html
     }
 

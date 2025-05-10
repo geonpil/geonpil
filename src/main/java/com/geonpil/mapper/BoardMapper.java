@@ -22,4 +22,9 @@ public interface BoardMapper {
 
     List<BoardDTO> findLatestByBoardCode(@Param("boardCode") int boardCode, @Param("limit") int limit);
 
+    List<BoardDTO> findByPage(@Param("boardCode") int boardCode,
+                              @Param("offset") int offset,
+                              @Param("size") int size);
+
+    int countAll(int boardCode);
 }
