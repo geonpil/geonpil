@@ -1,6 +1,7 @@
 package com.geonpil.service;
 
 import com.geonpil.domain.BoardDTO;
+import com.geonpil.domain.PageResult;
 import com.geonpil.domain.PostLike;
 import com.geonpil.mapper.BoardMapper;
 import com.geonpil.mapper.PostLikeMapper;
@@ -88,4 +89,15 @@ public class BoardService {
     public List<BoardDTO> getLatestPosts(int boardCode, int limit) {
         return boardMapper.findLatestByBoardCode(boardCode, limit);
     }
+
+    public PageResult<BoardDTO> findByPage(int boardCode, int page, int size) {
+        int offset = (page - 1) * size;
+
+        List<BoardDTO> posts = boardMapper.findByPage(boardCode, offset, size);
+        int totalCount = boardMapper.countAll(boardCode);
+        int totalPages = (int) Math.ceil((double) totalCount / size);
+
+        return new PageResult<>(posts, page, totalPages);
+    }
+
 }
