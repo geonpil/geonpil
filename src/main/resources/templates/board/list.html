@@ -5,12 +5,12 @@
       th:inline="text">
 
 <th:block layout:fragment="meta">
-    <title>건필 - 글 목록</title>
+    <title>건필 - 공모전</title>
 </th:block>
 
 <body>
 <div layout:fragment="content">
-    <div class="board-header">📚 커뮤니티 게시판</div>
+    <div class="board-header" th:text = "${boardName}">게시판 이름</div>
     <div class="board-wrapper">
         <div class="board-container">
             <div class="board-list">
