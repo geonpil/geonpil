@@ -1,6 +1,6 @@
     .contest-container {
       display : grid;
-      grid-template-columns : 1fr 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: 20px;
       max-width: 1000px;
       margin: auto;
@@ -12,6 +12,7 @@
 
     /* 공모전 리스트 시작*/
     .contest-row {
+      height: 240px;        /* ✅ 고정 카드 너비 */
       display: flex;
       align-items: stretch;
       background-color: #fff;
@@ -32,23 +33,35 @@
     .contest-info {
       display: grid;
       grid-template-rows: auto auto auto auto auto auto;
-      padding : 16px 0;
+      padding : 10px 0;
     }
 
     .contest-title {
-      font-size: 20px;
+      font-size: 15px;
       font-weight: bold;
       color: #333;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 2;      /* ✅ 최대 줄 수 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .categoryName {
-        font-size: 13px;
+        font-size: 11px;
     }
 
     .contest-subtitle {
-      font-size: 16px;
+      font-size: 15px;
       color: #666;
       margin-bottom : 6px;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 2;      /* ✅ 최대 줄 수 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .contest-host{
@@ -123,7 +136,7 @@
 
     .poster-thumb-wrapper {
       position: relative;
-      width: 120px;           /* 너비 조정 가능 (반응형으로 줄이려면 %도 가능) */
+      width: 160px;           /* 너비 조정 가능 (반응형으로 줄이려면 %도 가능) */
       aspect-ratio: 3 / 4;    /* 📌 3:4 비율 유지 */
       background-color: #f2f2f2;
       border-right: 1px solid #ddd;
@@ -220,7 +233,6 @@
       width: 300px;
       aspect-ratio: 3 / 4; /* ✅ 3:4 세로형 비율 유지 */
       overflow: hidden;
-      border: 1px solid #ccc;
       border-radius: 6px;
       background-color: #f8f8f8;
       flex-shrink: 0;

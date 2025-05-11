@@ -39,20 +39,17 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <input type="text" id="target" name="target" class="form-input" placeholder="응모 대상을 입력해주세요."/>
-      </div>
 
       <div class="form-group">
         <input type="text" id="hostName" name="hostName" class="form-input" placeholder="주최/주관사를 입력해주세요." required />
       </div>
 
       <div class="form-group">
-        <input type="text" id="totalPrize" name="totalPrize" class="form-input" placeholder="총 상금을 입력해주세요."  />
+        <input type="text" id="contactInfo" name="contactInfo" class="form-input" placeholder="문의 주소(문의 이메일, 연락처 등)을 입력해주세요." required />
       </div>
 
       <div class="form-group">
-        <input type="text" id="firstPrize" name="firstPrize" class="form-input" placeholder="1등상을 입력해주세요."  />
+        <input type="text" id="totalPrize" name="totalPrize" class="form-input" placeholder="총 상금을 입력해주세요."  />
       </div>
 
       <div class="form-group">
@@ -139,11 +136,11 @@
     startDate: document.getElementById("startDate").value,
     endDate: document.getElementById("endDate").value,
     hostName: document.getElementById("hostName").value,
-    target: document.getElementById("target").value,
     totalPrize: document.getElementById("totalPrize").value,
-    firstPrize: document.getElementById("firstPrize").value,
     boardCode: document.getElementById("boardCode").value,
-    applyUrl : document.getElementById("applyUrl").value
+    applyUrl : document.getElementById("applyUrl").value,
+    contactInfo : document.getElementById("contactInfo").value,
+    categoryId : document.getElementById("categoryId").value
   };
 
   const posterFile = document.getElementById("posterFile").files[0];
