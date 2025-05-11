@@ -70,4 +70,20 @@ public class ContestController {
         model.addAttribute("post", post);
         return "contest/detail";
     }
+
+    // 글쓰기 수정
+    @GetMapping("/edit/{id}")
+    public String contestEdit(@PathVariable Long id,
+                                @RequestParam(value = "boardCode", required = false) Integer boardCode,
+                                Model model) {
+        ContestPost post = contestService.findContestById(id);
+        List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
+
+        System.out.println("디버그 : " + categories.get(0));
+        System.out.println("디버그2 : " + post.getCategoryId());
+        model.addAttribute("categories", categories);
+        model.addAttribute("boardCode", boardCode);
+        model.addAttribute("post", post);
+        return "contest/edit";
+    }
 }

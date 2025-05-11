@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const editor = new toastui.Editor({
+  window.editor = new toastui.Editor({
     el: document.querySelector('#editor'),
     height: '400px',
     initialEditType: 'wysiwyg',

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<!-- Toast UI Editor CSS -->
+
+<!-- Toast UI Editor Script -->
+<th:block layout:fragment="meta">
+  <title>건필 - 공모전 게시</title>
+</th:block>
+
+
+<th:block layout:fragment="css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  <link rel="stylesheet" href="/css/contest.css">
+</th:block>
+
+
+<body>
+<div layout:fragment="content">
+  <div class="write-card">
+    <h2 class="form-title">✍ 공모전 글쓰기</h2>
+    <form id="postForm">
+      <div class="form-group">
+        <input type="text" id="title" name="title" th:value="${post.title}" class="form-input" required />
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="subtitle" name="subtitle" class="form-input" th:value="${post.subtitle}"/>
+      </div>
+
+      <div class="form-group">
+        <label for="categoryId">분류</label>
+        <select id="categoryId" name="categoryId" required>
+          <option value="">-- 분류 선택 --</option>
+          <th:block th:each="cat : ${categories}">
+            <option th:value="${cat.id}" th:text="${cat.categoryName}" th:selected="${cat.id == post.categoryId}"></option>
+          </th:block>
+        </select>
+      </div>
+
+
+      <div class="form-group">
+        <input type="text" id="hostName" name="hostName" class="form-input" th:value="${post.hostName}" required />
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="contactInfo" name="contactInfo" class="form-input" th:value="${post.contactInfo}" required />
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="totalPrize" name="totalPrize" class="form-input" th:value="${post.totalPrize}"  />
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="applyUrl" name="applyUrl" class="form-input" th:value="${post.applyUrl}"  />
+      </div>
+
+      <div class="form-group">
+        <label for="posterFile">포스터 이미지</label>
+        <img id="poster-preview" th:if="${post.posterUrl}" th:src="@{${post.posterUrl}}" style="max-width: 200px; display: block; margin-bottom: 10px;">
+        <button type="button" id="remove-poster-btn" class="delete-btn">포스터 제거</button>
+        <input class ="img-upload" type="file" id="posterFile" accept="image/*" />
+        <input type="hidden" id="existingPosterUrl" th:value="${post.posterUrl}" />
+      </div>
+
+      <div class="form-group">
+        <label>공모 기간</label>
+        <div class="date-range">
+          <input type="date" id="startDate" name="startDate" th:value="${post.startDate}" required>
+          <span class="date-separator">~</span>
+          <input type="date" id="endDate" name="endDate" th:value="${post.endDate}">
+          <label class="checkbox-label">
+            <input type="checkbox" id="endDateUndefined">
+            마감일 미정
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>내용</label>
+        <div id="editor"></div>
+        <input type="hidden" id="content" name="content" th:value="${post.content}" />
+      </div>
+
+      <!-- 버튼 -->
+      <div class="form-buttons">
+        <button type="button" id="update-btn" class="basic-btn">수정 완료</button>
+        <button type="button" class="cancel-btn" onclick="history.back()">취소</button>
+      </div>
+
+      <input type="hidden" id="boardCode" th:value="${boardCode}">
+      <input type="hidden" id="postId" th:value="${post.postId}">
+    </form>
+  </div>
+</div>
+
+<th:block layout:fragment="script">
+  <!-- 공통 toast editor 초기화 -->
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <script src="/js/toast-editor-rest.js"></script>
+  <script>
+    const startDate= document.getElementById("startDate");
+    const endDate = document.getElementById("endDate");
+    const today = new Date();
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        editor.setHTML(document.getElementById("content").value);
+
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const tmm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const tdd = String(tomorrow.getDate()).padStart(2, '0');
+        const tomorrowStr = `${yyyy}-${tmm}-${tdd}`;
+
+        startDate.setAttribute("max", todayStr);     // 시작일은 오늘까지만
+        endDate.setAttribute("min", tomorrowStr);    // 종료일은 내일부터
+      });
+
+
+document.getElementById("update-btn").addEventListener("click", async function () {
+  const start = new Date(startDate.value);
+  const end = new Date(endDate.value);
+  const boardCode = document.getElementById("boardCode").value;
+  today.setHours(0, 0, 0, 0);
+
+  if (start > today) {
+    alert("시작일은 오늘 이후로 설정할 수 없습니다.");
+    return;
+  }
+  if (end <= today) {
+    alert("종료일은 오늘보다 이후여야 합니다.");
+    return;
+  }
+
+  const data = {
+    title: document.getElementById("title").value,
+    subtitle: document.getElementById("subtitle").value,
+    startDate: document.getElementById("startDate").value,
+    endDate: document.getElementById("endDate").value,
+    hostName: document.getElementById("hostName").value,
+    totalPrize: document.getElementById("totalPrize").value,
+    boardCode: document.getElementById("boardCode").value,
+    applyUrl : document.getElementById("applyUrl").value,
+    contactInfo : document.getElementById("contactInfo").value,
+    categoryId : document.getElementById("categoryId").value,
+    postId : document.getElementById("postId").value,
+    content: editor.getHTML()
+  };
+
+  const file = document.getElementById("posterFile").files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await fetch("/upload-image", {
+        method: "POST",
+        body: formData
+      });
+      const result = await res.json();
+      data.posterUrl = result.url;
+    } else {
+      data.posterUrl = document.getElementById("existingPosterUrl").value;
+    }
+
+    await fetch("/api/contest/update", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(res => {
+      if (res.ok) {
+        alert("수정 완료!");
+        location.href = `/contest/detail/${data.postId}?boardCode=${boardCode}`;
+      } else {
+        alert("수정 실패");
+      }
+    });
+  });
+
+
+
+ document.addEventListener("DOMContentLoaded", function () {
+  const endDateInput = document.getElementById("endDate");
+  const endDateUndefined = document.getElementById("endDateUndefined");
+
+  endDateUndefined.addEventListener("change", function () {
+    if (this.checked) {
+      endDateInput.disabled = true;
+      endDateInput.value = ""; // 필드 비움
+    } else {
+      endDateInput.disabled = false;
+    }
+  });
+});
+
+async function uploadPosterFile(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch("/upload-image", {
+    method: "POST",
+    body: formData
+  });
+
+  const result = await res.json();
+  return result.url;
+}
+
+
+
+document.getElementById("posterFile").addEventListener("change", async function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch("/upload-image", {
+    method: "POST",
+    body: formData
+  });
+
+  const result = await res.json();
+  document.getElementById("poster-preview").src = result.url;
+  document.getElementById("existingPosterUrl").value = result.url;
+});
+
+document.getElementById("remove-poster-btn").addEventListener("click", function () {
+  const preview = document.getElementById("poster-preview");
+  if (preview) preview.src = "";
+  document.getElementById("posterFile").value = "";
+  document.getElementById("existingPosterUrl").value = "";
+});
+  </script>
+</th:block>
+</body>
+</html>

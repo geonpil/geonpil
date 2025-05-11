@@ -1,6 +1,7 @@
 package com.geonpil.mapper;
 
 import com.geonpil.domain.BoardDTO;
+import com.geonpil.domain.Category;
 import com.geonpil.domain.ContestPost;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,4 +17,6 @@ public interface ContestMapper {
     ContestPost findContestById(Long postId);
 
     List<ContestPost> findContestsByPage(@Param("offset")int offset, @Param("size") int size);
-}
+
+    void updateContestPost(ContestPost contestPost);
+    }

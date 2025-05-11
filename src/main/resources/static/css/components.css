@@ -140,9 +140,13 @@
   background-color: #c0392b;
 }
 
+/*삭제 버튼 끝 */
 
-
-
+/* 파일 업로드 시작 */
+.img-upload {
+ margin-top : 5px;
+}
+/*파일 업로드 끝 */
 
 #e74c3c;  margin-top: 5px;
           background-color: transparent;

@@ -12,6 +12,7 @@
         <result property="viewCount" column="view_count"/>
         <result property="createdAt" column="created_at"/>
         <result property="categoryName" column="category_name"/>
+        <result property="categoryId" column="category_id"/>
         <result property="subtitle" column="subtitle"/>
         <result property="hostName" column="host_name"/>
         <result property="posterUrl" column="poster_url"/>
@@ -101,7 +102,8 @@
         c.total_prize,
         c.first_prize,
         c.apply_url,
-        c.contact_info
+        c.contact_info,
+        ct.category_id
         FROM board b
         JOIN contest_post c ON b.post_id = c.contest_id
         JOIN category ct ON b.category_id = ct.category_id
@@ -134,4 +136,18 @@
         LIMIT #{size} OFFSET #{offset}
     </select>
 
+
+    <update id="updateContestPost" parameterType="com.geonpil.domain.ContestPost">
+        UPDATE contest_post
+        SET
+        subtitle = #{subtitle},
+        poster_url = #{posterUrl},
+        start_date = #{startDate},
+        end_date = #{endDate},
+        host_name = #{hostName},
+        first_prize = #{firstPrize},
+        apply_url = #{applyUrl},
+        contact_info = #{contactInfo}
+        WHERE contest_id = #{postId}
+    </update>
 </mapper>
