@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geonpil.mapper.ContestMapper">
+
+    <resultMap id="contestPostResultMap" type="com.geonpil.domain.ContestPost">
+        <id property="postId" column="post_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="subtitle" column="subtitle"/>
+        <result property="hostName" column="host_name"/>
+        <result property="posterUrl" column="poster_url"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="target" column="target"/>
+        <result property="totalPrize" column="total_prize"/>
+        <result property="firstPrize" column="first_prize"/>
+        <result property="applyUrl" column="apply_url"/>
+    </resultMap>
+
+
+    <insert id="insertContestPost" parameterType="com.geonpil.domain.ContestPost">
+        INSERT INTO contest_post (
+        contest_id,
+        subtitle,
+        poster_url,
+        start_date,
+        end_date,
+        host_name,
+        target,
+        total_prize,
+        first_prize,
+        tags,
+        past_winner_info,
+        apply_url,
+        category_id
+        )
+        VALUES (
+        #{postId},
+        #{subtitle},
+        #{posterUrl},
+        #{startDate},
+        #{endDate},
+        #{hostName},
+        #{target},
+        #{totalPrize},
+        #{firstPrize},
+        #{tags},
+        #{pastWinnerInfo},
+        #{applyUrl},
+        #{category_id}
+        )
+    </insert>
+
+
+    <select id="findAllContests" resultMap="contestPostResultMap">
+        SELECT
+        b.post_id,
+        b.title,
+        b.view_count,
+        b.created_at,
+        ct.category_name,
+        c.subtitle,
+        c.host_name,
+        c.poster_url,
+        c.start_date,
+        c.end_date,
+        c.target,
+        c.total_prize,
+        c.first_prize
+        FROM board b
+        JOIN contest_post c ON b.post_id = c.contest_id
+        JOIN category ct ON b.category_id = ct.category_id
+        WHERE b.board_code = 3
+        ORDER BY b.created_at DESC
+    </select>
+
+
+    <select id="findContestById" resultMap="contestPostResultMap">
+        SELECT
+        b.post_id,
+        b.user_id,
+        b.title,
+        c.subtitle,
+        b.content,
+        ct.category_name,
+        b.view_count,
+        b.created_at,
+        c.subtitle,
+        c.host_name,
+        c.poster_url,
+        c.start_date,
+        c.end_date,
+        c.target,
+        c.total_prize,
+        c.first_prize,
+        c.apply_url
+        FROM board b
+        JOIN contest_post c ON b.post_id = c.contest_id
+        JOIN category ct ON b.category_id = ct.category_id
+        WHERE b.board_code = 3
+        AND b.is_deleted = false
+        AND b.post_id = #{postId}
+    </select>
+
+    <select id="findContestsByPage" resultMap="contestPostResultMap">
+        SELECT
+        b.post_id,
+        b.title,
+        b.view_count,
+        b.created_at,
+        ct.category_name,
+        c.subtitle,
+        c.host_name,
+        c.poster_url,
+        c.start_date,
+        c.end_date,
+        c.target,
+        c.total_prize,
+        c.first_prize
+        FROM board b
+        JOIN contest_post c ON b.post_id = c.contest_id
+        JOIN category ct ON b.category_id = ct.category_id
+        WHERE b.board_code = 3
+          AND b.is_deleted = 0
+        ORDER BY b.created_at DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+</mapper>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+      th:inline="text">
+
+<th:block layout:fragment="meta">
+    <title>건필 - 공모전 목록</title>
+</th:block>
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/contest.css"/>
+</th:block>
+
+<body>
+<div layout:fragment="content">
+    <div class="board-container">
+        <h2 class="board-header">📢 공모전</h2>
+        <div class="contest-container">
+            <div class="contest-row"
+                 th:each="contest : ${contests}"
+                 th:attr="data-id=${contest.postId}">
+                <div class="poster-thumb-wrapper">
+                    <img th:src="@{${contest.posterUrl}}" alt="포스터" class="poster-thumb">
+                </div>
+
+                <div class="contest-info">
+                    <div class="contest-category" th:text="'[' + ${contest.categoryName} + ']'">카테고리</div>
+                    <div class="contest-title" th:text="${contest.title}">제목</div>
+                    <div class="contest-subtitle" th:text="${contest.subtitle}">공모전 요약 설명...</div>
+                    <div class="contest-host" th:text="'주최: ' + ${contest.hostName}"></div>
+                    <div th:text="'D-' + ${contest.dDay}" class="dday">D-30</div>
+                    <div class="contest-meta" th:text="'조회수: ' + ${contest.viewCount}">조회수: 1234</div>
+                    <div class="contest-meta" th:text="${#dates.format(contest.createdAt, 'yyyy-MM-dd')}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="contest-footer">
+            <div class="pagination">
+                <a th:if="${currentPage > 1}" th:href="@{/contest/list(page=${currentPage - 1})}">◀ 이전</a>
+
+                <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a th:href="@{/contest/list(page=${i}, boardCode = ${boardCode})}"
+                       th:classappend="${i == currentPage} ? 'active' : ''"
+                       th:text="${i}">1</a>
+                  </span>
+
+                <a th:if="${currentPage < totalPages}" th:href="@{/contest/list(page=${currentPage + 1})}">다음 ▶</a>
+            </div>
+
+            <div class="contest-upload">
+                <a th:href="@{/contest/write(boardCode=${boardCode})}" class="basic-btn">✍ 공모전 게시</a>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="boardCode" th:value="${boardCode}"/>
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".contest-row").forEach(row => {
+          row.addEventListener("click", function () {
+                      const id = this.dataset.id;
+                      if (id) {
+                           const boardCode = document.getElementById("boardCode")?.value;
+                           window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
+                        }
+                  });
+              });
+        });
+    </script>
+</th:block>
+</body>
+</html>

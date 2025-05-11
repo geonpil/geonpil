@@ -100,4 +100,6 @@ public class BoardService {
         return new PageResult<>(posts, page, totalPages);
     }
 
+
+
 }

@@ -35,7 +35,7 @@
                            th:title="${post.title}">제목</a>
                     </span>
                     <span class="author" th:text="${post.nickname}">작성자</span>
-                    <span class="date" th:text="${#dates.format(post.createdAt, 'yy-MM-dd')}">25-05-01</span>
+                    <span class="date" th:text="${#dates.format(post.createdAt, 'MM-dd')}">25-05-01</span>
                     <span class="views" th:text="${post.viewCount}">147</span>
                     <span class="likes" th:text="${post.likeCount}">1</span>
                 </div>

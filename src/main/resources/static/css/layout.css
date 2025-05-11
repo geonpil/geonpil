@@ -7,6 +7,12 @@
 }
 
 
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0;
+      }
+    }
+
 /* ========== 헤더 레이아웃 ========== */
 .header {
   background-color: #1F4EB2;
@@ -65,5 +71,7 @@
       "challenge"
       "contest";
     grid-template-columns: 1fr;
+
+    padding : 0;
   }
 }

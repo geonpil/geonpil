@@ -1,0 +1,26 @@
+package com.geonpil.domain;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
+
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class ContestPost extends BoardDTO {
+    private String subtitle;           // 부제목 (요약 설명)
+    private String posterUrl;          // 포스터 이미지 경로
+    private LocalDate startDate;       // 시작일
+    private LocalDate endDate;         // 마감일
+    private String hostName;           // 주최사
+    private String target;             // 응모 대상자
+    private String totalPrize;         // 총 상금
+    private String firstPrize;         // 1등 상금
+    private String tags;               // 태그 문자열 (예: "문학,디자인")
+    private String pastWinnerInfo;     // 수상작 정보
+    private int dDay;                  // 남은 일수 (계산용, DB 저장 X)
+    private String applyUrl;           // 지원 링크
+}

@@ -4,6 +4,7 @@ import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Category;
 import com.geonpil.domain.Comment;
 import com.geonpil.domain.PageResult;
+import com.geonpil.resolver.BoardNameResolver;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
@@ -46,6 +47,7 @@ public class BoardController {
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("page", pageResult.getPage());
         model.addAttribute("totalPages", pageResult.getTotalPages());
+        model.addAttribute("boardName", BoardNameResolver.resolve(boardCode));
         return "board/list"; // templates/board/list.html
     }
 
@@ -93,10 +95,13 @@ public class BoardController {
     @PostMapping("/delete/{id}")
     public String deletePost(@PathVariable Long id,
                              @AuthenticationPrincipal CustomUserDetails userDetails,
+                             @RequestParam int boardCode,
                              RedirectAttributes redirectAttributes) {
         boardService.softDeleteById(id, userDetails.getId()); // 본인 확인 포함
         redirectAttributes.addFlashAttribute("message", "게시글이 삭제되었습니다.");
-        return "redirect:/board/list?boardCode=1"; // 필요 시 boardCode 동적으로 변경
+
+        if(boardCode == 3) return "redirect:/contest/list?boardCode=3";
+        return "redirect:/board/list?boardCode=" + boardCode;
     }
 
     //게시글 좋아요

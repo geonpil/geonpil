@@ -1,0 +1,251 @@
+    .contest-container {
+      display : grid;
+      grid-template-columns : 1fr 1fr;
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+      box-sizing: border-box;
+    }
+
+
+
+
+    /* 공모전 리스트 시작*/
+    .contest-row {
+      display: flex;
+      align-items: stretch;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      gap: 16px;
+      min-height: 160px;
+      cursor: pointer;
+    }
+
+    .contest-row:hover {
+       background-color: #f9f9f9;
+       cursor: pointer;
+    }
+
+
+    .contest-info {
+      display: grid;
+      grid-template-rows: auto auto auto auto auto auto;
+      padding : 16px 0;
+    }
+
+    .contest-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .categoryName {
+        font-size: 13px;
+    }
+
+    .contest-subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-bottom : 6px;
+    }
+
+    .contest-host{
+       font-size: 14px;
+    }
+
+    .contest-meta {
+      font-size: 14px;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dday {
+      color: red;
+      font-weight: bold;
+    }
+
+
+    .contest-upload {
+        margin : auto;
+    }
+
+    .contest-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+    }
+    /* 공모전 리스트 끝 */
+    /* 시작일,마감일 시작 */
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+   flex-wrap: wrap;
+}
+
+.date-range input[type="date"] {
+    width: 140px;
+    min-width: 120px;
+}
+
+.date-separator {
+  margin: 0 4px;
+  font-size: 16px;
+  color: #555;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .checkbox-label {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .date-range {
+    flex-direction: row;
+  }
+}
+    /* 시작일,마감일 시작 끝 */
+
+
+    /* 리스트 썸네일 시작 */
+
+    .poster-thumb-wrapper {
+      position: relative;
+      width: 120px;           /* 너비 조정 가능 (반응형으로 줄이려면 %도 가능) */
+      aspect-ratio: 3 / 4;    /* 📌 3:4 비율 유지 */
+      background-color: #f2f2f2;
+      border-right: 1px solid #ddd;
+      flex-shrink: 0;         /* 포스터가 작아지지 않도록 */
+      overflow: hidden;
+    }
+
+    .poster-thumb {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    /* 리스트 썸네일 끝 */
+
+    /* 상세보기 시작 시작 */
+
+    .contest-container-detail {
+      display : flex;
+      flex-direction : column;
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+      box-sizing: border-box;
+    }
+
+
+    .contest-desc-container{
+      gap: 20px;
+      width : 100%;
+      margin: auto;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-sizing: border-box;
+    }
+
+    .contest-detail-title{
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .contest-detail-subtitle{
+      font-size: 16px;
+      color: #666;
+      margin-bottom : 6px;
+    }
+
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 100%;
+      align-items: stretch;
+    }
+
+    .info-row {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #ddd;
+      padding: 8px 10px;
+      background-color: #fff;
+      margin: 0;
+      line-height: 1.2;
+      box-sizing: border-box;
+    }
+
+    .info-label {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .info-value {
+      font-size: 15px;
+      color: #555;
+    }
+
+    .contest-desc-wrapper {
+       display: grid;
+       grid-template-columns: 1fr 0.5fr;
+       gap: 20px;
+       margin: auto;
+       align-items: start;
+       width : 100%;
+    }
+
+    .post-image-wrapper{
+      width: 300px;
+      aspect-ratio: 3 / 4; /* ✅ 3:4 세로형 비율 유지 */
+      overflow: hidden;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #f8f8f8;
+      flex-shrink: 0;
+    }
+
+    /* ✅ 모바일 대응 */
+    @media (max-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr; /* 한 열로 떨어지게 */
+      }
+
+      .contest-desc-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+
+    }
+
+    /* 상세보기 시작 끝 */
+
+    /* 모바일 시작*/
+    @media (max-width: 768px) {
+      .contest-container {
+        grid-template-columns: 1fr;
+        padding : 0;
+      }
+    }
+    /* 모바일 끝*/
