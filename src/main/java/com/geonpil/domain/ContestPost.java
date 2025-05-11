@@ -23,4 +23,6 @@ public class ContestPost extends BoardDTO {
     private String pastWinnerInfo;     // 수상작 정보
     private int dDay;                  // 남은 일수 (계산용, DB 저장 X)
     private String applyUrl;           // 지원 링크
+    private String contactInfo;           // 문의 주소
+
 }

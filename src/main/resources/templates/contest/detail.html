@@ -38,10 +38,6 @@
                         <span class="info-value" th:text="${post.categoryName}">카테고리</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">지원대상</span>
-                        <span class="info-value" th:text="${post.target}"></span>
-                    </div>
-                    <div class="info-row">
                         <span class="info-label">신청기간</span>
                         <span class="info-value"  th:text="${#temporals.format(post.startDate, 'yyyy-MM-dd')} + ' ~ ' + ${#temporals.format(post.endDate, 'yyyy-MM-dd')}">
                         <span class="dday" th:text = "${post.dDay}"> </span>
@@ -52,8 +48,8 @@
                         <span class="info-value" th:text="${post.totalPrize}"></span>
                     </div>
                     <div class="info-row">
-                         <span class="info-label">1등 상금</span>
-                        <span class="info-value" th:text="${post.firstPrize}"></span>
+                         <span class="info-label">문의정보</span>
+                        <span class="info-value" th:text="${post.contactInfo}"></span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">지원링크</span>

@@ -21,6 +21,7 @@
         <result property="totalPrize" column="total_prize"/>
         <result property="firstPrize" column="first_prize"/>
         <result property="applyUrl" column="apply_url"/>
+        <result property="contactInfo" column="contact_info"/>
     </resultMap>
 
 
@@ -38,7 +39,7 @@
         tags,
         past_winner_info,
         apply_url,
-        category_id
+        contact_info
         )
         VALUES (
         #{postId},
@@ -53,7 +54,7 @@
         #{tags},
         #{pastWinnerInfo},
         #{applyUrl},
-        #{category_id}
+        #{contactInfo}
         )
     </insert>
 
@@ -99,7 +100,8 @@
         c.target,
         c.total_prize,
         c.first_prize,
-        c.apply_url
+        c.apply_url,
+        c.contact_info
         FROM board b
         JOIN contest_post c ON b.post_id = c.contest_id
         JOIN category ct ON b.category_id = ct.category_id
