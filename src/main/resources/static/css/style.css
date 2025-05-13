@@ -6,6 +6,7 @@
 @import url('/css/board.css');
 @import url('/css/components.css');
 @import url('/css/form.css');
+@import url('/css/contest.css');
 
 :root {
   --primary-color: #1F4EB2;

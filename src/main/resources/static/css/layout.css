@@ -52,7 +52,7 @@
   grid-template-areas:
     "community contest"
     "challenge contest";
-  grid-template-columns: 1.3fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 24px;
   max-width: 1200px;
   margin: 0 auto;

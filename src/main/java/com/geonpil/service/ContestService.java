@@ -80,5 +80,15 @@ public class ContestService {
     }
 
 
+    public List<ContestPost> findLatestContest(int limit){
+        List<ContestPost> contestPosts = contestMapper.findLatestContest(limit);
+
+        //dday 설정
+        for(ContestPost post : contestPosts){
+            post.setDDay(DateUtils.calculateDDay(post.getEndDate()));
+        }
+
+        return contestPosts;
+    }
 
 }

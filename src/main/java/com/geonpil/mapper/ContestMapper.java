@@ -19,4 +19,7 @@ public interface ContestMapper {
     List<ContestPost> findContestsByPage(@Param("offset")int offset, @Param("size") int size);
 
     void updateContestPost(ContestPost contestPost);
+
+
+    List<ContestPost> findLatestContest(int limit);
     }

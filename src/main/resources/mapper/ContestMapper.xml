@@ -150,4 +150,30 @@
         contact_info = #{contactInfo}
         WHERE contest_id = #{postId}
     </update>
+
+
+
+    <select id="findLatestContest" resultMap="contestPostResultMap">
+        SELECT
+        b.post_id,
+        b.title,
+        b.view_count,
+        b.created_at,
+        ct.category_name,
+        c.subtitle,
+        c.host_name,
+        c.poster_url,
+        c.start_date,
+        c.end_date,
+        c.target,
+        c.total_prize,
+        c.first_prize
+        FROM board b
+        JOIN contest_post c ON b.post_id = c.contest_id
+        JOIN category ct ON b.category_id = ct.category_id
+        WHERE b.board_code = 3
+        AND b.is_deleted = 0
+        ORDER BY b.created_at DESC
+        LIMIT #{limit}
+    </select>
 </mapper>
