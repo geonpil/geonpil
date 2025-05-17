@@ -8,6 +8,7 @@ import com.geonpil.resolver.BoardNameResolver;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.geonpil.security.CustomUserDetails;
 
+import java.util.Arrays;
 import java.util.List;
+
 
 
 @Controller
@@ -37,12 +40,19 @@ public class BoardController {
 
     @GetMapping("/list")
     public String list(@RequestParam("boardCode") int boardCode,
+                       @RequestParam(required = false) List<Long> categoryIds,
                        @RequestParam(value = "page", defaultValue = "1") int page,
                                                         Model model) {
 
         int size = 10;
-        PageResult<BoardDTO> pageResult= boardService.findByPage(boardCode,page,size);
 
+        PageResult<BoardDTO> pageResult= boardService.findByPage(boardCode,categoryIds, page,size);
+
+
+        List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
+
+
+        model.addAttribute("categories", categories);
         model.addAttribute("posts", pageResult.getPosts());
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("page", pageResult.getPage());
@@ -148,6 +158,25 @@ public class BoardController {
 
         boardService.updatePost(id, updatedPost, userDetails.getId());
         return "redirect:/board/list/detail/" + id + "?boardCode=" + updatedPost.getBoardCode();
+    }
+
+
+    // 게시글 fragment 반환
+    @GetMapping("/list/fragment")
+    public String listFragment(@RequestParam("boardCode") int boardCode,
+                               @RequestParam(required = false) List<Long> categoryIds,
+                               @RequestParam(value = "page", defaultValue = "1") int page,
+                               Model model) {
+        int size = 10;
+
+        PageResult<BoardDTO> pageResult = boardService.findByPage(boardCode, categoryIds, page, size);
+
+        model.addAttribute("posts", pageResult.getPosts());
+        model.addAttribute("boardCode", boardCode);
+        model.addAttribute("page", pageResult.getPage());
+        model.addAttribute("totalPages", pageResult.getTotalPages());
+
+        return "board/post-list :: postListFragment";
     }
 
 }

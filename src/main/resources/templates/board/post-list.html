@@ -1,0 +1,42 @@
+<!-- 게시글 목록 + 페이지네이션 조각 -->
+<div id="post-list" class="board-list" th:fragment="postListFragment(posts, page, totalPages, boardCode)">
+    <div class="board-list-header">
+        <span>카테고리</span>
+        <span>제목</span>
+        <span>작성자</span>
+        <span>작성일</span>
+        <span>조회</span>
+        <span>추천</span>
+    </div>
+
+    <div th:if="${#lists.isEmpty(posts)}" class="empty-message">
+        등록된 글이 없어요.
+    </div>
+
+    <div class="board-row" th:each="post : ${posts}">
+        <span class="category" th:text="${post.categoryName}">일반</span>
+        <span class="title">
+      <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
+         th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
+         th:title="${post.title}">제목</a>
+    </span>
+        <span class="author" th:text="${post.nickname}">작성자</span>
+        <span class="date" th:text="${#dates.format(post.createdAt, 'MM-dd')}">25-05-01</span>
+        <span class="views" th:text="${post.viewCount}">147</span>
+        <span class="likes" th:text="${post.likeCount}">1</span>
+    </div>
+
+    <div class="board-footer">
+        <div class="pagination">
+            <button th:if="${page > 1}" th:text="'◀ 이전'" th:onclick="'fetchFilteredPosts(' + (${page} - 1) + ')'"></button>
+
+            <button th:each="i : ${#numbers.sequence(1, totalPages)}"
+                    th:text="${i}"
+                    th:classappend="${i == page} ? 'active'"
+                    th:onclick="'fetchFilteredPosts(' + ${i} + ')'">
+            </button>
+
+            <button th:if="${page < totalPages}" th:text="'다음 ▶'" th:onclick="'fetchFilteredPosts(' + (${page} + 1) + ')'"></button>
+        </div>
+    </div>
+</div>

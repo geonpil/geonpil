@@ -111,9 +111,10 @@
 
 .board-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding-top: 10px;
+  margin-bottom: 10px;
 }
 
 /* 페이지내이션 시작 */
@@ -124,7 +125,7 @@
 }
 
 
-.pagination a {
+.pagination button {
   display: inline-block;
   padding: 6px 12px;
   border: 1px solid #ccc;
@@ -135,12 +136,12 @@
   transition: all 0.2s ease;
 }
 
-.pagination a:hover {
+.pagination button:hover {
   background-color: #f0f0f0;
   color : black;
 }
 
-.pagination a.active {
+.pagination button.active {
   background-color: var(--primary-color);
   color: #fff;
   border-color: #007bff;
@@ -148,6 +149,11 @@
 }
 
 /* 페이지내이션 끝 */
+
+.write-btn {
+  margin-top : 10px;
+}
+
 
 .write-btn a {
   font-size: 0.9rem;
@@ -446,3 +452,28 @@
   color: #999;
 }
 /* 메인화면 게시글 끝 */
+
+/* 카테고리 디자인 */
+.category-filter {
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.category-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* 카테고리 디자인 끝*/

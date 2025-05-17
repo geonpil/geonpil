@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -75,7 +76,8 @@ public class ContestService {
     }
 
     public int getTotalPageCount(int pageSize, int boardCode) {
-        int totalCount = boardMapper.countAll(boardCode);
+        List<Long> categoryIds = new ArrayList<>(); // 임시
+        int totalCount = boardMapper.countAll(boardCode, categoryIds);
         return (int) Math.ceil((double) totalCount / pageSize);
     }
 

@@ -143,6 +143,12 @@
         JOIN category c ON b.category_id = c.category_id
         JOIN users u ON b.user_id = u.id
         WHERE b.board_code = #{boardCode}
+        <if test="categoryIds != null and categoryIds.size > 0">
+            AND c.category_id IN
+            <foreach item="id" collection="categoryIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
         AND b.is_deleted = 0
         ORDER BY b.created_at DESC
         LIMIT #{size} OFFSET #{offset}
@@ -151,8 +157,14 @@
 
     <select id="countAll" resultType="int">
         SELECT COUNT(*)
-        FROM board
+        FROM board b
         WHERE board_code = #{boardCode}
         AND is_deleted = 0
+        <if test="categoryIds != null and categoryIds.size > 0">
+            AND b.category_id IN
+            <foreach item="id" collection="categoryIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
     </select>
 </mapper>

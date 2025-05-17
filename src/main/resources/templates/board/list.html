@@ -13,52 +13,33 @@
     <div class="board-header" th:text = "${boardName}">게시판 이름</div>
     <div class="board-wrapper">
         <div class="board-container">
-            <div class="board-list">
-                <div class="board-list-header">
-                    <span>카테고리</span>
-                    <span>제목</span>
-                    <span>작성자</span>
-                    <span>작성일</span>
-                    <span>조회</span>
-                    <span>추천</span>
-                </div>
+            <div class="category-filter">
+                <!-- 전체 버튼 -->
+                <button class="category-btn"
+                        data-id=""
+                        onclick="selectAllCategories(this)">
+                    전체
+                </button>
 
-                <div th:if="${#lists.isEmpty(posts)}" class="empty-message">
-                    등록된 글이 없어요.
-                </div>
-                <!-- 게시글 행 -->
-                <div class="board-row" th:each="post : ${posts}">
-                    <span class="category" th:text="${post.categoryName}">일반</span>
-                    <span class="title">
-                        <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
-                           th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
-                           th:title="${post.title}">제목</a>
-                    </span>
-                    <span class="author" th:text="${post.nickname}">작성자</span>
-                    <span class="date" th:text="${#dates.format(post.createdAt, 'MM-dd')}">25-05-01</span>
-                    <span class="views" th:text="${post.viewCount}">147</span>
-                    <span class="likes" th:text="${post.likeCount}">1</span>
-                </div>
+                <!-- 카테고리 버튼 -->
+                <button type="button"
+                        th:each="cat : ${categories}"
+                        th:data-id="${cat.id}"
+                        th:text="${cat.categoryName}"
+                        class="category-btn"
+                        onclick="toggleCategory(this)">
+                </button>
             </div>
 
-            <div class="board-footer">
-                <div class="pagination">
-                    <a th:if="${page > 1}"
-                       th:href="@{/board/list(page=${page - 1}, boardCode=${boardCode})}">◀ 이전</a>
-
-                    <a th:each = "i : ${#numbers.sequence(1,totalPages)}"
-                       th:href = "@{/board/list(page=${i}, boardCode = ${boardCode})}"
-                       th:classappend = "${i == page} ? 'active'"
-                       th:text="${i}">1</a>
-
-
-                    <a th:if="${page < totalPages}"
-                       th:href="@{/board/list(page=${page + 1}, boardCode=${boardCode})}">다음 ▶</a>
-                </div>
-                <div class="write-btn">
-                    <a th:href="@{/board/write(boardCode=${boardCode})}" class="basic-btn">✍ 글쓰기</a>
-                </div>
+            <div id="post-list" class="board-list"
+                 th:replace="~{board/post-list :: postListFragment(${posts}, ${page}, ${totalPages}, ${boardCode})}">
             </div>
+
+
+            <div class="write-btn">
+                <a th:href="@{/board/write(boardCode=${boardCode})}" class="basic-btn">✍ 글쓰기</a>
+            </div>
+
 
         </div>
 
@@ -70,6 +51,90 @@
     </div>
 </div>
     <th:block layout:fragment="script">
+        <script>
+            const selectedCategories = new Set();
+
+            function toggleCategory(btn) {
+              const id = btn.dataset.id;
+
+              document.querySelector('.category-btn[data-id=""]').classList.remove("active");
+
+              if (selectedCategories.has(id)) {
+                selectedCategories.delete(id);
+                btn.classList.remove("active");
+              } else {
+                selectedCategories.add(id);
+                btn.classList.add("active");
+              }
+
+              fetchFilteredPosts();
+            }
+
+            function fetchFilteredPosts(page = 1) {
+              const params = new URLSearchParams();
+
+              highlightSelectedButtons()
+
+              if (selectedCategories.size > 0) {
+                params.set("categoryIds", Array.from(selectedCategories).join(","));
+              }
+
+              const boardCode = new URLSearchParams(window.location.search).get("boardCode");
+              if (boardCode) {
+                params.set("boardCode", boardCode);
+              }
+
+              params.set("page", page);
+
+              fetch("/board/list/fragment?" + params.toString())
+                .then(res => res.text())
+                .then(html => {
+                  document.getElementById("post-list").innerHTML = html;
+                })
+                .catch(err => console.error("게시글 불러오기 실패", err));
+            }
+
+
+            function selectAllCategories(btn) {
+                  // 모든 카테고리 버튼 비활성화
+                  document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+
+                  // 전체 버튼만 활성화
+                  btn.classList.add("active");
+
+                  // 선택된 카테고리 Set 비우기
+                  selectedCategories.clear();
+
+                  // 전체 게시글 요청
+                  fetchFilteredPosts();
+                }
+
+
+
+        function highlightSelectedButtons() {
+          const allBtn = document.querySelector('.category-btn[data-id=""]');
+
+          document.querySelectorAll(".category-btn").forEach(btn => {
+            const id = btn.dataset.id;
+
+            if (id === "") {
+              // 전체 버튼은 선택된 카테고리가 아무것도 없을 때만 활성화
+              if (selectedCategories.size === 0) {
+                btn.classList.add("active");
+              } else {
+                btn.classList.remove("active");
+              }
+            } else {
+              // 일반 카테고리 버튼
+              if (selectedCategories.has(id)) {
+                btn.classList.add("active");
+              } else {
+                btn.classList.remove("active");
+              }
+            }
+          });
+        }
+        </script>
     </th:block>
 </body>
 </html>

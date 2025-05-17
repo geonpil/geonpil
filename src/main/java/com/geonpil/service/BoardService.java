@@ -90,11 +90,11 @@ public class BoardService {
         return boardMapper.findLatestByBoardCode(boardCode, limit);
     }
 
-    public PageResult<BoardDTO> findByPage(int boardCode, int page, int size) {
+    public PageResult<BoardDTO> findByPage(int boardCode,List<Long> categoryIds, int page, int size) {
         int offset = (page - 1) * size;
 
-        List<BoardDTO> posts = boardMapper.findByPage(boardCode, offset, size);
-        int totalCount = boardMapper.countAll(boardCode);
+        List<BoardDTO> posts = boardMapper.findByPage(boardCode, categoryIds, offset, size);
+        int totalCount = boardMapper.countAll(boardCode, categoryIds);
         int totalPages = (int) Math.ceil((double) totalCount / size);
 
         return new PageResult<>(posts, page, totalPages);
