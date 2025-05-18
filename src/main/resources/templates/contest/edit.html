@@ -31,13 +31,18 @@
       </div>
 
       <div class="form-group">
-        <label for="categoryId">분류</label>
-        <select id="categoryId" name="categoryId" required>
-          <option value="">-- 분류 선택 --</option>
+        <label class="form-label">장르</label>
+        <div class="category-checkbox-group">
           <th:block th:each="cat : ${categories}">
-            <option th:value="${cat.id}" th:text="${cat.categoryName}" th:selected="${cat.id == post.categoryId}"></option>
+            <label class="category-checkbox">
+              <input type="checkbox"
+                     name="categoryIds"
+                     th:value="${cat.id}"
+                     th:checked="${post.categoryIdsFromRaw.contains(cat.id)}" />
+              <span th:text="${cat.categoryName}">장르명</span>
+            </label>
           </th:block>
-        </select>
+        </div>
       </div>
 
 
@@ -105,7 +110,6 @@
     const endDate = document.getElementById("endDate");
     const today = new Date();
 
-
     document.addEventListener("DOMContentLoaded", function () {
         editor.setHTML(document.getElementById("content").value);
 
@@ -120,25 +124,42 @@
         const tdd = String(tomorrow.getDate()).padStart(2, '0');
         const tomorrowStr = `${yyyy}-${tmm}-${tdd}`;
 
-        startDate.setAttribute("max", todayStr);     // 시작일은 오늘까지만
+<!--        startDate.setAttribute("max", todayStr);     // 시작일은 오늘까지만-->
         endDate.setAttribute("min", tomorrowStr);    // 종료일은 내일부터
       });
 
 
 document.getElementById("update-btn").addEventListener("click", async function () {
+
+  const checkedCategoryInputs = document.querySelectorAll('input[name="categoryIds"]:checked');
+  const categoryIds = Array.from(checkedCategoryInputs).map(input => input.value);
+
+  if (checkedCategoryInputs.length === 0) {
+    alert("장르(카테고리)를 하나 이상 선택해주세요.");
+    // 선택 항목이 없으면 중단
+    return;
+  }
+
   const start = new Date(startDate.value);
   const end = new Date(endDate.value);
   const boardCode = document.getElementById("boardCode").value;
   today.setHours(0, 0, 0, 0);
 
-  if (start > today) {
-    alert("시작일은 오늘 이후로 설정할 수 없습니다.");
-    return;
-  }
-  if (end <= today) {
-    alert("종료일은 오늘보다 이후여야 합니다.");
-    return;
-  }
+
+
+
+    <!--  if (start > today) {-->
+    <!--    alert("시작일은 오늘 이후로 설정할 수 없습니다.");-->
+    <!--    return;-->
+    <!--  }-->
+
+      if (end <= today) {
+        alert("종료일은 오늘보다 이후여야 합니다.");
+        return;
+      } else if(end < start) {
+        alert("시작일은 종료일 이전이어야 합니다.");
+        return;
+      }
 
   const data = {
     title: document.getElementById("title").value,
@@ -150,7 +171,7 @@ document.getElementById("update-btn").addEventListener("click", async function (
     boardCode: document.getElementById("boardCode").value,
     applyUrl : document.getElementById("applyUrl").value,
     contactInfo : document.getElementById("contactInfo").value,
-    categoryId : document.getElementById("categoryId").value,
+    categoryIds: categoryIds,
     postId : document.getElementById("postId").value,
     content: editor.getHTML()
   };
