@@ -39,17 +39,17 @@ public class ContestService {
 
         long postId = contest.getPostId();
 
-        for(Long categoryId : categoryIds){
+        for (Long categoryId : categoryIds) {
             contestMapper.insertContestCategory(postId, categoryId); // 카테고리 필드 처리
         }
     }
 
 
-    public List<ContestPost> findContestByPage(){
+    public List<ContestPost> findContestByPage() {
         List<ContestPost> contestPosts = contestMapper.findAllContests();
-            
+
         //dday 설정
-        for(ContestPost post : contestPosts){
+        for (ContestPost post : contestPosts) {
             post.setDDay(DateUtils.calculateDDay(post.getEndDate()));
         }
 
@@ -57,7 +57,7 @@ public class ContestService {
     }
 
     public void updateContestPost(ContestPost contestPost,
-                                  Long id){
+                                  Long id) {
         Long postId = contestPost.getPostId();
 
         if (!contestPost.getUserId().equals(id)) {
@@ -69,16 +69,16 @@ public class ContestService {
 
     }
 
-    public ContestPost findContestById(Long postId){
+    public ContestPost findContestById(Long postId) {
         ContestPost contestPost = contestMapper.findContestById(postId);
         contestPost.setDDay(DateUtils.calculateDDay(contestPost.getEndDate()));
         return contestPost;
     }
 
-    public List<ContestPost> findContestsByPage(int page, int size, List<Long> categoryIds) {
+    public List<ContestPost> findContestsByPage(int page, int size, List<Long> categoryIds, String sort) {
         int offset = (page - 1) * size;
 
-        return contestMapper.findContestsByPage(offset, size, categoryIds);
+        return contestMapper.findContestsByPage(offset, size, categoryIds, sort);
     }
 
     public int getTotalPageCount(int pageSize, int boardCode, List<Long> categoryIds) {
@@ -88,11 +88,11 @@ public class ContestService {
     }
 
 
-    public List<ContestPost> findLatestContest(int limit){
+    public List<ContestPost> findLatestContest(int limit) {
         List<ContestPost> contestPosts = contestMapper.findLatestContest(limit);
 
         //dday 설정
-        for(ContestPost post : contestPosts){
+        for (ContestPost post : contestPosts) {
             post.setDDay(DateUtils.calculateDDay(post.getEndDate()));
         }
 

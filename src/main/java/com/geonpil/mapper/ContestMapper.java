@@ -16,9 +16,13 @@ public interface ContestMapper {
 
     ContestPost findContestById(Long postId);
 
-    List<ContestPost> findContestsByPage(@Param("offset")int offset,
+
+
+    List<ContestPost> findContestsByPage(@Param("offset") int offset,
                                          @Param("size") int size,
-                                            @Param("categoryIds") List<Long> categoryIds);
+                                         @Param("categoryIds") List<Long> categoryIds,
+                                         @Param("sort") String sort)
+            ;
 
     void updateContestPost(ContestPost contestPost);
 
@@ -31,9 +35,9 @@ public interface ContestMapper {
 
 
     int contestCountAll(@Param("boardCode") int boardCode
-                        , @Param("categoryIds") List<Long> categoryIds );
+            , @Param("categoryIds") List<Long> categoryIds);
 
-    }
+}
 
 
 

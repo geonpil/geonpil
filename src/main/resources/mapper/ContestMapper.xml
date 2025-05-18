@@ -154,7 +154,14 @@
             </foreach>
         </if>
         GROUP BY b.post_id
-        ORDER BY b.created_at DESC
+        <choose>
+            <when test="sort == 'deadline'">
+                ORDER BY c.end_date ASC
+            </when>
+            <otherwise>
+                ORDER BY b.created_at DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{offset}
     </select>
 

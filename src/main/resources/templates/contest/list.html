@@ -78,6 +78,8 @@
 
 
         const selectedCategories = new Set();
+        let currentSort = "recent";
+
 
         function toggleCategory(btn) {
           const id = btn.dataset.id;
@@ -128,6 +130,7 @@
           }
 
           params.set("page", page);
+          params.set("sort", currentSort);
 
           fetch("/contest/list/fragment?" + params.toString())
             .then(res => res.text())
@@ -138,6 +141,15 @@
             .catch(err => console.error("게시글 불러오기 실패", err));
         }
 
+
+
+        function changeSort(btn) {
+          document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          currentSort = btn.dataset.sort;
+          fetchFilteredPosts(); // 정렬 기준 포함해서 재요청
+        }
     </script>
 </th:block>
 </body>

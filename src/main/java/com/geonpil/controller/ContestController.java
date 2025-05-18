@@ -40,8 +40,10 @@ public class ContestController {
                        @RequestParam("boardCode") int boardCode) {
         int pageSize = 8;
         List<Long> categoryIds = new ArrayList<>();
+        String sort = "recent";
 
-        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds);
+
+        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort);
         
         //카테고리목록 가져오기
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
@@ -98,10 +100,11 @@ public class ContestController {
     public String listFragment(@RequestParam("boardCode") int boardCode,
                                @RequestParam(required = false) List<Long> categoryIds,
                                @RequestParam(value = "page", defaultValue = "1") int page,
+                               @RequestParam("sort") String sort,
                                Model model) {
         int pageSize = 8;
 
-        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds);
+        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort);
 
         int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds);
 
