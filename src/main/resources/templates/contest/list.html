@@ -58,22 +58,28 @@
 <th:block layout:fragment="script">
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".contest-row").forEach(row => {
-          row.addEventListener("click", function () {
-                      const id = this.dataset.id;
-                      if (id) {
-                           const boardCode = document.getElementById("boardCode")?.value;
-                           window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
-                        }
-                  });
-              });
+
+            bindContestClickEvents();
 
              // ✅ '전체' 버튼에 .active 클래스 부여
-              const allBtn = document.querySelector('.category-btn[data-id=""]');
-              if (allBtn) allBtn.classList.add("active");
+            const allBtn = document.querySelector('.category-btn[data-id=""]');
+            if (allBtn) allBtn.classList.add("active");
 
-
+           const recentSortBtn = document.querySelector('.sort-btn[data-sort="recent"]');
+            if (recentSortBtn) recentSortBtn.classList.add("active");
         });
+
+        function bindContestClickEvents() {
+          document.querySelectorAll(".contest-row").forEach(row => {
+            row.addEventListener("click", function () {
+              const id = this.dataset.id;
+              if (id) {
+                const boardCode = document.getElementById("boardCode")?.value;
+                window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
+              }
+            });
+          });
+        }
 
 
 
@@ -137,6 +143,7 @@
             .then(html => {
               document.getElementById("contest-list").innerHTML = html;
               highlightSelectedButtons();
+              bindContestClickEvents();
             })
             .catch(err => console.error("게시글 불러오기 실패", err));
         }

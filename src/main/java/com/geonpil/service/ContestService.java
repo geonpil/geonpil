@@ -77,8 +77,13 @@ public class ContestService {
 
     public List<ContestPost> findContestsByPage(int page, int size, List<Long> categoryIds, String sort) {
         int offset = (page - 1) * size;
+        List<ContestPost> contestPosts = contestMapper.findContestsByPage(offset, size, categoryIds, sort);
 
-        return contestMapper.findContestsByPage(offset, size, categoryIds, sort);
+        for (ContestPost post : contestPosts) {
+            post.setDDay(DateUtils.calculateDDay(post.getEndDate()));
+        }
+
+        return contestPosts;
     }
 
     public int getTotalPageCount(int pageSize, int boardCode, List<Long> categoryIds) {
