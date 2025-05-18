@@ -80,7 +80,9 @@ public class BoardService {
 
         existing.setTitle(updatedPost.getTitle());
         existing.setContent(updatedPost.getContent());
-        existing.setCategoryId(updatedPost.getCategoryId());
+
+        if(updatedPost.getCategoryId() != null) existing.setCategoryId(updatedPost.getCategoryId());
+
         existing.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         boardMapper.updatePost(existing);
     }

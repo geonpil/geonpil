@@ -59,12 +59,28 @@ public class ContestService {
     public void updateContestPost(ContestPost contestPost,
                                   Long id) {
         Long postId = contestPost.getPostId();
+        List<Long> categoryIds = contestPost.getCategoryIds();
 
         if (!contestPost.getUserId().equals(id)) {
             throw new AccessDeniedException("수정 권한이 없습니다.");
         }
 
+
+
+
+
         boardService.updatePost(postId, contestPost, id);
+
+        contestMapper.deleteCategoriesByPostId(postId);
+
+        System.out.println("디버그그 : " +  contestPost.getCategoryIds());
+
+
+        for(Long categoryId : categoryIds){
+            System.out.println("디버그 : " + categoryId);
+            contestMapper.insertContestCategory(postId, categoryId);
+        }
+
         contestMapper.updateContestPost(contestPost);
 
     }

@@ -75,7 +75,7 @@
         u.id AS userId
         FROM board b
         JOIN users u ON b.user_id = u.id
-        JOIN category c ON b.category_id = c.category_id
+        LEFT OUTER JOIN category c ON b.category_id = c.category_id
         WHERE b.post_id = #{postId}
     </select>
 

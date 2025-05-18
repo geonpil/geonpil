@@ -15,6 +15,7 @@
         <result property="categoryName" column="category_name"/>
         <result property="categoryNames" column="category_names"/>
         <result property="categoryId" column="category_id"/>
+        <result property="categoryIdsRaw" column="category_ids"/>
         <result property="subtitle" column="subtitle"/>
         <result property="hostName" column="host_name"/>
         <result property="posterUrl" column="poster_url"/>
@@ -72,6 +73,12 @@
         #{categoryId}
         )
     </insert>
+
+
+    <delete id="deleteCategoriesByPostId" parameterType="long">
+        DELETE FROM contest_category
+        WHERE contest_id = #{postId}
+    </delete>
 
     <select id="findAllContests" resultMap="contestPostResultMap">
         SELECT
@@ -147,13 +154,17 @@
         LEFT JOIN category cat ON cc.category_id = cat.category_id
         WHERE b.board_code = 3
         AND b.is_deleted = 0
+        GROUP BY b.post_id
         <if test="categoryIds != null and categoryIds.size > 0">
-            AND cc.category_id IN
+            HAVING
+            (
+            COUNT(DISTINCT CASE WHEN cat.category_id IN
             <foreach item="id" collection="categoryIds" open="(" separator="," close=")">
                 #{id}
             </foreach>
+            THEN cat.category_id END) > 0
+            )
         </if>
-        GROUP BY b.post_id
         <choose>
             <when test="sort == 'deadline'">
                 ORDER BY c.end_date ASC

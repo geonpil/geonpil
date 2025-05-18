@@ -37,6 +37,8 @@ public interface ContestMapper {
     int contestCountAll(@Param("boardCode") int boardCode
             , @Param("categoryIds") List<Long> categoryIds);
 
+
+    void deleteCategoriesByPostId(Long postId);
 }
 
 

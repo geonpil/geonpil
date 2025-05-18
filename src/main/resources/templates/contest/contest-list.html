@@ -15,7 +15,7 @@
             </div>
 
             <div class="contest-info">
-                <div class="contest-category" th:text="'[' + ${contest.categoryName} + ']'">카테고리</div>
+                <div class="contest-category" th:text="'[' + ${contest.categoryNames} + ']'">카테고리</div>
                 <div class="contest-title" th:text="${contest.title}">제목</div>
                 <div class="contest-subtitle" th:text="${contest.subtitle}">공모전 요약 설명...</div>
                 <div class="contest-host" th:text="'주최: ' + ${contest.hostName}"></div>
