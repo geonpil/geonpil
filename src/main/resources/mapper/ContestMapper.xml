@@ -189,7 +189,6 @@
         b.view_count,
         b.created_at,
         b.board_code,
-        ct.category_name,
         c.subtitle,
         c.host_name,
         c.poster_url,
@@ -197,12 +196,15 @@
         c.end_date,
         c.target,
         c.total_prize,
-        c.first_prize
+        c.first_prize,
+        GROUP_CONCAT(cat.category_name ORDER BY cat.category_name SEPARATOR ',') AS category_names
         FROM board b
         JOIN contest_post c ON b.post_id = c.contest_id
-        JOIN category ct ON b.category_id = ct.category_id
+        LEFT JOIN contest_category cc ON b.post_id = cc.contest_id
+        LEFT JOIN category cat ON cc.category_id = cat.category_id
         WHERE b.board_code = 3
         AND b.is_deleted = 0
+        GROUP BY b.post_id
         ORDER BY b.created_at DESC
         LIMIT #{limit}
     </select>
