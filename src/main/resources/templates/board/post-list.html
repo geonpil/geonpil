@@ -28,15 +28,16 @@
 
     <div class="board-footer">
         <div class="pagination">
-            <button th:if="${page > 1}" th:text="'◀ 이전'" th:onclick="'fetchFilteredPosts(' + (${page} - 1) + ')'"></button>
+            <button type="button" th:if="${page > 1}" th:text="'◀ 이전'" th:onclick="'fetchFilteredPosts(' + (${page} - 1) + ')'"></button>
 
-            <button th:each="i : ${#numbers.sequence(1, totalPages)}"
+            <button type="button"
+                    th:each="i : ${#numbers.sequence(1, totalPages)}"
                     th:text="${i}"
                     th:classappend="${i == page} ? 'active'"
                     th:onclick="'fetchFilteredPosts(' + ${i} + ')'">
             </button>
 
-            <button th:if="${page < totalPages}" th:text="'다음 ▶'" th:onclick="'fetchFilteredPosts(' + (${page} + 1) + ')'"></button>
+            <button type="button" th:if="${page < totalPages}" th:text="'다음 ▶'" th:onclick="'fetchFilteredPosts(' + (${page} + 1) + ')'"></button>
         </div>
     </div>
 </div>

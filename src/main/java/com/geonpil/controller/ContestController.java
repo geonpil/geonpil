@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,9 +39,17 @@ public class ContestController {
                        @RequestParam(defaultValue = "1") int page,
                        @RequestParam("boardCode") int boardCode) {
         int pageSize = 8;
+        List<Long> categoryIds = new ArrayList<>();
 
-        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize);
-        int totalPages = contestService.getTotalPageCount(pageSize, boardCode);
+        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds);
+        
+        //카테고리목록 가져오기
+        List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
+
+        // 전체페이지 가지고 오기
+        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds);
+
+        model.addAttribute("categories", categories);
         model.addAttribute("contests", contests);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -78,12 +87,30 @@ public class ContestController {
                                 Model model) {
         ContestPost post = contestService.findContestById(id);
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
-
-        System.out.println("디버그 : " + categories.get(0));
-        System.out.println("디버그2 : " + post.getCategoryId());
         model.addAttribute("categories", categories);
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("post", post);
         return "contest/edit";
+    }
+
+
+    @GetMapping("/list/fragment")
+    public String listFragment(@RequestParam("boardCode") int boardCode,
+                               @RequestParam(required = false) List<Long> categoryIds,
+                               @RequestParam(value = "page", defaultValue = "1") int page,
+                               Model model) {
+        int pageSize = 8;
+
+        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds);
+
+        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds);
+
+        model.addAttribute("contests", contests);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("boardCode",boardCode);
+
+
+        return "contest/contest-list :: contestListFragment";
     }
 }

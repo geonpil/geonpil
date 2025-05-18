@@ -16,10 +16,26 @@ public interface ContestMapper {
 
     ContestPost findContestById(Long postId);
 
-    List<ContestPost> findContestsByPage(@Param("offset")int offset, @Param("size") int size);
+    List<ContestPost> findContestsByPage(@Param("offset")int offset,
+                                         @Param("size") int size,
+                                            @Param("categoryIds") List<Long> categoryIds);
 
     void updateContestPost(ContestPost contestPost);
 
 
     List<ContestPost> findLatestContest(int limit);
+
+
+    void insertContestCategory(@Param("postId") long postId,
+                               @Param("categoryId") long categoryId);
+
+
+    int contestCountAll(@Param("boardCode") int boardCode
+                        , @Param("categoryIds") List<Long> categoryIds );
+
     }
+
+
+
+
+

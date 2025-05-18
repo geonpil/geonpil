@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 @RequestMapping("api/contest")
@@ -26,7 +28,7 @@ public class ContestRestController {
     public ResponseEntity<String> create(@RequestBody ContestPost contest
                                         , @AuthenticationPrincipal CustomUserDetails user) {
         contest.setUserId(user.getId());
-        contestService.saveContest(contest); // board + contest_post 저장
+        contestService.saveContest(contest, contest.getCategoryIds()); // board + contest_post 저장
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
     }
 

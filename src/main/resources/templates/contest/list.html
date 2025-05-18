@@ -16,38 +16,37 @@
 <div layout:fragment="content">
     <div class="board-container">
         <h2 class="board-header">📢 공모전</h2>
-        <div class="contest-container">
-            <div class="contest-row"
-                 th:each="contest : ${contests}"
-                 th:attr="data-id=${contest.postId}">
-                <div class="poster-thumb-wrapper">
-                    <img th:src="@{${contest.posterUrl}}" alt="포스터" class="poster-thumb">
-                </div>
 
-                <div class="contest-info">
-                    <div class="contest-category" th:text="'[' + ${contest.categoryName} + ']'">카테고리</div>
-                    <div class="contest-title" th:text="${contest.title}">제목</div>
-                    <div class="contest-subtitle" th:text="${contest.subtitle}">공모전 요약 설명...</div>
-                    <div class="contest-host" th:text="'주최: ' + ${contest.hostName}"></div>
-                    <div th:text="'D-' + ${contest.dDay}" class="dday">D-30</div>
-                    <div class="contest-meta" th:text="'조회수: ' + ${contest.viewCount}">조회수: 1234</div>
-                    <div class="contest-meta" th:text="${#dates.format(contest.createdAt, 'yyyy-MM-dd')}"></div>
-                </div>
-            </div>
+<!--        장르필터-->
+        <div class="category-filter">
+            <button class="category-btn"
+                    data-id=""
+                    onclick="selectAllCategories(this)">
+                전체
+            </button>
+
+            <button type="button"
+                    th:each="cat : ${categories}"
+                    th:data-id="${cat.id}"
+                    th:text="${cat.categoryName}"
+                    class="category-btn"
+                    onclick="toggleCategory(this)">
+            </button>
         </div>
+
+
+        <div class="sort-filter">
+            <button class="sort-btn" data-sort="recent" onclick="changeSort(this)">최신순</button>
+            <button class="sort-btn" data-sort="deadline" onclick="changeSort(this)">마감 임박순</button>
+        </div>
+
+
+
+        <div th:replace="~{contest/contest-list :: contestListFragment(${contests}, ${currentPage}, ${totalPages}, ${boardCode})}">
+        </div>
+
+
         <div class="contest-footer">
-            <div class="pagination">
-                <a th:if="${currentPage > 1}" th:href="@{/contest/list(page=${currentPage - 1})}">◀ 이전</a>
-
-                <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-                    <a th:href="@{/contest/list(page=${i}, boardCode = ${boardCode})}"
-                       th:classappend="${i == currentPage} ? 'active' : ''"
-                       th:text="${i}">1</a>
-                  </span>
-
-                <a th:if="${currentPage < totalPages}" th:href="@{/contest/list(page=${currentPage + 1})}">다음 ▶</a>
-            </div>
-
             <div class="contest-upload">
                 <a th:href="@{/contest/write(boardCode=${boardCode})}" class="basic-btn">✍ 공모전 게시</a>
             </div>
@@ -68,7 +67,77 @@
                         }
                   });
               });
+
+             // ✅ '전체' 버튼에 .active 클래스 부여
+              const allBtn = document.querySelector('.category-btn[data-id=""]');
+              if (allBtn) allBtn.classList.add("active");
+
+
         });
+
+
+
+        const selectedCategories = new Set();
+
+        function toggleCategory(btn) {
+          const id = btn.dataset.id;
+
+          // 전체 버튼 비활성화
+          document.querySelector('.category-btn[data-id=""]').classList.remove("active");
+
+          if (selectedCategories.has(id)) {
+            selectedCategories.delete(id);
+            btn.classList.remove("active");
+          } else {
+            selectedCategories.add(id);
+            btn.classList.add("active");
+          }
+
+          fetchFilteredPosts();
+        }
+
+        function selectAllCategories(btn) {
+          document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedCategories.clear();
+          fetchFilteredPosts();
+        }
+
+        function highlightSelectedButtons() {
+          document.querySelectorAll(".category-btn").forEach(btn => {
+            const id = btn.dataset.id;
+            if (id === "") {
+              btn.classList.toggle("active", selectedCategories.size === 0);
+            } else {
+              btn.classList.toggle("active", selectedCategories.has(id));
+            }
+          });
+        }
+
+
+        function fetchFilteredPosts(page = 1) {
+          const params = new URLSearchParams();
+
+          if (selectedCategories.size > 0) {
+            params.set("categoryIds", Array.from(selectedCategories).join(","));
+          }
+
+          const boardCode = new URLSearchParams(window.location.search).get("boardCode");
+          if (boardCode) {
+            params.set("boardCode", boardCode);
+          }
+
+          params.set("page", page);
+
+          fetch("/contest/list/fragment?" + params.toString())
+            .then(res => res.text())
+            .then(html => {
+              document.getElementById("contest-list").innerHTML = html;
+              highlightSelectedButtons();
+            })
+            .catch(err => console.error("게시글 불러오기 실패", err));
+        }
+
     </script>
 </th:block>
 </body>

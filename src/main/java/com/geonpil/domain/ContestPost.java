@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,5 +25,8 @@ public class ContestPost extends BoardDTO {
     private int dDay;                  // 남은 일수 (계산용, DB 저장 X)
     private String applyUrl;           // 지원 링크
     private String contactInfo;           // 문의 주소
+    private List<Long> categoryIds; // 카테고리들
+    private String categoryNames; // 카테고리들
+
 
 }

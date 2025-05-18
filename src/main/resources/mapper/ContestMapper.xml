@@ -10,8 +10,10 @@
         <result property="userId" column="user_id"/>
         <result property="title" column="title"/>
         <result property="viewCount" column="view_count"/>
+        <result property="boardCode" column="board_code"/>
         <result property="createdAt" column="created_at"/>
         <result property="categoryName" column="category_name"/>
+        <result property="categoryNames" column="category_names"/>
         <result property="categoryId" column="category_id"/>
         <result property="subtitle" column="subtitle"/>
         <result property="hostName" column="host_name"/>
@@ -60,6 +62,17 @@
     </insert>
 
 
+    <insert id="insertContestCategory">
+        INSERT INTO CONTEST_CATEGORY (
+        contest_id,
+        category_id
+        )
+        VALUES (
+        #{postId},
+        #{categoryId}
+        )
+    </insert>
+
     <select id="findAllContests" resultMap="contestPostResultMap">
         SELECT
         b.post_id,
@@ -90,7 +103,33 @@
         b.title,
         c.subtitle,
         b.content,
-        ct.category_name,
+        b.view_count,
+        b.created_at,
+        c.host_name,
+        c.poster_url,
+        c.start_date,
+        c.end_date,
+        c.target,
+        c.total_prize,
+        c.first_prize,
+        c.apply_url,
+        c.contact_info,
+        GROUP_CONCAT(cat.category_name ORDER BY cat.category_name SEPARATOR ',') AS category_names,
+        GROUP_CONCAT(cat.category_id ORDER BY cat.category_id SEPARATOR ',') AS category_ids
+        FROM board b
+        JOIN contest_post c ON b.post_id = c.contest_id
+        LEFT JOIN contest_category cc ON b.post_id = cc.contest_id
+        LEFT JOIN category cat ON cc.category_id = cat.category_id
+        WHERE b.board_code = 3
+        AND b.is_deleted = false
+        AND b.post_id = #{postId}
+        GROUP BY b.post_id
+    </select>
+
+    <select id="findContestsByPage" resultMap="contestPostResultMap">
+        SELECT
+        b.post_id,
+        b.title,
         b.view_count,
         b.created_at,
         c.subtitle,
@@ -101,37 +140,20 @@
         c.target,
         c.total_prize,
         c.first_prize,
-        c.apply_url,
-        c.contact_info,
-        ct.category_id
+        GROUP_CONCAT(cat.category_name ORDER BY cat.category_name SEPARATOR ',') AS category_names
         FROM board b
         JOIN contest_post c ON b.post_id = c.contest_id
-        JOIN category ct ON b.category_id = ct.category_id
+        LEFT JOIN contest_category cc ON b.post_id = cc.contest_id
+        LEFT JOIN category cat ON cc.category_id = cat.category_id
         WHERE b.board_code = 3
-        AND b.is_deleted = false
-        AND b.post_id = #{postId}
-    </select>
-
-    <select id="findContestsByPage" resultMap="contestPostResultMap">
-        SELECT
-        b.post_id,
-        b.title,
-        b.view_count,
-        b.created_at,
-        ct.category_name,
-        c.subtitle,
-        c.host_name,
-        c.poster_url,
-        c.start_date,
-        c.end_date,
-        c.target,
-        c.total_prize,
-        c.first_prize
-        FROM board b
-        JOIN contest_post c ON b.post_id = c.contest_id
-        JOIN category ct ON b.category_id = ct.category_id
-        WHERE b.board_code = 3
-          AND b.is_deleted = 0
+        AND b.is_deleted = 0
+        <if test="categoryIds != null and categoryIds.size > 0">
+            AND cc.category_id IN
+            <foreach item="id" collection="categoryIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        GROUP BY b.post_id
         ORDER BY b.created_at DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
@@ -159,6 +181,7 @@
         b.title,
         b.view_count,
         b.created_at,
+        b.board_code,
         ct.category_name,
         c.subtitle,
         c.host_name,
@@ -175,5 +198,24 @@
         AND b.is_deleted = 0
         ORDER BY b.created_at DESC
         LIMIT #{limit}
+    </select>
+
+
+    <select id="contestCountAll" resultType="int">
+        SELECT COUNT(DISTINCT b.post_id)
+        FROM board b
+        JOIN contest_post c ON b.post_id = c.contest_id
+        LEFT JOIN contest_category cc ON b.post_id = cc.contest_id
+        <if test="categoryIds != null and categoryIds.size > 0">
+            LEFT JOIN category cat ON cc.category_id = cat.category_id
+        </if>
+        WHERE b.board_code = #{boardCode}
+        AND b.is_deleted = 0
+        <if test="categoryIds != null and categoryIds.size > 0">
+            AND cc.category_id IN
+            <foreach item="id" collection="categoryIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
     </select>
 </mapper>

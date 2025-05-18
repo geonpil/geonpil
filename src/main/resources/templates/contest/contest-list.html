@@ -1,0 +1,45 @@
+<div id="contest-list" th:fragment="contestListFragment(contests, currentPage, totalPages, boardCode)">
+    <div class="contest-container">
+
+        <div th:if="${#lists.isEmpty(contests)}" class="empty-message">
+            등록된 공모전이 없습니다.
+        </div>
+
+
+        <div class="contest-row"
+             th:each="contest : ${contests}"
+             th:attr="data-id=${contest.postId}"
+             th:unless="${#lists.isEmpty(contests)}">
+            <div class="poster-thumb-wrapper">
+                <img th:src="@{${contest.posterUrl}}" alt="포스터" class="poster-thumb">
+            </div>
+
+            <div class="contest-info">
+                <div class="contest-category" th:text="'[' + ${contest.categoryName} + ']'">카테고리</div>
+                <div class="contest-title" th:text="${contest.title}">제목</div>
+                <div class="contest-subtitle" th:text="${contest.subtitle}">공모전 요약 설명...</div>
+                <div class="contest-host" th:text="'주최: ' + ${contest.hostName}"></div>
+                <div th:text="'D-' + ${contest.dDay}" class="dday">D-30</div>
+                <div class="contest-meta" th:text="'조회수: ' + ${contest.viewCount}">조회수: 1234</div>
+                <div class="contest-meta" th:text="${#dates.format(contest.createdAt, 'yyyy-MM-dd')}"></div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+        <button th:if="${currentPage > 1}" th:text="'◀ 이전'"
+                th:onclick="'fetchFilteredPosts(' + (${currentPage} - 1) + ')'"></button>
+
+        <button type="button"
+                th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:text="${i}"
+                th:classappend="${i == currentPage} ? 'active'"
+                th:onclick="'fetchFilteredPosts(' + ${i} + ')'">
+        </button>
+
+        <button th:if="${currentPage < totalPages}" th:text="'다음 ▶'"
+                th:onclick="'fetchFilteredPosts(' + (${currentPage} + 1) + ')'"></button>
+    </div>
+</div>

@@ -30,13 +30,27 @@
         <input type="text" id="subtitle" name="subtitle" class="form-input" placeholder="부제목을 입력하세요."/>
       </div>
 
+<!--      <div class="form-group">-->
+<!--        <select id="categoryId" name="categoryId" required class="form-select">-->
+<!--          <option value="">&#45;&#45; 분류 선택 &#45;&#45;</option>-->
+<!--          <th:block th:each="cat : ${categories}">-->
+<!--            <option th:value="${cat.id}" th:text="${cat.categoryName}"></option>-->
+<!--          </th:block>-->
+<!--        </select>-->
+<!--      </div>-->
+
       <div class="form-group">
-        <select id="categoryId" name="categoryId" required class="form-select">
-          <option value="">-- 분류 선택 --</option>
+        <label class="form-label">장르</label>
+        <div class="category-checkbox-group">
           <th:block th:each="cat : ${categories}">
-            <option th:value="${cat.id}" th:text="${cat.categoryName}"></option>
+            <label class="category-checkbox">
+              <input type="checkbox"
+                     name="categoryIds"
+                     th:value="${cat.id}">
+              <span th:text="${cat.categoryName}">장르명</span>
+            </label>
           </th:block>
-        </select>
+        </div>
       </div>
 
 
@@ -116,7 +130,7 @@
       });
 
 
-   document.getElementById("submit-btn").addEventListener("click", async function () {
+document.getElementById("submit-btn").addEventListener("click", async function () {
   const start = new Date(startDate.value);
   const end = new Date(endDate.value);
   today.setHours(0, 0, 0, 0);
@@ -129,6 +143,8 @@
     alert("종료일은 오늘보다 이후여야 합니다.");
     return;
   }
+  const checkedCategoryInputs = document.querySelectorAll('input[name="categoryIds"]:checked');
+  const categoryIds = Array.from(checkedCategoryInputs).map(input => input.value);
 
   const data = {
     title: document.getElementById("title").value,
@@ -140,7 +156,7 @@
     boardCode: document.getElementById("boardCode").value,
     applyUrl : document.getElementById("applyUrl").value,
     contactInfo : document.getElementById("contactInfo").value,
-    categoryId : document.getElementById("categoryId").value
+    categoryIds: categoryIds
   };
 
   const posterFile = document.getElementById("posterFile").files[0];

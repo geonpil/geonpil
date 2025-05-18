@@ -33,9 +33,15 @@ public class ContestService {
 
 
     @Transactional
-    public void saveContest(ContestPost contest) {
+    public void saveContest(ContestPost contest, List<Long> categoryIds) {
         boardMapper.insertBoard(contest);           // BoardDTO 필드 처리
         contestMapper.insertContestPost(contest);   // contest_post 필드 처리
+
+        long postId = contest.getPostId();
+
+        for(Long categoryId : categoryIds){
+            contestMapper.insertContestCategory(postId, categoryId); // 카테고리 필드 처리
+        }
     }
 
 
@@ -69,15 +75,15 @@ public class ContestService {
         return contestPost;
     }
 
-    public List<ContestPost> findContestsByPage(int page, int size) {
+    public List<ContestPost> findContestsByPage(int page, int size, List<Long> categoryIds) {
         int offset = (page - 1) * size;
 
-        return contestMapper.findContestsByPage(offset, size);
+        return contestMapper.findContestsByPage(offset, size, categoryIds);
     }
 
-    public int getTotalPageCount(int pageSize, int boardCode) {
-        List<Long> categoryIds = new ArrayList<>(); // 임시
-        int totalCount = boardMapper.countAll(boardCode, categoryIds);
+    public int getTotalPageCount(int pageSize, int boardCode, List<Long> categoryIds) {
+
+        int totalCount = contestMapper.contestCountAll(boardCode, categoryIds);
         return (int) Math.ceil((double) totalCount / pageSize);
     }
 
