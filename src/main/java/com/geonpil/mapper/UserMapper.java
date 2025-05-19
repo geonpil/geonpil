@@ -9,7 +9,11 @@ import java.util.Optional;
 
 @Mapper
 public interface UserMapper {
-    void insert(User user);
+    void insertLocalUser(User user);
+
+    void insertSocialUser(User user);
+
+
 
 
     @Select("SELECT COUNT(*) > 0 FROM users WHERE email = #{email}")
@@ -17,6 +21,10 @@ public interface UserMapper {
 
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByProviderAndProviderId(@Param("provider") String provider,
+                                               @Param("providerId") String providerId
+                                               );
 
     User findByNickname(String nickname);
 

@@ -14,6 +14,21 @@ public class User {
     private String nickname;     // 닉네임
     private String email;        // 이메일 주소
     private String role;         // 권한 (예: USER, ADMIN 등)
+    private String provider;
+    private String providerId;
     private boolean deleted;  //삭제 여부
 
+    public User(String email, String nickname, String provider, String providerId, String role) {
+        this.email = email;
+        this.nickname = nickname;
+        this.providerId = providerId;
+        this.provider = provider;
+        this.role = role;
+        this.deleted = false;
+    }
+
 }
+
+
+
+

@@ -21,7 +21,8 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userMapper.insert(user);
+        user.setRole("user");
+        userMapper.insertLocalUser(user);
         return true;
     }
 
