@@ -75,18 +75,21 @@
 
                 <div class="main-contest-container">
                     <a class="main-contest-wrapper"
-                         th:href="@{/contest/detail/{id}(id=${contest.postId}, boardCode=${contest.boardCode})}"
-                         th:each="contest : ${contestPost}">
+                       th:href="@{/contest/detail/{id}(id=${contest.postId}, boardCode=${contest.boardCode})}"
+                       th:each="contest : ${contestPost}">
                         <div class="contest-poster">
                             <img th:src="@{${contest.posterUrl}}" alt="공모전 포스터">
                         </div>
                         <div class="main-contest-info">
-                            <div class="main-contest-category" th:text="'[' + ${contest.categoryName}+ ']'"></div>
+                            <div class="main-contest-category" th:text="'[' + ${contest.categoryNames}+ ']'"></div>
                             <div class="main-contest-title" th:text="${contest.title}">[다이슨] 공모전 제목</div>
                             <div class="main-contest-subtitle" th:text="${contest.subtitle}"></div>
-                            <div class="main-contest-host" th:text ="${contest.hostName}"></div>
+                            <div class="main-contest-host" th:text="${contest.hostName}"></div>
                             <div class="main-contest-bottom">
-                                <span class="d-day" th:text="'D-' + ${contest.dDay}">D-69</span>
+                                <span class="dday"
+                                      th:text="${contest.dDay > 0} ? 'D-' + ${contest.dDay} : (${contest.dDay) == 0} ? '오늘마감' : '마감')"
+                                      th:classappend="${contest.dDay == 0} ? ' today' : (${contest.dDay < 0} ? ' expired' : '')">D-69
+                                </span>
                                 <span class="view-count">조회수 : <span
                                         th:text="${contest.viewCount}">41914</span></span>
                             </div>
