@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,20 +29,41 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(request);
 
+        String registrationId = request.getClientRegistration().getRegistrationId(); // "kakao" 또는 "naver"
+
         // 네이버는 사용자 정보가 response 안에 들어 있음
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        Map<String, Object> flatAttributes = new HashMap<>();
 
-        String email = (String) response.get("email");
-        String nickname = (String) response.get("nickname");
-        String naverId = (String) response.get("id");
 
+        String email = null;
+        String nickname = null;
+        String providerId = null;
+
+
+        if (registrationId.equals("kakao")) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+            Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+            email = (String) kakaoAccount.get("email");
+            nickname = (String) profile.get("nickname");
+            providerId = String.valueOf(attributes.get("id"));
+        } else if (registrationId.equals("naver")) {
+            Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+            email = (String) response.get("email");
+            nickname = (String) response.get("nickname");
+            providerId = (String) response.get("id");
+
+            flatAttributes.put("email", email);
+            flatAttributes.put("nickname", nickname);
+            flatAttributes.put("id", providerId);
+
+        }
 
         // 회원 조회 or 가입 처리
-        Optional<User> userOpt = userMapper.findByProviderAndProviderId("naver", naverId);
+        Optional<User> userOpt = userMapper.findByProviderAndProviderId(registrationId, providerId);
         User user;
         if (userOpt.isEmpty()) {
-            user = new User(email, nickname, "naver", naverId, "user");  // 소셜 로그인용 생성자 사용
+            user = new User(email, nickname, registrationId, providerId, "user");  // 소셜 로그인용 생성자 사용
             userMapper.insertSocialUser(user);
         }  else {
             user = userOpt.get();
@@ -50,7 +72,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                response, // nickname이 직접 포함된 Map
+                flatAttributes, // nickname이 직접 포함된 Map
                 "id",     // nameAttributeKey
                 user.getNickname(),
                 user.getId()// DB에 저장된 nickname 사용
