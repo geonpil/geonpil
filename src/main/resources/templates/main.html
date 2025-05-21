@@ -87,8 +87,9 @@
                             <div class="main-contest-host" th:text="${contest.hostName}"></div>
                             <div class="main-contest-bottom">
                                 <span class="dday"
-                                      th:text="${contest.dDay > 0} ? 'D-' + ${contest.dDay} : (${contest.dDay) == 0} ? '오늘마감' : '마감')"
-                                      th:classappend="${contest.dDay == 0} ? ' today' : (${contest.dDay < 0} ? ' expired' : '')">D-69
+                                      th:text="${contest.dDay > 0 ? 'D-' + contest.dDay : (contest.dDay == 0 ? '오늘마감' : '마감')}"
+                                      th:classappend="${contest.dDay == 0 ? ' today' : (contest.dDay < 0 ? ' expired' : '')}">
+                                  D-69
                                 </span>
                                 <span class="view-count">조회수 : <span
                                         th:text="${contest.viewCount}">41914</span></span>

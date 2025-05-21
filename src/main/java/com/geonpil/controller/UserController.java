@@ -3,6 +3,7 @@ package com.geonpil.controller;
 import com.geonpil.domain.User;
 import com.geonpil.service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,7 +62,11 @@ public class UserController {
 
     //로그인 화면
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(HttpServletRequest request, HttpSession session) {
+        String referer = request.getHeader("Referer");
+        if (referer != null && !referer.contains("/login")) {
+            session.setAttribute("redirectAfterLogin", referer);
+        }
         return "login"; // templates/login.html 보여주기
     }
 
