@@ -69,10 +69,9 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
-                        .userInfoEndpoint(userInfo ->
-                                userInfo.userService(customOAuth2UserService)
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(new CustomOAuth2SuccessHandler())
                         )
-                )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .permitAll()
