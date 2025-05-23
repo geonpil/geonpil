@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Getter
-public class CustomOAuth2User extends DefaultOAuth2User {
+public class CustomOAuth2User extends DefaultOAuth2User implements AppUserInfo {
 
     private final String nickname;
     private final Long id;
@@ -21,4 +21,8 @@ public class CustomOAuth2User extends DefaultOAuth2User {
         this.nickname = nickname;
         this.id = id;
     }
+
+
+
+
 }

@@ -5,12 +5,15 @@ import com.geonpil.domain.Category;
 import com.geonpil.domain.Comment;
 import com.geonpil.domain.PageResult;
 import com.geonpil.resolver.BoardNameResolver;
+import com.geonpil.security.AppUserInfo;
+import com.geonpil.security.CustomOAuth2User;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,9 +78,10 @@ public class BoardController {
     //글쓰기 저장
     @PostMapping("/write/save")
     public String savePost(@ModelAttribute BoardDTO boardDTO,
-                           @AuthenticationPrincipal CustomUserDetails userDetail,
+                           @AuthenticationPrincipal AppUserInfo user,
                            RedirectAttributes redirectAttributes) {
-        boardDTO.setUserId(userDetail.getId());
+
+        boardDTO.setUserId(user.getId());
         boardService.save(boardDTO);
         redirectAttributes.addFlashAttribute("message", "글이 성공적으로 등록되었습니다.");
         return "redirect:/board/list?boardCode=" + boardDTO.getBoardCode();

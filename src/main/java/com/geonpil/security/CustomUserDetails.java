@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Getter
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails, AppUserInfo {
 
     private final User user;
 
@@ -17,10 +17,13 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+
+    @Override
     public Long getId() {
         return user.getId();
     }
 
+    @Override
     public String getNickname() {
         return user.getNickname();
     }
