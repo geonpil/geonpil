@@ -108,10 +108,10 @@ public class BoardController {
     // 게시글 삭제
     @PostMapping("/delete/{id}")
     public String deletePost(@PathVariable Long id,
-                             @AuthenticationPrincipal CustomUserDetails userDetails,
+                             @AuthenticationPrincipal AppUserInfo user,
                              @RequestParam int boardCode,
                              RedirectAttributes redirectAttributes) {
-        boardService.softDeleteById(id, userDetails.getId()); // 본인 확인 포함
+        boardService.softDeleteById(id, user.getId()); // 본인 확인 포함
         redirectAttributes.addFlashAttribute("message", "게시글이 삭제되었습니다.");
 
         if(boardCode == 3) return "redirect:/contest/list?boardCode=3";
@@ -122,11 +122,11 @@ public class BoardController {
     @PostMapping("/like/{postId}")
     @PreAuthorize("isAuthenticated()")
     public String likePost(@PathVariable Long postId,
-                           @AuthenticationPrincipal CustomUserDetails userDetails,
+                           @AuthenticationPrincipal AppUserInfo user,
                            @RequestParam int boardCode,
                            RedirectAttributes redirectAttributes) {
         try {
-            boardService.likePost(postId, userDetails.getId());
+            boardService.likePost(postId, user.getId());
             redirectAttributes.addFlashAttribute("message", "추천 완료!");
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -138,12 +138,12 @@ public class BoardController {
     @GetMapping("/edit/{id}")
     @PreAuthorize("isAuthenticated()")
     public String editForm(@PathVariable Long id,
-                           @AuthenticationPrincipal CustomUserDetails userDetails,
+                           @AuthenticationPrincipal AppUserInfo user,
                            @RequestParam int boardCode,
                            Model model) {
         BoardDTO post = boardService.findById(id);
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
-        if (!post.getUserId().equals(userDetails.getId())) {
+        if (!post.getUserId().equals(user.getId())) {
             throw new AccessDeniedException("수정 권한이 없습니다.");
         }
         model.addAttribute("post", post);
@@ -157,10 +157,10 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public String editPost(@PathVariable Long id,
                            @ModelAttribute BoardDTO updatedPost,
-                           @AuthenticationPrincipal CustomUserDetails userDetails
+                           @AuthenticationPrincipal AppUserInfo user
                            ) {
 
-        boardService.updatePost(id, updatedPost, userDetails.getId());
+        boardService.updatePost(id, updatedPost, user.getId());
         return "redirect:/board/list/detail/" + id + "?boardCode=" + updatedPost.getBoardCode();
     }
 

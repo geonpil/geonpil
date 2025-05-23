@@ -1,6 +1,7 @@
 package com.geonpil.controller;
 
 import com.geonpil.domain.Comment;
+import com.geonpil.security.AppUserInfo;
 import com.geonpil.security.CustomUserDetails;
 import com.geonpil.service.CommentService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,17 +26,17 @@ public class CommentController {
     @PostMapping("/save")
     @ResponseBody
     public Map<String, Object> addComment(@ModelAttribute Comment comment,
-                             @AuthenticationPrincipal CustomUserDetails userDetails,
+                             @AuthenticationPrincipal AppUserInfo user,
                              RedirectAttributes redirectAttributes) {
         Map<String, Object> result = new HashMap<>();
 
-        if (userDetails == null) {
+        if (user == null) {
             result.put("success", false);
             result.put("message", "로그인이 필요합니다.");
             return result;
         }
-        comment.setUserId(userDetails.getId());
-        comment.setNickname(userDetails.getNickname());
+        comment.setUserId(user.getId());
+        comment.setNickname(user.getNickname());
         commentService.addComment(comment);
 
         result.put("success", true);
@@ -55,8 +56,8 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
     public String deleteComment(@PathVariable Long commentId,
-                                @AuthenticationPrincipal CustomUserDetails userDetails) {
-        commentService.deleteComment(commentId, userDetails.getId());
+                                @AuthenticationPrincipal AppUserInfo user) {
+        commentService.deleteComment(commentId, user.getId());
         return "success";
     }
 
@@ -67,8 +68,8 @@ public class CommentController {
     @ResponseBody
     public String editComment(@PathVariable Long id,
                               @RequestParam String content,
-                              @AuthenticationPrincipal CustomUserDetails userDetails) {
-        commentService.updateComment(id, content, userDetails.getUser().getId());
+                              @AuthenticationPrincipal AppUserInfo user) {
+        commentService.updateComment(id, content, user.getId());
         return "success";
     }
 }
