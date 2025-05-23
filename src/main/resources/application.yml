@@ -84,3 +84,6 @@ logging:
   level:
     org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter: INFO
 
+kakao:
+  api:
+    key: 043ce262cb71f664e9ac1e46f4fb94a6

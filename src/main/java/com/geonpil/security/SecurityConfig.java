@@ -52,7 +52,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/signup", "/login","/find-password",
                                 "/fonts/**", "/favicon.ico", "/error", "/verify/**","/board/list/**",
-                                "/contest/list/**", "/contest/detail/**"
+                                "/contest/list/**", "/contest/detail/**",
+                                "api/search/**"
                         ).permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**").permitAll()
                         .anyRequest().authenticated()

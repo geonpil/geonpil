@@ -7,6 +7,7 @@
 @import url('/css/components.css');
 @import url('/css/form.css');
 @import url('/css/contest.css');
+@import url('/css/search.css');
 
 :root {
   --primary-color: #1F4EB2;
@@ -41,8 +42,14 @@ a:focus-visible {
 }
 
 /* ========== 배너 영역 ========== */
+
+.banner-section {
+
+}
+
 .banner-container {
-  margin: 30px auto;
+
+  margin: 10px auto 15px;
   padding: 0 20px;
   max-width: var(--container-width);
 }
