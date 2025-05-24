@@ -1,0 +1,19 @@
+
+
+    <ul class="book-list" th:fragment = "resultFragment">
+        <li th:each="book : ${books}">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <!-- ✅ 썸네일 이미지 -->
+                <img th:src="${book.thumbnail}" alt="책 표지" width="100" height="150"
+                     style="object-fit: cover;"/>
+
+                <!-- 책 정보 -->
+                <div>
+                    <strong th:text="${book.title}">제목</strong><br/>
+                    <span th:text="${book.publisher}">출판사</span><br/>
+                    <span th:text="${book.authors}">저자</span><br/>
+                    <span th:text="${book.contents}">콘텐츠</span><br/>
+                </div>
+            </div>
+        </li>
+    </ul>

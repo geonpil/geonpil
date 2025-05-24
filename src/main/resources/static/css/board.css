@@ -118,6 +118,11 @@
 }
 
 /* 페이지내이션 시작 */
+.pagination-area {
+  padding : 15px;
+}
+
+
 .pagination {
   display: flex;
   gap: 6px;

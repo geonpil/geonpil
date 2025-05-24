@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div layout:fragment="content">
+
+
+    <section class=search-section>
+
+
+        <div class=search-container>
+            <div class="search-header">
+                <h2 th:text="'검색어: ' + ${query}">검색어</h2>
+            </div>
+            <div class=search-wrapper>
+                <!-- 탭 메뉴 -->
+                <div class="tab-menu">
+                    <a th:href="@{/search(query=${query}, type='actor')}">책</a>
+                    <a class="line" th:href="@{book/search(query=${query}, type='post')}">게시글</a>
+                </div>
+
+
+                <div class="search-content">
+                    <div th:text="'전체 결과 : ' + ${pageableCount} + '건'">메타정보</div>
+                    <div id= "book-list-area" class="book-list-area">
+                        <div th:replace = "~{book/search/_result-fragment :: resultFragment}"></div>
+                    </div>
+                </div>
+
+
+                <nav id = "pagination-area" class="pagination-area">
+                    <div th:replace = "~{book/search/_pagination-fragment :: paginationFragment}"></div>
+                </nav>
+
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        document.getElementById("pagination-area").addEventListener("click", function (e) {
+            if(e.target.classList.contains("page-button")) {
+                const page = parseInt(e.target.dataset.page);
+                const query = e.target.dataset.query;
+                fetchFilteredPosts(page, query);
+            }
+        });
+
+
+        window.addEventListener("popstate", function () {
+          const urlParams = new URLSearchParams(window.location.search);
+          const query = urlParams.get("query") || "";
+          const page = parseInt(urlParams.get("page")) || 1;
+          fetchFilteredPosts(page, query);
+        });
+
+
+        function fetchFilteredPosts(page, query) {
+            const newUrl = `/api/search?query=${encodeURIComponent(query)}&page=${page}`;
+
+          // ✅ 주소창만 업데이트 (리로드 안 됨)
+          history.pushState({}, '', newUrl);
+
+            fetch(`/api/search/fragment/result?query=${encodeURIComponent(query)}&page=${page}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.querySelector("#book-list-area").innerHTML = html;
+                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+
+            fetch(`/api/search/fragment/pagination?query=${encodeURIComponent(query)}&page=${page}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.querySelector("#pagination-area").innerHTML = html;
+                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                 }
+    </script>
+</th:block>
+
+
+</body>
+</html>

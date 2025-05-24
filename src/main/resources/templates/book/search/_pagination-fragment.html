@@ -1,0 +1,25 @@
+<div th:fragment = "paginationFragment" class="pagination" th:if="${totalPages > 1}">
+    <button type="button"
+            th:if="${hasPrevGroup}"
+            class="page-button"
+            th:attr="data-page=${startPage - 1}, data-query = ${query}">
+        &laquo;
+    </button>
+
+    <!-- 페이지 번호 버튼들 -->
+    <button type="button"
+            th:each="i : ${#numbers.sequence(startPage, endPage)}"
+            th:text="${i}"
+            th:classappend="${i == currentPage} ? 'active'"
+            class="page-button"
+            th:attr="data-page=${i}, data-query = ${query}">
+    </button>
+
+    <!-- 다음 버튼 -->
+    <button type="button"
+            th:if="${hasNextGroup}"
+            class="page-button"
+            th:attr="data-page=${endPage + 1}, data-query=${query}">
+        &raquo;
+    </button>
+</div>
