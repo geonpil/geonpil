@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.geonpil.domain.Book;
@@ -53,39 +54,15 @@ public class BookSearchService {
 
         try{
             ObjectMapper mapper = new ObjectMapper();
-
             mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Optional: 날짜 포맷 개선
 
             JsonNode root = mapper.readTree(body);
 
             JsonNode docs = root.path("documents");
             JsonNode metaNode = root.path("meta");
 
-            List<Book> books = new java.util.ArrayList<>();
-
-            for(JsonNode bookJson : docs){
-                ObjectNode bookNode = (ObjectNode) bookJson.deepCopy();
-                JsonNode authorsNode = bookNode.remove("authors"); // ← authors 제거
-
-                Book book = mapper.treeToValue(bookNode, Book.class); // 이제 에러 없음
-
-
-                //  authos 필드만 수동으로 List<String> -> String 변환
-                List<String> authorList = mapper.convertValue(bookJson.get("authors"), new TypeReference<List<String>>() {});
-                book.setAuthors(String.join(", ",authorList ));
-
-
-                books.add(book);
-            }
-
-
-            Meta meta = mapper.treeToValue(metaNode,Meta.class);
-
-
-            BookSearchResponse result = new BookSearchResponse();
-            result.setDocuments(books);
-            result.setMeta(meta);
-
+            BookSearchResponse result = mapper.readValue(body, BookSearchResponse.class);
 
             return result;
 
