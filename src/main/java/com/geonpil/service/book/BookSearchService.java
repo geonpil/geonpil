@@ -3,6 +3,9 @@ package com.geonpil.service.book;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.geonpil.domain.Book;
 import com.geonpil.dto.response.BookSearchResponse;
 import com.geonpil.dto.response.Meta;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
 
 import org.springframework.http.HttpHeaders;
 
@@ -49,12 +53,32 @@ public class BookSearchService {
 
         try{
             ObjectMapper mapper = new ObjectMapper();
+
+            mapper.registerModule(new JavaTimeModule());
+
             JsonNode root = mapper.readTree(body);
 
             JsonNode docs = root.path("documents");
             JsonNode metaNode = root.path("meta");
 
-            List<Book> books = Arrays.asList(mapper.treeToValue(docs, Book[].class));
+            List<Book> books = new java.util.ArrayList<>();
+
+            for(JsonNode bookJson : docs){
+                ObjectNode bookNode = (ObjectNode) bookJson.deepCopy();
+                JsonNode authorsNode = bookNode.remove("authors"); // ← authors 제거
+
+                Book book = mapper.treeToValue(bookNode, Book.class); // 이제 에러 없음
+
+
+                //  authos 필드만 수동으로 List<String> -> String 변환
+                List<String> authorList = mapper.convertValue(bookJson.get("authors"), new TypeReference<List<String>>() {});
+                book.setAuthors(String.join(", ",authorList ));
+
+
+                books.add(book);
+            }
+
+
             Meta meta = mapper.treeToValue(metaNode,Meta.class);
 
 

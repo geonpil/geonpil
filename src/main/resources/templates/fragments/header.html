@@ -35,9 +35,9 @@
 
         <!-- 메뉴 -->
         <div class="header-center" th:if="${not (requestUri == '/signup' or requestUri == '/login' or requestUri == '/find-password' or requestUri == '/reset-password')}">
-          <a href="board/list?boardCode=1">커뮤니티</a>
-          <a href="contest/list?boardCode=3">공모전</a>
-          <a href="board/list?boardCode=2">도전건필</a>
+          <a href="/board/list?boardCode=1">커뮤니티</a>
+          <a href="/contest/list?boardCode=3">공모전</a>
+          <a href="/board/list?boardCode=2">도전건필</a>
         </div>
 
         <!-- 로그인 / 회원가입 or 닉네임 -->
