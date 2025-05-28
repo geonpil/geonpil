@@ -53,7 +53,7 @@ public class SecurityConfig {
                                 "/", "/signup", "/login","/find-password",
                                 "/fonts/**", "/favicon.ico", "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
-                                "api/search/**"
+                                "api/search/**", "books/**"
                         ).permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**").permitAll()
                         .anyRequest().authenticated()

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>책 상세보기</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div layout:fragment="content">
+
+
+    <h2 th:text="${book.title}">책 제목</h2>
+    <p th:text="${book.contents}">줄거리</p>
+    <p><strong>장르:</strong> <span th:text="${book.category}"></span></p>
+<!--    <p><strong>페이지 수:</strong> <span th:text="${book.pageCount}"></span></p>-->
+
+    <hr/>
+
+    <h3>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h3>
+
+    <ul>
+        <li th:each="review : ${reviews}">
+            <strong th:text="${review.username}">닉네임</strong>:
+            <span th:text="${review.rating}">5</span>점 -
+            <span th:text="${review.comment}">좋은 책입니다</span>
+        </li>
+    </ul>
+
+    <form method="post" th:action="@{'/books/' + ${book.BookId} + '/reviews'}">
+        <label>평점:
+            <select name="rating">
+                <option>5</option><option>4</option><option>3</option><option>2</option><option>1</option>
+            </select>
+        </label><br/>
+        <textarea name="comment" placeholder="리뷰를 남겨주세요"></textarea><br/>
+        <button type="submit">리뷰 작성</button>
+    </form>
+
+
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+    </script>
+</th:block>
+
+
+</body>
+</html>

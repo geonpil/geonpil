@@ -5,8 +5,8 @@
 
 <mapper namespace="com.geonpil.mapper.book.BookMapper">
 
-    <resultMap id="BookResultMap" type="com.geonpil.domain.Book">
-        <id property="id" column="id"/>
+    <resultMap id="BookResultMap" type="com.geonpil.domain.entity.BookEntity">
+        <id property="bookId" column="book_id"/>
         <result property="isbn" column="isbn"/>
         <result property="title" column="title"/>
         <result property="authors" column="authors"/>
@@ -25,7 +25,7 @@
         SELECT * FROM books WHERE isbn = #{isbn}
     </select>
 
-    <insert id="insert" parameterType="com.geonpil.domain.Book">
+    <insert id="insertBook" parameterType="com.geonpil.domain.entity.BookEntity" useGeneratedKeys="true" keyProperty="bookId">
         INSERT INTO books (
         isbn, title, authors, publisher, thumbnail, contents,
         datetime, price, sale_price, category, status
@@ -35,5 +35,12 @@
         #{datetime}, #{price}, #{salePrice}, #{category}, #{status}
         )
     </insert>
+
+
+    <select id="findById" parameterType="long" resultMap="BookResultMap">
+        SELECT *
+        FROM books
+        WHERE book_id = #{bookId}
+    </select>
 
 </mapper>

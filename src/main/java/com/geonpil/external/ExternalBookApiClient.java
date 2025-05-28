@@ -3,6 +3,8 @@ package com.geonpil.external;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.geonpil.domain.Book;
 import com.geonpil.dto.response.BookSearchResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +29,18 @@ public class ExternalBookApiClient {
 
 
     public Book fetchBookByIsbn(String isbn){
+
+        String cleanIsbn = isbn.split(" ")[0].trim();
+
         String url = UriComponentsBuilder
                 .fromHttpUrl("https://dapi.kakao.com/v3/search/book")
-                .queryParam("query", isbn)
-                .queryParam("isbn", "isbn")
+                .queryParam("query", cleanIsbn)
                 .build()
                 .toUriString();
 
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authoriztion", "KaKaoAK " + kakaoApiKey);
+        headers.set("Authorization", "KakaoAK " + kakaoApiKey);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
@@ -45,6 +49,8 @@ public class ExternalBookApiClient {
 
         try{
             ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             JsonNode root = mapper.readTree(body);
 
             JsonNode docs = root.path("documents");

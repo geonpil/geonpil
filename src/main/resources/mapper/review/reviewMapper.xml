@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geonpil.mapper.review.ReviewMapper">
+
+    <resultMap id="ReviewResultMap" type="com.geonpil.domain.Review">
+        <id property="reviewId" column="review_id"/>
+        <result property="bookId" column="book_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="rating" column="rating"/>
+        <result property="content" column="content"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.geonpil.domain.Review" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO reviews (
+        book_id, user_id, rating, content, is_deleted, created_at, updated_at
+        ) VALUES (
+        #{bookId}, #{userId}, #{rating}, #{content}, false, NOW(), NOW()
+        )
+    </insert>
+
+    <select id="findByBookId" parameterType="long" resultMap="ReviewResultMap">
+        SELECT r.*, u.nickname
+        FROM reviews r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.book_id = #{bookId}
+        AND r.is_deleted = false
+        ORDER BY r.created_at DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="ReviewResultMap">
+        SELECT r.*, u.nickname
+        FROM reviews r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.review_id = #{reviewId}
+    </select>
+
+    <update id="update" parameterType="com.geonpil.domain.Review">
+        UPDATE reviews
+        SET content = #{content},
+        rating = #{rating},
+        updated_at = NOW()
+        WHERE review_id = #{reviewId}
+    </update>
+
+    <update id="softDelete" parameterType="long">
+        UPDATE reviews
+        SET is_deleted = true,
+        updated_at = NOW()
+        WHERE review_id = #{reviewId}
+    </update>
+
+</mapper>
