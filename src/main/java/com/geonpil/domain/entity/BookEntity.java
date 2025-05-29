@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class BookEntity {
-    private Long BookId;
+    private Long bookId;
     private String isbn;
     private String title;
     private String authors;       // 문자열로 저장

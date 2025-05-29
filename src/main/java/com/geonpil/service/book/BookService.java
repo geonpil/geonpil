@@ -42,10 +42,14 @@ public class BookService {
 
 
         Book fetched = externalBookApiClient.fetchBookByIsbn(isbn);
-        BookEntity fechedBookEntity = toEntity(fetched);
-        bookMapper.insertBook(fechedBookEntity);
+        BookEntity fetchedBookEntity = toEntity(fetched);
+        bookMapper.insertBook(fetchedBookEntity);
 
-        return fetched;
+
+        System.out.println("Generated ID: " + fetched.getBookId());
+
+
+        return toDomain(fetchedBookEntity);
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class Book {
-    private Long BookId;
+    private Long bookId;
     private String isbn;
     private String title;
     private List<String> authors; // JSON에서 List<String> → String으로 가공

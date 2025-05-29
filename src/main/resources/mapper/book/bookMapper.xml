@@ -25,7 +25,7 @@
         SELECT * FROM books WHERE isbn = #{isbn}
     </select>
 
-    <insert id="insertBook" parameterType="com.geonpil.domain.entity.BookEntity" useGeneratedKeys="true" keyProperty="bookId">
+    <insert id="insertBook" parameterType="com.geonpil.domain.entity.BookEntity" useGeneratedKeys="true" keyProperty="bookId" keyColumn = "book_id">
         INSERT INTO books (
         isbn, title, authors, publisher, thumbnail, contents,
         datetime, price, sale_price, category, status
