@@ -8,7 +8,7 @@
     <!-- 카테고리 가져오기 -->
     <select id="getCategoriesByBoardCode"
             parameterType="int"
-            resultType="com.geonpil.domain.Category">1``
+            resultType="com.geonpil.domain.Category">
         SELECT category_id AS id,
         category_name AS categoryName
         FROM category

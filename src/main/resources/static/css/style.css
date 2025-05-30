@@ -8,6 +8,7 @@
 @import url('/css/form.css');
 @import url('/css/contest.css');
 @import url('/css/search.css');
+@import url('/css/common.css');
 
 :root {
   --primary-color: #1F4EB2;

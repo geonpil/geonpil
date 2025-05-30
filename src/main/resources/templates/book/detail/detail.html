@@ -10,42 +10,88 @@
 <body>
 <div layout:fragment="content">
 
+    <div class="book-detail-container">
+        <!-- 왼쪽: 책 정보 -->
+        <div class="book-info card-wrapper">
+            <img th:src="${book.thumbnail}" alt="책 표지" class="book-cover"/>
+            <div class="book-meta">
+                <h2 th:text="${book.title}">책 제목</h2>
+                <p><strong>저자:</strong> <span th:text="${book.authors}">저자</span></p>
+                <p><strong>출판사:</strong> <span th:text="${book.publisher}">출판사</span></p>
+                <p><strong>ISBN:</strong> <span th:text="${book.isbn}">ISBN</span></p>
+                <p><strong>책소개:</strong></p>
+                <p th:text="${book.contents}">줄거리 내용</p>
+            </div>
+        </div>
 
-    <h2 th:text="${book.title}">책 제목</h2>
-    <p th:text="${book.contents}">줄거리</p>
-    <p><strong>장르:</strong> <span th:text="${book.category}"></span></p>
-<!--    <p><strong>페이지 수:</strong> <span th:text="${book.pageCount}"></span></p>-->
+        <!-- 오른쪽: 리뷰 -->
+        <div class="book-reviews card-wrapper">
+            <h3>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h3>
 
-    <hr/>
+            <div th:each="review : ${reviews}" class="review-card">
+                <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
+                <p>⭐ <span th:text="${review.rating}">5</span>점</p>
+                <p th:text="${review.comment}">좋은 책입니다.</p>
+            </div>
 
-    <h3>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h3>
-
-    <ul>
-        <li th:each="review : ${reviews}">
-            <strong th:text="${review.username}">닉네임</strong>:
-            <span th:text="${review.rating}">5</span>점 -
-            <span th:text="${review.comment}">좋은 책입니다</span>
-        </li>
-    </ul>
-
-    <form method="post" th:action="@{'/books/' + ${book.BookId} + '/reviews'}">
-        <label>평점:
-            <select name="rating">
-                <option>5</option><option>4</option><option>3</option><option>2</option><option>1</option>
-            </select>
-        </label><br/>
-        <textarea name="comment" placeholder="리뷰를 남겨주세요"></textarea><br/>
-        <button type="submit">리뷰 작성</button>
-    </form>
-
+            <!-- 리뷰 작성 -->
+            <div class="review-form">
+                <form method="post" th:action="@{'/books/' + ${book.bookId} + '/reviews'}">
+                    <div class="rating-stars" id="ratingStars">
+                        <div class="stars-fill" id="fillStars"></div>
+                    </div>
+                    <input type="hidden" name="rating" id="ratingInput" value="0" />
+                    <div>
+                        <label>
+                            <textarea id= "reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
+                        </label><br/>
+                        <button type="submit">리뷰 작성</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div>
 
 <th:block layout:fragment="script">
     <script>
+/*        const bookId = [[${book.bookId}]];
+        const content = document.getElementById("reviewContent");
+        const rating = document.getElementById("reviewRating");*/
+
+
+        const starContainer = document.getElementById('ratingStars');
+        const fillStars = document.getElementById('fillStars');
+        const ratingInput = document.getElementById('ratingInput');
+        const totalStars = 5;
+
+        starContainer.addEventListener('mousemove', (e) => {
+            const rect = starContainer.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const starWidth = rect.width / totalStars;
+            let rating = Math.ceil((offsetX / starWidth) * 2) / 2; // 0.5 단위
+
+            const fillPercent = (rating / totalStars) * 100;
+            fillStars.style.width = `${fillPercent}%`;
+        });
+
+        starContainer.addEventListener('mouseleave', () => {
+            // 마우스를 벗어나면 기존 값 유지
+            const current = parseFloat(ratingInput.value) || 0;
+            fillStars.style.width = `${(current / totalStars) * 100}%`;
+        });
+
+        starContainer.addEventListener('click', (e) => {
+            const rect = starContainer.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const starWidth = rect.width / totalStars;
+            const rating = Math.ceil((offsetX / starWidth) * 2) / 2;
+            ratingInput.value = rating;
+
+            fillStars.style.width = `${(rating / totalStars) * 100}%`;
+        });
     </script>
 </th:block>
-
-
 </body>
 </html>

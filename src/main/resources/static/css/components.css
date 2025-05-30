@@ -148,14 +148,6 @@
 }
 /*파일 업로드 끝 */
 
-#e74c3c;  margin-top: 5px;
-          background-color: transparent;
-          border: none;
-          color: #1F4EB2;
-          cursor: pointer;
-          font-size: 0.9rem;
-          padding: 0;
-
 .delete-btn:hover {
   background-color: #c0392b;
 }
