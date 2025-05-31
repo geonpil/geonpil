@@ -58,7 +58,7 @@
     <th:block layout:fragment="script">
         <script>
 
-
+            //리뷰 별 애니메이션
             const starContainer = document.getElementById('ratingStars');
             const fillStars = document.getElementById('fillStars');
             const ratingInput = document.getElementById('ratingInput');
@@ -92,6 +92,8 @@
             });
 
 
+
+            //리뷰 등록
             document.getElementById("submitReviewBtn").addEventListener("click", async () => {
                 const rating = parseFloat(document.getElementById("ratingInput").value);
                 const content = document.getElementById("reviewContent").value;
@@ -128,6 +130,13 @@
                         const newReview = await response.json();
                         alert("리뷰가 등록되었어요!")
                         appendReview(newReview)
+
+                        const avgRes = await fetch(`/api/reviews/average?bookId=${bookId}`);
+                        const avgRating = await avgRes.text();
+
+                        document.querySelector(".book-reviews h3 span").innerHTML = avgRating;
+
+                        //초기화
                         document.getElementById("reviewContent").value = "";
                         ratingInput.value = "0";
                         fillStars.style.width = "0%";

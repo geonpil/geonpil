@@ -64,4 +64,14 @@ public class ReviewController {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
+
+
+    // 리뷰 평균 가져오기
+    @GetMapping("/average")
+    @ResponseBody
+    public double getAverageRating(@RequestParam Long bookId) {
+        List<Review> reviews = reviewService.getReviewsByBookId(bookId);
+        return reviewService.calculateAverageRating(reviews);
+
+    }
 }
