@@ -50,12 +50,7 @@ public class BookDetailController {
 
 
         // 3. 평균 평점 계산 (없으면 0)
-        double averageRating = reviews.isEmpty()
-                ? 0.0
-                : reviews.stream()
-                .mapToDouble(Review::getRating)
-                .average()
-                .orElse(0.0);
+        double averageRating = reviewService.calculateAverageRating(reviews);
 
         // 4. 모델에 데이터 주입
         model.addAttribute("book", book);

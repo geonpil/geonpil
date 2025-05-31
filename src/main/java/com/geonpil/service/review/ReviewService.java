@@ -28,4 +28,16 @@ public class ReviewService {
     public void deleteReview(Long reviewId) {
         reviewMapper.softDeleteById(reviewId);
     }
+
+
+    public double calculateAverageRating(List<Review> reviews) {
+        return reviews.isEmpty()
+                ? 0.0
+                : Math.round(
+                reviews.stream()
+                        .mapToDouble(Review::getRating)
+                        .average()
+                        .orElse(0.0) * 100.0
+        ) / 100.0;
+    }
 }
