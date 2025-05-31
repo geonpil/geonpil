@@ -10,4 +10,7 @@ public interface ReviewMapper {
     List<Review> findByBookId(Long bookId);
     void insertReview(Review review);
     void softDeleteById(Long id);
+
+
+
 }

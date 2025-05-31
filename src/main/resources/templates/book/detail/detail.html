@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <title>책 상세보기</title>
     <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/search.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 <div layout:fragment="content">
@@ -30,42 +32,48 @@
             <h1>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h1>
 
             <!-- 리뷰 작성 -->
-            <th:block sec:authorize = "isAuthenticated()">
+            <th:block sec:authorize="isAuthenticated()">
                 <form class="review-form" id="reviewForm" onsubmit="return false;">
                     <div class="rating-group">
                         <div class="rating-stars" id="ratingStars">
                             <div class="stars-fill" id="fillStars"></div>
                         </div>
                         <input type="hidden" name="rating" id="ratingInput" value="0"/>
-                        <div class ="rating-text">
+                        <div class="rating-text">
                             <span id="ratingDisplay"></span>
                         </div>
                     </div>
 
                     <div class="comment-group">
-                        <textarea class = "comment-input" id="reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
+                        <textarea class="comment-input" id="reviewContent" name="reviewContent"
+                                  placeholder="리뷰를 남겨주세요"></textarea>
                         <button id="submitReviewBtn" type="button">리뷰 작성</button>
                     </div>
                 </form>
             </th:block>
 
-            <th:block sec:authorize = "isAnonymous()">
+            <th:block sec:authorize="isAnonymous()">
                 <div class="border-bottom border-top" style="padding : 15px; margin-top : 15px;">
                     리뷰를 작성하려면 <a href="/login" class="link">로그인</a> 해주세요.
                 </div>
             </th:block>
 
 
-
             <div id="reviewList">
-                <div th:if = "${#lists.isEmpty(reviews)}" class="comment-empty">
-                   등록된 리뷰가 없습니다.
+                <div th:if="${#lists.isEmpty(reviews)}" class="comment-empty">
+                    등록된 리뷰가 없습니다.
                 </div>
 
                 <article th:each="review : ${reviews}" class="review-card">
                     <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
                     <p>⭐ <span th:text="${review.rating}">5</span>점</p>
                     <p th:text="${review.content}">좋은 책입니다.</p>
+                    <button class="like-btn review-like-btn"
+                            th:classappend="${review.likedByCurrentUser} ? 'review-liked' : ''"
+                            th:attr="data-review-id=${review.reviewId}">
+                        <i th:class="'like-icon review-like-icon fa-thumbs-up ' + (${review.likedByCurrentUser} ? 'fa-solid' : 'fa-regular')"></i>
+                        <span class="like-count" th:text="${review.likeCount} ?: 0">0</span>
+                    </button>
                 </article>
             </div>
         </section>
@@ -75,102 +83,151 @@
     <th:block layout:fragment="script">
         <script src="/js/toastMessage.js"></script>
         <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                //리뷰 별 애니메이션
+                const starContainer = document.getElementById('ratingStars');
+                const fillStars = document.getElementById('fillStars');
+                const ratingInput = document.getElementById('ratingInput');
+                const totalStars = 5;
 
-            //리뷰 별 애니메이션
-            const starContainer = document.getElementById('ratingStars');
-            const fillStars = document.getElementById('fillStars');
-            const ratingInput = document.getElementById('ratingInput');
-            const totalStars = 5;
+                if (starContainer) {
+                    starContainer.addEventListener('mousemove', (e) => {
+                        const rect = starContainer.getBoundingClientRect();
+                        const offsetX = e.clientX - rect.left;
+                        const starWidth = rect.width / totalStars;
+                        let rating = Math.ceil((offsetX / starWidth) * 2) / 2; // 0.5 단위
 
-            starContainer.addEventListener('mousemove', (e) => {
-                const rect = starContainer.getBoundingClientRect();
-                const offsetX = e.clientX - rect.left;
-                const starWidth = rect.width / totalStars;
-                let rating = Math.ceil((offsetX / starWidth) * 2) / 2; // 0.5 단위
-
-                const fillPercent = (rating / totalStars) * 100;
-                fillStars.style.width = `${fillPercent}%`;
-            });
-
-            starContainer.addEventListener('mouseleave', () => {
-                // 마우스를 벗어나면 기존 값 유지
-                const current = parseFloat(ratingInput.value) || 0;
-                fillStars.style.width = `${(current / totalStars) * 100}%`;
-            });
-
-            starContainer.addEventListener('click', (e) => {
-                const rect = starContainer.getBoundingClientRect();
-                const offsetX = e.clientX - rect.left;
-                const starWidth = rect.width / totalStars;
-                const rating = Math.ceil((offsetX / starWidth) * 2) / 2;
-                ratingInput.value = rating;
-
-                fillStars.style.width = `${(rating / totalStars) * 100}%`;
-                document.getElementById("ratingDisplay").innerText = rating.toFixed(1);
-            });
-
-
-
-            //리뷰 등록
-            document.getElementById("submitReviewBtn").addEventListener("click", async () => {
-                const rating = parseFloat(document.getElementById("ratingInput").value);
-                const content = document.getElementById("reviewContent").value;
-                const bookId = [[${book.bookId}]];
-
-                if (!rating || !content.trim()) {
-                    alert("별점과 리뷰를 모두 입력해주세요.")
-                    return;
-                }
-
-                const data = {
-                    bookId: bookId,
-                    rating: rating,
-                    content: content
-                };
-
-
-                try {
-                    const response = await fetch('/api/reviews', {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
+                        const fillPercent = (rating / totalStars) * 100;
+                        fillStars.style.width = `${fillPercent}%`;
                     });
 
-                    if (response.status === 401) {
-                        alert("로그인이 필요합니다.");
-                        window.location.href = "/login";
-                        return;
-                    }
+                    starContainer.addEventListener('mouseleave', () => {
+                        // 마우스를 벗어나면 기존 값 유지
+                        const current = parseFloat(ratingInput.value) || 0;
+                        fillStars.style.width = `${(current / totalStars) * 100}%`;
+                    });
 
-                    if (response.ok) {
-                        const newReview = await response.json();
+                    starContainer.addEventListener('click', (e) => {
+                        const rect = starContainer.getBoundingClientRect();
+                        const offsetX = e.clientX - rect.left;
+                        const starWidth = rect.width / totalStars;
+                        const rating = Math.ceil((offsetX / starWidth) * 2) / 2;
+                        ratingInput.value = rating;
 
-                        appendReview(newReview)
-                        showToast("리뷰가 등록되었어요!");
-
-                        const avgRes = await fetch(`/api/reviews/average?bookId=${bookId}`);
-                        const avgRating = await avgRes.text();
-
-                        document.querySelector(".book-reviews h3 span").innerHTML = avgRating;
-
-                        //초기화
-                        document.getElementById("reviewContent").value = "";
-                        ratingInput.value = "0";
-                        fillStars.style.width = "0%";
-                        document.getElementById("ratingDisplay").innerText = "0";
-                    } else {
-                        const error = await response.text();
-                        alert("리뷰 등록 실패 :" + error);
-                    }
-
-                } catch (e) {
-                    alert("에러 발생:" + e.message);
+                        fillStars.style.width = `${(rating / totalStars) * 100}%`;
+                        document.getElementById("ratingDisplay").innerText = rating.toFixed(1);
+                    });
                 }
 
 
+                //리뷰 등록
+                if (document.getElementById("submitReviewBtn")) {
+                    document.getElementById("submitReviewBtn").addEventListener("click", async () => {
+                        const rating = parseFloat(document.getElementById("ratingInput").value);
+                        const content = document.getElementById("reviewContent").value;
+                        const bookId = [[${book.bookId}]];
+
+                        if (!rating || !content.trim()) {
+                            alert("별점과 리뷰를 모두 입력해주세요.")
+                            return;
+                        }
+
+                        const data = {
+                            bookId: bookId,
+                            rating: rating,
+                            content: content
+                        };
+
+
+                        try {
+                            const response = await fetch('/api/reviews', {
+                                method: 'POST',
+                                headers: {
+                                    'content-type': 'application/json',
+                                },
+                                body: JSON.stringify(data)
+                            });
+
+                            if (response.status === 401) {
+                                alert("로그인이 필요합니다.");
+                                window.location.href = "/login";
+                                return;
+                            }
+
+                            if (response.ok) {
+                                const newReview = await response.json();
+
+                                appendReview(newReview)
+                                showToast("리뷰가 등록되었어요!");
+
+                                const avgRes = await fetch(`/api/reviews/average?bookId=${bookId}`);
+                                const avgRating = await avgRes.text();
+
+                                document.querySelector(".book-reviews h1 span").innerHTML = avgRating;
+
+                                //초기화
+                                document.getElementById("reviewContent").value = "";
+                                ratingInput.value = "0";
+                                fillStars.style.width = "0%";
+                                document.getElementById("ratingDisplay").innerText = "0";
+                            } else {
+                                const error = await response.text();
+                                alert("리뷰 등록 실패 :" + error);
+                            }
+
+                        } catch (e) {
+                            alert("에러 발생:" + e.message);
+                        }
+
+
+                    });
+                }
+
+
+                document.addEventListener("click", async (e) => {
+                    const likeBtn = e.target.closest(".like-btn");
+                    if (!likeBtn) return;
+
+                    const reviewId = likeBtn.dataset.reviewId;
+
+                    try {
+                        const res = await fetch(`/api/reviews/${reviewId}/like`, {method: "POST"});
+
+                        if (res.ok) {
+                            const count = await res.text();
+                            const countEl = likeBtn.querySelector(".like-count");
+                            if (countEl) {
+                                countEl.innerText = count;
+                            }
+                            const icon = likeBtn.querySelector(".like-icon");
+                            if (icon) {
+                                icon.classList.toggle("fa-regular");
+                                icon.classList.toggle("fa-solid");
+                            }
+
+                            const isLiked = likeBtn.classList.toggle("review-liked");
+
+                            // ✅ 좋아요/취소 구분해서 메시지 표시
+                            showToast(
+                                isLiked ? "좋아요를 눌렀어요!" : "좋아요를 취소했어요!",
+                                !isLiked // true면 취소 상태
+                            );
+
+                        } else if (res.status === 401) {
+                            const goLogin = confirm("로그인이 필요해요.\n로그인 하시겠어요?");
+                            if (goLogin) {
+                                window.location.href = "/login";
+                            }
+                        } else {
+                            alert("오류가 발생했습니다.");
+                        }
+                    } catch (err) {
+                        console.error("추천 처리 중 오류 발생:", err);
+                        alert("네트워크 오류가 발생했습니다.");
+                    }
+                });
             });
+
 
 
             function appendReview(review) {
@@ -183,10 +240,21 @@
                                     <p><strong>${review.username}</strong> 님의 평가</p>
                                     <p>⭐ ${review.rating}점</p>
                                     <p>${review.content}</p>
+
+                                    <button class="like-btn review-like-btn"
+                                            th:classappend="${review.likedByCurrentUser} ? 'review-liked' : ''"
+                                            th:attr="data-review-id=${review.reviewId}">
+                                        <i th:class="'like-icon review-like-icon fa-thumbs-up ' + (${review.likedByCurrentUser} ? 'fa-solid' : 'fa-regular')"></i>
+                                        <span class="like-count" th:text="${review.likeCount} ?: 0">0</span>
+                                    </button>
+
                                 `;
 
                 reviewList.prepend(card); // 최신순으로 맨 위에 추가
             }
+
+
+            //추천 버튼
 
 
 

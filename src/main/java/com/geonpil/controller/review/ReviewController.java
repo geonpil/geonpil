@@ -5,8 +5,10 @@ import com.geonpil.domain.Review;
 import com.geonpil.dto.review.ReviewRequestDto;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.security.AppUserInfo;
+import com.geonpil.service.review.ReviewLikeService;
 import com.geonpil.service.review.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ import java.util.Map;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final ReviewLikeService reviewLikeService;
 
     // 리뷰 등록
     @PostMapping
@@ -39,13 +42,17 @@ public class ReviewController {
         reviewService.addReview(review, user);
 
 
-        ReviewResponseDto responseDto = new ReviewResponseDto(
-                review.getBookId(),
-                user.getNickname(), // 또는 username, userId 등
-                review.getRating(),
-                review.getContent(),
-                review.getCreatedAt()
-        );
+
+
+        ReviewResponseDto responseDto = ReviewResponseDto.builder()
+                                        .reviewId(review.getReviewId())
+                                        .bookId(review.getBookId())
+                                        .username(user.getNickname())
+                                        .rating(review.getRating())
+                                        .content(review.getContent())
+                                        .createdAt(review.getCreatedAt()).build();
+
+
 
         // Location 헤더에 등록된 책 상세 URI 반환
         return ResponseEntity.ok(responseDto);
@@ -73,5 +80,20 @@ public class ReviewController {
         List<Review> reviews = reviewService.getReviewsByBookId(bookId);
         return reviewService.calculateAverageRating(reviews);
 
+    }
+
+    //리뷰 좋아요
+    @PostMapping("/{reviewId}/like")
+    @ResponseBody
+    public ResponseEntity<Integer> toggleLike(
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal AppUserInfo user) {
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        int updatedLikeCount = reviewLikeService.toggleLike(reviewId, user.getId());
+        return ResponseEntity.ok(updatedLikeCount);
     }
 }

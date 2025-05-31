@@ -201,8 +201,12 @@
 }
 
 
+.review-liked {
+    color: var(--primary-hover);
+}
 
-/* START : 리뷰 작성 시 애니메이션 */
+
+/* START : 리뷰 작성 시 애니메이션(토스트) */
 
 .review-card.animate-in {
     animation: fadeSlideIn 0.4s ease-out;
@@ -210,23 +214,26 @@
 
 .toast-message {
     position: fixed;
-    top: 20%;
+    top: 100px;
     left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background-color: #333;
-    color: #fff;
-    padding: 14px 24px;
-    border-radius: 10px;
-    font-size: 1rem;
+    transform: translateX(-50%);
+    background-color: #1F4EB2; /* 기본: 좋아요 */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     opacity: 0;
-    transition: all 0.4s ease;
+    transition: opacity 0.4s ease, top 0.4s ease;
     z-index: 9999;
-    pointer-events: none;
 }
 
 .toast-message.show {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    top: 120px;
+}
+
+.toast-message.cancel {
+    background-color: #999; /* 좋아요 취소 시 회색 등으로 표시 */
 }
 
 
@@ -262,5 +269,43 @@
 
 }
 /* END : 책리뷰-별 */
+
+
+/* START : 책 리뷰 - 좋아요 버튼 */
+/* 기본 스타일 (책 상세 페이지 한정) */
+.book-detail-container .review-like-btn {
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0px 2px;
+    transition: color 0.3s ease;
+}
+
+/* 아이콘 기본 상태 */
+.book-detail-container .review-like-icon {
+    margin-right: 6px;
+    color: #1F4EB2;
+    transition: color 0.3s ease;
+}
+
+/* 버튼 호버 시 아이콘 색상 변경 */
+.book-detail-container .review-like-btn:hover .review-like-icon {
+    color: #3498db;
+}
+
+/* 좋아요 누른 상태 */
+.book-detail-container .review-like-btn.review-liked .review-like-icon {
+    color: #1F4EB2;
+}
+
+/* 숫자 텍스트 스타일 */
+.book-detail-container .review-like-btn .like-count {
+    font-weight: 500;
+    color: #444;
+}
+/* END : 책 리뷰 - 좋아요 버튼 */
 
 /* END : 책 리뷰 */

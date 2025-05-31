@@ -4,6 +4,7 @@ import com.geonpil.domain.Book;
 import com.geonpil.domain.Review;
 import com.geonpil.domain.entity.BookEntity;
 import com.geonpil.dto.review.ReviewResponseDto;
+import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.UserService;
 import com.geonpil.service.book.BookService;
@@ -25,9 +26,10 @@ public class BookDetailController {
     private final BookService bookService;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final ReviewLikeMapper reviewLikeMapper;
 
     @GetMapping("/{bookId}")
-    public String getBookDetail(@PathVariable Long bookId, Model model) {
+    public String getBookDetail(@PathVariable Long bookId,@AuthenticationPrincipal AppUserInfo user, Model model) {
         // 1. 책 상세 정보 조회
         Book book = bookService.getBookById(bookId);
         if (book == null) {
@@ -39,13 +41,23 @@ public class BookDetailController {
         List<Review> reviews = reviewService.getReviewsByBookId(bookId);
 
         List<ReviewResponseDto> reviewDtos = reviews.stream()
-                .map(review -> new ReviewResponseDto(
-                        review.getBookId(),
-                        userService.getUserNicknameByUserId(review.getUserId()),
-                        review.getRating(),
-                        review.getContent(),
-                        review.getCreatedAt()
-                ))
+                .map(review -> {
+
+                    boolean liked = false;
+                            if(user != null){
+                                liked = reviewLikeMapper.existsByReviewIdAndUserId(review.getReviewId(), user.getId());
+                            }
+                    return ReviewResponseDto.builder()
+                            .reviewId(review.getReviewId())
+                            .bookId(review.getBookId())
+                            .username(userService.getUserNicknameByUserId(review.getUserId()))
+                            .rating(review.getRating())
+                            .content(review.getContent())
+                            .createdAt(review.getCreatedAt())
+                            .likedByCurrentUser(liked)
+                            .likeCount(reviewLikeMapper.countByReviewId(review.getReviewId()))
+                            .build();
+                        })
                 .collect(Collectors.toList());
 
 

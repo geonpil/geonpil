@@ -30,6 +30,11 @@ public class ReviewService {
     }
 
 
+
+
+
+
+
     public double calculateAverageRating(List<Review> reviews) {
         return reviews.isEmpty()
                 ? 0.0
@@ -40,4 +45,7 @@ public class ReviewService {
                         .orElse(0.0) * 100.0
         ) / 100.0;
     }
+
+
+
 }
