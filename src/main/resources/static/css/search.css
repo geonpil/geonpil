@@ -254,6 +254,13 @@
     pointer-events: none;
     width: 0%;
 }
+
+
+.rating-text {
+    font-weight: bold;
+    font-size: 1.25rem;
+
+}
 /* END : 책리뷰-별 */
 
 /* END : 책 리뷰 */

@@ -30,23 +30,39 @@
             <h3>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h3>
 
             <!-- 리뷰 작성 -->
-            <form class="review-form" id="reviewForm" onsubmit="return false;">
-                <div class="rating-group">
-                    <div class="rating-stars" id="ratingStars">
-                        <div class="stars-fill" id="fillStars"></div>
+            <th:block sec:authorize = "isAuthenticated()">
+                <form class="review-form" id="reviewForm" onsubmit="return false;">
+                    <div class="rating-group">
+                        <div class="rating-stars" id="ratingStars">
+                            <div class="stars-fill" id="fillStars"></div>
+                        </div>
+                        <input type="hidden" name="rating" id="ratingInput" value="0"/>
+                        <div class ="rating-text">
+                            <span id="ratingDisplay"></span>
+                            <span>점</span>
+                        </div>
                     </div>
-                    <input type="hidden" name="rating" id="ratingInput" value="0"/>
-                    <div id="ratingDisplay">0</div>
-                </div>
 
-                <div class="comment-group">
-                    <textarea id="reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
-                    <button id="submitReviewBtn" type="button">리뷰 작성</button>
+                    <div class="comment-group">
+                        <textarea id="reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
+                        <button id="submitReviewBtn" type="button">리뷰 작성</button>
+                    </div>
+                </form>
+            </th:block>
+
+            <th:block sec:authorize = "isAnonymous()">
+                <div class="border-bottom border-top" style="padding : 15px; margin-top : 15px;">
+                    리뷰를 작성하려면 <a href="/login" class="link">로그인</a> 해주세요.
                 </div>
-            </form>
-            <br>
+            </th:block>
+
+
 
             <div id="reviewList">
+                <div th:if = "${#lists.isEmpty(reviews)}" class="comment-empty">
+                   등록된 리뷰가 없습니다.
+                </div>
+
                 <article th:each="review : ${reviews}" class="review-card">
                     <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
                     <p>⭐ <span th:text="${review.rating}">5</span>점</p>

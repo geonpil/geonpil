@@ -4,6 +4,7 @@
       layout:decorate="layout.html"
       th:inline="text">
 
+<link rel="stylesheet" href="../../static/css/common.css">
 <th:block layout:fragment="meta">
     <title>건필 - 글 상세</title>
 </th:block>
@@ -184,7 +185,7 @@
 
             <!-- 👤 비로그인 사용자 메시지 -->
             <th:block sec:authorize="isAnonymous()">
-                <p style="color: gray; margin-top: 20px;">
+                <p class = "unAuthMsg">
                     댓글을 작성하려면 <a href="/login" class="link">로그인</a> 해주세요.
                 </p>
             </th:block>
