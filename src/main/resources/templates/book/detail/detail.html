@@ -74,6 +74,12 @@
                         <i th:class="'like-icon review-like-icon fa-thumbs-up ' + (${review.likedByCurrentUser} ? 'fa-solid' : 'fa-regular')"></i>
                         <span class="like-count" th:text="${review.likeCount} ?: 0">0</span>
                     </button>
+
+                    <!--삭제 버튼-->
+                    <th:block th:if="${currentUserId == review.userId}">
+                        <button class="delete-btn" th:attr="data-review-id=${review.reviewId}">🗑️ 삭제</button>
+                    </th:block>
+
                 </article>
             </div>
         </section>
@@ -83,6 +89,8 @@
     <th:block layout:fragment="script">
         <script src="/js/toastMessage.js"></script>
         <script>
+            const currentUserId = [[${currentUserId}]];
+
             document.addEventListener("DOMContentLoaded", () => {
                 //리뷰 별 애니메이션
                 const starContainer = document.getElementById('ratingStars');
@@ -226,6 +234,30 @@
                         alert("네트워크 오류가 발생했습니다.");
                     }
                 });
+
+                document.addEventListener("click", async (e) => {
+                    const deleteBtn = e.target.closest(".delete-btn");
+                    if (!deleteBtn) return;
+
+                    const reviewId = deleteBtn.dataset.reviewId;
+                    const confirmDelete = confirm("정말 이 리뷰를 삭제하시겠어요?");
+                    if (!confirmDelete) return;
+
+                    try {
+                        const res = await fetch(`/api/reviews/${reviewId}`, { method: "DELETE" });
+                        if (res.ok) {
+                            // 삭제 성공 시 UI에서 제거
+                            deleteBtn.closest(".review-card").remove();
+                            showToast("리뷰가 삭제되었어요!", "deleted");
+                        } else {
+                            alert("삭제에 실패했어요.");
+                        }
+                    } catch (err) {
+                        console.error("삭제 오류:", err);
+                        alert("네트워크 오류가 발생했어요.");
+                    }
+                });
+
             });
 
 
@@ -236,18 +268,25 @@
                 const card = document.createElement("article");
                 card.className = "review-card animate-in";
 
+                const isLiked = review.likedByCurrentUser;
+                const iconClass = isLiked ? "fa-solid" : "fa-regular";
+                const likedClass = isLiked ? "review-liked" : "";
+                const canDelete = (typeof currentUserId !== 'undefined') && (review.userId === currentUserId);
+
+
+
                 card.innerHTML = `
                                     <p><strong>${review.username}</strong> 님의 평가</p>
                                     <p>⭐ ${review.rating}점</p>
                                     <p>${review.content}</p>
 
-                                    <button class="like-btn review-like-btn"
-                                            th:classappend="${review.likedByCurrentUser} ? 'review-liked' : ''"
-                                            th:attr="data-review-id=${review.reviewId}">
-                                        <i th:class="'like-icon review-like-icon fa-thumbs-up ' + (${review.likedByCurrentUser} ? 'fa-solid' : 'fa-regular')"></i>
-                                        <span class="like-count" th:text="${review.likeCount} ?: 0">0</span>
+                                    <button class="like-btn review-like-btn ${likedClass}" data-review-id="${review.reviewId}">
+                                        <i class="like-icon review-like-icon fa-thumbs-up ${iconClass}"></i>
+                                        <span class="like-count">${review.likeCount}</span>
                                     </button>
-
+                                ${canDelete ? `
+                                    <button class="delete-btn" data-review-id="${review.reviewId}">🗑️ 삭제</button>
+                                ` : ''}
                                 `;
 
                 reviewList.prepend(card); // 최신순으로 맨 위에 추가

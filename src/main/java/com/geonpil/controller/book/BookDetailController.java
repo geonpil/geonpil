@@ -49,6 +49,7 @@ public class BookDetailController {
                             }
                     return ReviewResponseDto.builder()
                             .reviewId(review.getReviewId())
+                            .userId(review.getUserId())
                             .bookId(review.getBookId())
                             .username(userService.getUserNicknameByUserId(review.getUserId()))
                             .rating(review.getRating())
@@ -68,6 +69,9 @@ public class BookDetailController {
         model.addAttribute("book", book);
         model.addAttribute("reviews", reviewDtos);
         model.addAttribute("avgRating", averageRating);
+        if (user != null) {
+            model.addAttribute("currentUserId", user.getId());
+        }
 
         return "book/detail/detail"; // detail.html
     }

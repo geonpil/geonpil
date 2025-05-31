@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ReviewResponseDto {
     private Long reviewId;
+    private Long userId;
     private Long bookId;
     private String username; // 또는 userId 등
     private double rating;
