@@ -38,18 +38,21 @@ function performSearch(query, page = 1) {
 
         document.querySelector(".search-header h2").textContent = "검색어: " + query;
 
+
+        // 1.검색결과 가져오기
         fetch(`/api/search/fragment/result?query=${encodedQuery}&page=${page}`)
             .then(res => res.text())
             .then(html => {
                 document.querySelector("#book-list-area").innerHTML = html;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-
+        // 2.페이지네이션 가져오기
         fetch(`/api/search/fragment/pagination?query=${encodedQuery}&page=${page}`)
             .then(res => res.text())
             .then(html => {
                 document.querySelector("#pagination-area").innerHTML = html;
             });
+
     }
 }
 

@@ -36,7 +36,6 @@
 
 
                 <div class="search-content">
-                    <div th:text="'전체 결과 : ' + ${pageableCount} + '건'">메타정보</div>
                     <div id= "book-list-area" class="book-list-area">
                         <div th:replace = "~{book/search/_result-fragment :: resultFragment}"></div>
                     </div>

@@ -67,6 +67,7 @@ public class BookSearchController {
 
         if (includeBooks) {
             model.addAttribute("books", result.getDocuments());
+            model.addAttribute("pageableCount", meta.getPageable_count());
         }
 
         if (includePagination) {
