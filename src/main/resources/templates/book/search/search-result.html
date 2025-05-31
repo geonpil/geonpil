@@ -12,14 +12,7 @@
 
 
 
-    <section class="searchBar-section">
-        <div class="searchBar-container">
-            <div class="searchBar-wrapper">
-                <input th:value="${query}" type="text" id="searchInput" class="search-input" placeholder="책 제목을 입력하세요">
-                <button class="btn btn-primary">검색</button>
-            </div>
-        </div>
-    </section>
+    <div th:replace = "~{fragments/search-bar :: searchBar(${query})}"></div>
 
 
     <section class=search-section>
