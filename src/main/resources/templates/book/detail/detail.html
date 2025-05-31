@@ -9,6 +9,8 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div id="toast" class="toast-message hidden">리뷰가 등록되었어요!</div>
+
 
     <div class="book-detail-container">
         <!-- 왼쪽: 책 정보 -->
@@ -56,6 +58,7 @@
 
 
     <th:block layout:fragment="script">
+        <script src="/js/toastMessage.js"></script>
         <script>
 
             //리뷰 별 애니메이션
@@ -128,8 +131,9 @@
 
                     if (response.ok) {
                         const newReview = await response.json();
-                        alert("리뷰가 등록되었어요!")
+
                         appendReview(newReview)
+                        showToast("리뷰가 등록되었어요!");
 
                         const avgRes = await fetch(`/api/reviews/average?bookId=${bookId}`);
                         const avgRating = await avgRes.text();
@@ -168,6 +172,8 @@
 
                 reviewList.prepend(card); // 최신순으로 맨 위에 추가
             }
+
+
 
         </script>
     </th:block>

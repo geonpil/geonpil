@@ -200,9 +200,37 @@
     }
 }
 
+
+
+/* START : 리뷰 작성 시 애니메이션 */
+
 .review-card.animate-in {
     animation: fadeSlideIn 0.4s ease-out;
 }
+
+.toast-message {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background-color: #333;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.toast-message.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+
+/* END: 리뷰 작성 시 애니메이션 */
 
 
 /* START : 책리뷰-별 */
