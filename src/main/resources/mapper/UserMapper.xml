@@ -39,5 +39,12 @@
         WHERE email = #{email}
     </update>
 
+    <!-- 유저 닉네임 가지고 오기  -->
+    <select id = "getUserNicknameById" parameterType="long" resultType="string">
+        SELECT nickname
+        FROM users
+        WHERE id = #{id}
+    </select>
+
 
 </mapper>

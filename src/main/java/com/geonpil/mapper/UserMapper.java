@@ -30,4 +30,6 @@ public interface UserMapper {
 
     void updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
 
+    String getUserNicknameById(long id);
+
 }

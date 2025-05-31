@@ -1,4 +1,4 @@
-package com.geonpil.dto.response;
+package com.geonpil.dto.bookSearch;
 
 import com.geonpil.domain.Book;
 import lombok.Data;

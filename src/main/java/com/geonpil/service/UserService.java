@@ -46,5 +46,9 @@ public class UserService {
         userMapper.updatePasswordByEmail(email, encodedPassword);
     }
 
+    public String getUserNicknameByUserId(Long userId) {
+        return userMapper.getUserNicknameById(userId);
+    }
+
 
 }

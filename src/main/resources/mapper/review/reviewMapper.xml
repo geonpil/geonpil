@@ -7,7 +7,7 @@
 <mapper namespace="com.geonpil.mapper.review.ReviewMapper">
 
     <resultMap id="ReviewResultMap" type="com.geonpil.domain.Review">
-        <id property="id" column="review_id"/>
+        <id property="reviewId" column="review_id"/>
         <result property="bookId" column="book_id"/>
         <result property="userId" column="user_id"/>
         <result property="rating" column="rating"/>

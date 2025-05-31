@@ -3,13 +3,9 @@ package com.geonpil.service.book;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.geonpil.domain.Book;
-import com.geonpil.dto.response.BookSearchResponse;
-import com.geonpil.dto.response.Meta;
+import com.geonpil.dto.bookSearch.BookSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,9 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 
 import org.springframework.http.HttpHeaders;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

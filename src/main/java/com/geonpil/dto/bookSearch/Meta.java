@@ -1,4 +1,4 @@
-package com.geonpil.dto.response;
+package com.geonpil.dto.bookSearch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

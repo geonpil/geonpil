@@ -12,7 +12,7 @@
 
     <div class="book-detail-container">
         <!-- 왼쪽: 책 정보 -->
-        <div class="book-info card-wrapper">
+        <aside class="book-info card-wrapper">
             <img th:src="${book.thumbnail}" alt="책 표지" class="book-cover"/>
             <div class="book-meta">
                 <h2 th:text="${book.title}">책 제목</h2>
@@ -22,76 +22,139 @@
                 <p><strong>책소개:</strong></p>
                 <p th:text="${book.contents}">줄거리 내용</p>
             </div>
-        </div>
-
+        </aside>
         <!-- 오른쪽: 리뷰 -->
-        <div class="book-reviews card-wrapper">
+        <section class="book-reviews card-wrapper">
             <h3>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h3>
 
-            <div th:each="review : ${reviews}" class="review-card">
-                <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
-                <p>⭐ <span th:text="${review.rating}">5</span>점</p>
-                <p th:text="${review.comment}">좋은 책입니다.</p>
-            </div>
-
             <!-- 리뷰 작성 -->
-            <div class="review-form">
-                <form method="post" th:action="@{'/books/' + ${book.bookId} + '/reviews'}">
+            <form class="review-form" id="reviewForm" onsubmit="return false;">
+                <div class="rating-group">
                     <div class="rating-stars" id="ratingStars">
                         <div class="stars-fill" id="fillStars"></div>
                     </div>
-                    <input type="hidden" name="rating" id="ratingInput" value="0" />
-                    <div>
-                        <label>
-                            <textarea id= "reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
-                        </label><br/>
-                        <button type="submit">리뷰 작성</button>
-                    </div>
-                </form>
+                    <input type="hidden" name="rating" id="ratingInput" value="0"/>
+                    <div id="ratingDisplay">0</div>
+                </div>
+
+                <div class="comment-group">
+                    <textarea id="reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
+                    <button id="submitReviewBtn" type="button">리뷰 작성</button>
+                </div>
+            </form>
+            <br>
+
+            <div id="reviewList">
+                <article th:each="review : ${reviews}" class="review-card">
+                    <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
+                    <p>⭐ <span th:text="${review.rating}">5</span>점</p>
+                    <p th:text="${review.content}">좋은 책입니다.</p>
+                </article>
             </div>
-        </div>
+        </section>
     </div>
 
-</div>
 
-<th:block layout:fragment="script">
-    <script>
-/*        const bookId = [[${book.bookId}]];
-        const content = document.getElementById("reviewContent");
-        const rating = document.getElementById("reviewRating");*/
+    <th:block layout:fragment="script">
+        <script>
 
 
-        const starContainer = document.getElementById('ratingStars');
-        const fillStars = document.getElementById('fillStars');
-        const ratingInput = document.getElementById('ratingInput');
-        const totalStars = 5;
+            const starContainer = document.getElementById('ratingStars');
+            const fillStars = document.getElementById('fillStars');
+            const ratingInput = document.getElementById('ratingInput');
+            const totalStars = 5;
 
-        starContainer.addEventListener('mousemove', (e) => {
-            const rect = starContainer.getBoundingClientRect();
-            const offsetX = e.clientX - rect.left;
-            const starWidth = rect.width / totalStars;
-            let rating = Math.ceil((offsetX / starWidth) * 2) / 2; // 0.5 단위
+            starContainer.addEventListener('mousemove', (e) => {
+                const rect = starContainer.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left;
+                const starWidth = rect.width / totalStars;
+                let rating = Math.ceil((offsetX / starWidth) * 2) / 2; // 0.5 단위
 
-            const fillPercent = (rating / totalStars) * 100;
-            fillStars.style.width = `${fillPercent}%`;
-        });
+                const fillPercent = (rating / totalStars) * 100;
+                fillStars.style.width = `${fillPercent}%`;
+            });
 
-        starContainer.addEventListener('mouseleave', () => {
-            // 마우스를 벗어나면 기존 값 유지
-            const current = parseFloat(ratingInput.value) || 0;
-            fillStars.style.width = `${(current / totalStars) * 100}%`;
-        });
+            starContainer.addEventListener('mouseleave', () => {
+                // 마우스를 벗어나면 기존 값 유지
+                const current = parseFloat(ratingInput.value) || 0;
+                fillStars.style.width = `${(current / totalStars) * 100}%`;
+            });
 
-        starContainer.addEventListener('click', (e) => {
-            const rect = starContainer.getBoundingClientRect();
-            const offsetX = e.clientX - rect.left;
-            const starWidth = rect.width / totalStars;
-            const rating = Math.ceil((offsetX / starWidth) * 2) / 2;
-            ratingInput.value = rating;
+            starContainer.addEventListener('click', (e) => {
+                const rect = starContainer.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left;
+                const starWidth = rect.width / totalStars;
+                const rating = Math.ceil((offsetX / starWidth) * 2) / 2;
+                ratingInput.value = rating;
 
-            fillStars.style.width = `${(rating / totalStars) * 100}%`;
-        });
-    </script>
-</th:block>
+                fillStars.style.width = `${(rating / totalStars) * 100}%`;
+                document.getElementById("ratingDisplay").innerText = rating.toFixed(1);
+            });
+
+
+            document.getElementById("submitReviewBtn").addEventListener("click", async () => {
+                const rating = parseFloat(document.getElementById("ratingInput").value);
+                const content = document.getElementById("reviewContent").value;
+                const bookId = [[${book.bookId}]];
+
+                if (!rating || !content.trim()) {
+                    alert("별점과 리뷰를 모두 입력해주세요.")
+                    return;
+                }
+
+                const data = {
+                    bookId: bookId,
+                    rating: rating,
+                    content: content
+                };
+
+
+                try {
+                    const response = await fetch('api/reviews', {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        const newReview = await response.json();
+                        alert("리뷰가 등록되었어요!")
+                        appendReview(newReview)
+                        document.getElementById("reviewContent").value = "";
+                        ratingInput.value = "0";
+                        fillStars.style.width = "0%";
+                        document.getElementById("ratingDisplay").innerText = "0";
+                    } else {
+                        const error = await response.text();
+                        alert("리뷰 등록 실패 :" + error);
+                    }
+
+                } catch (e) {
+                    alert("에러 발생:" + e.message);
+                }
+
+
+            });
+
+
+            function appendReview(review) {
+                const reviewList = document.getElementById("reviewList");
+
+                const card = document.createElement("article");
+                card.className = "review-card";
+
+                card.innerHTML = `
+                                    <p><strong>${review.username}</strong> 님의 평가</p>
+                                    <p>⭐ ${review.rating}점</p>
+                                    <p>${review.content}</p>
+                                `;
+
+                reviewList.prepend(card); // 최신순으로 맨 위에 추가
+            }
+
+        </script>
+    </th:block>
 </body>
 </html>

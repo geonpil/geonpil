@@ -1,7 +1,7 @@
 package com.geonpil.controller.book;
 
-import com.geonpil.dto.response.BookSearchResponse;
-import com.geonpil.dto.response.Meta;
+import com.geonpil.dto.bookSearch.BookSearchResponse;
+import com.geonpil.dto.bookSearch.Meta;
 import com.geonpil.service.book.BookSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
