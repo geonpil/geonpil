@@ -53,7 +53,7 @@ public class SecurityConfig {
                                 "/", "/signup", "/login","/find-password",
                                 "/fonts/**", "/favicon.ico", "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
-                                "api/search/**", "books/**"
+                                "/api/search/**", "/books/**"
                         ).permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**").permitAll()
                         .anyRequest().authenticated()
@@ -77,7 +77,21 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService());
+                .userDetailsService(userDetailsService())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String acceptHeader = request.getHeader("Accept");
+                            boolean isApiRequest = request.getRequestURI().startsWith("/api/");
+
+                            if (isApiRequest || (acceptHeader != null && acceptHeader.contains("application/json"))) {
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                response.setContentType("application/json;charset=UTF-8");
+                                response.getWriter().write("{\"error\": \"로그인이 필요합니다.\"}");
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
+                );
 
         return http.build();
     }

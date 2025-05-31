@@ -110,13 +110,19 @@
 
 
                 try {
-                    const response = await fetch('api/reviews', {
+                    const response = await fetch('/api/reviews', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json',
                         },
                         body: JSON.stringify(data)
                     });
+
+                    if (response.status === 401) {
+                        alert("로그인이 필요합니다.");
+                        window.location.href = "/login";
+                        return;
+                    }
 
                     if (response.ok) {
                         const newReview = await response.json();
