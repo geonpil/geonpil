@@ -27,7 +27,7 @@
         </aside>
         <!-- 오른쪽: 리뷰 -->
         <section class="book-reviews card-wrapper">
-            <h3>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h3>
+            <h1>🌟 평균 평점: <span th:text="${avgRating}">4.3</span></h1>
 
             <!-- 리뷰 작성 -->
             <th:block sec:authorize = "isAuthenticated()">
@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="comment-group">
-                        <textarea id="reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
+                        <textarea class = "comment-input" id="reviewContent" name="reviewContent" placeholder="리뷰를 남겨주세요"></textarea>
                         <button id="submitReviewBtn" type="button">리뷰 작성</button>
                     </div>
                 </form>
