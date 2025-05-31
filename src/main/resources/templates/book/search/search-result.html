@@ -11,9 +11,18 @@
 <div layout:fragment="content">
 
 
+
+    <section class="searchBar-section">
+        <div class="searchBar-container">
+            <div class="searchBar-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="책 제목을 입력하세요">
+                <button class="btn btn-primary">검색</button>
+            </div>
+        </div>
+    </section>
+
+
     <section class=search-section>
-
-
         <div class=search-container>
             <div class="search-header">
                 <h2 th:text="'검색어: ' + ${query}">검색어</h2>
@@ -45,6 +54,7 @@
 </div>
 
 <th:block layout:fragment="script">
+    <script src = "/js/bookSearch.js"></script>
     <script>
         document.getElementById("pagination-area").addEventListener("click", function (e) {
             if(e.target.classList.contains("page-button")) {

@@ -12,7 +12,7 @@
         <div class="searchBar-container">
             <div class="searchBar-wrapper">
                 <input type="text" id="searchInput" class="search-input" placeholder="책 제목을 입력하세요">
-                <button onclick="goToSearchPage()" class="btn btn-primary">검색</button>
+                <button class="btn btn-primary">검색</button>
             </div>
         </div>
     </section>
@@ -114,21 +114,7 @@
     </div>
 </div>
 <th:block layout:fragment="script">
-    <script>
-
-        function goToSearchPage() {
-            const query = document.getElementById("searchInput").value.trim();
-
-            if(!query) {
-                alert("검색어를 입력해주세요.");
-                return;
-                }
-
-            const encodedQuery = encodeURIComponent(query);
-            window.location.href = `/api/search?query=${encodedQuery}`;;
-
-        }
-    </script>
+    <script src = "/js/bookSearch.js"></script>
 </th:block>
 </body>
 </html>
