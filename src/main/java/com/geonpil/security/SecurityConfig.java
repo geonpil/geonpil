@@ -50,12 +50,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/signup", "/login","/find-password",
-                                "/fonts/**", "/favicon.ico", "/error", "/verify/**","/board/list/**",
+                                "/", "/signup", "/login","/find-password"
+                                ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
-                                "/api/search/**", "/books/**"
+                                "/api/search/**", "/books/**","/reviews/**"
                         ).permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**","/fonts/**"
+                                        ,"/favicon.ico").permitAll()
+                        .requestMatchers("/api/reviews/**").authenticated()
                         .anyRequest().authenticated()
                 )
 //                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())

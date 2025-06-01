@@ -33,7 +33,8 @@
 
             <!-- 리뷰 작성 -->
             <th:block sec:authorize="isAuthenticated()">
-                <form class="review-form" id="reviewForm" onsubmit="return false;">
+                <form class="review-form border-bottom" id="reviewForm" style="margin-bottom: 15px;"
+                      onsubmit="return false;">
                     <div class="rating-group">
                         <div class="rating-stars" id="ratingStars">
                             <div class="stars-fill" id="fillStars"></div>
@@ -63,26 +64,23 @@
                 <div th:if="${#lists.isEmpty(reviews)}" class="comment-empty">
                     등록된 리뷰가 없습니다.
                 </div>
+                <div class=review-wrapper>
+                    <div class="review-sort-filter">
+                        <button class="sort-btn active" data-sort="recent">최신순</button>
+                        <button class="sort-btn" data-sort="likes">추천순</button>
+                    </div>
+                    <div id= "review-list">
+                        <div th:replace = "~{/book/detail/_review-list-fragment :: reviewListFragment}">
 
-                <article th:each="review : ${reviews}" class="review-card">
-                    <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
-                    <p>⭐ <span th:text="${review.rating}">5</span>점</p>
-                    <p th:text="${review.content}">좋은 책입니다.</p>
-                    <button class="like-btn review-like-btn"
-                            th:classappend="${review.likedByCurrentUser} ? 'review-liked' : ''"
-                            th:attr="data-review-id=${review.reviewId}">
-                        <i th:class="'like-icon review-like-icon fa-thumbs-up ' + (${review.likedByCurrentUser} ? 'fa-solid' : 'fa-regular')"></i>
-                        <span class="like-count" th:text="${review.likeCount} ?: 0">0</span>
-                    </button>
-
-                    <!--삭제 버튼-->
-                    <th:block th:if="${currentUserId == review.userId}">
-                        <button class="delete-btn review-delete-btn"  th:attr="data-review-id=${review.reviewId}">
-                            <i class="fa-solid fa-trash delete-icon"></i>
-                        </button>
-                    </th:block>
-
-                </article>
+                            <!--삭제 버튼-->
+                            <th:block th:if="${currentUserId == review.userId}">
+                                <button class="delete-btn review-delete-btn" th:attr="data-review-id=${review.reviewId}">
+                                    <i class="fa-solid fa-trash delete-icon"></i>
+                                </button>
+                            </th:block>
+                        </article>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -91,7 +89,8 @@
     <th:block layout:fragment="script">
         <script src="/js/toastMessage.js"></script>
         <script>
-            const currentUserId = [[${currentUserId} ?: 'null']];
+            const currentUserId = [[${currentUserId != null ? currentUserId : 'null'}]];
+            const bookId = [[${book.bookId}]];
 
             document.addEventListener("DOMContentLoaded", () => {
                 //리뷰 별 애니메이션
@@ -135,7 +134,6 @@
                     document.getElementById("submitReviewBtn").addEventListener("click", async () => {
                         const rating = parseFloat(document.getElementById("ratingInput").value);
                         const content = document.getElementById("reviewContent").value;
-                        const bookId = [[${book.bookId}]];
 
                         if (!rating || !content.trim()) {
                             alert("별점과 리뷰를 모두 입력해주세요.")
@@ -177,7 +175,9 @@
 
                                 const commentEmpty = document.querySelector(".comment-empty")
 
-                                if(commentEmpty) {commentEmpty.remove();}
+                                if (commentEmpty) {
+                                    commentEmpty.remove();
+                                }
 
                                 //초기화
                                 document.getElementById("reviewContent").value = "";
@@ -241,6 +241,17 @@
                     }
                 });
 
+
+                const hasActive = document.querySelector(".sort-btn.active");
+
+                // 없으면 강제로 첫 버튼 활성화 + fetch 호출
+                if (!hasActive) {
+                    const defaultBtn = document.querySelector('.sort-btn[data-sort="recent"]');
+                    defaultBtn.classList.add("active");
+                    fetchReviews(bookId, 'recent');
+                }
+
+                //리뷰삭제
                 document.addEventListener("click", async (e) => {
                     const deleteBtn = e.target.closest(".delete-btn");
                     if (!deleteBtn) return;
@@ -250,7 +261,7 @@
                     if (!confirmDelete) return;
 
                     try {
-                        const res = await fetch(`/api/reviews/${reviewId}`, { method: "DELETE" });
+                        const res = await fetch(`/api/reviews/${reviewId}`, {method: "DELETE"});
                         if (res.ok) {
                             // 삭제 성공 시 UI에서 제거
                             deleteBtn.closest(".review-card").remove();
@@ -264,8 +275,29 @@
                     }
                 });
 
-            });
 
+                //정렬
+                document.querySelectorAll('.sort-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const sortType = this.dataset.sort;
+
+                        // 버튼 상태 UI 변경 (선택 표시)
+                        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+
+                        fetchReviews(bookId, sortType);
+                    });
+                });
+
+                function fetchReviews(bookId, sortType = 'recent') {
+                    fetch(`/reviews/${bookId}?sort=${sortType}`)
+                        .then(res => res.text())
+                        .then(html => {
+                            document.querySelector("#review-list").innerHTML = html;
+                        });
+                }
+
+            });
 
 
             function appendReview(review) {
@@ -293,16 +325,20 @@
                                     <button class="delete-btn review-delete-btn" data-review-id="${review.reviewId}">
                                         <i class="fa-solid fa-trash delete-icon"></i>
                                     </button>
-</button>
                                 ` : ''}
                                 `;
-
                 reviewList.prepend(card); // 최신순으로 맨 위에 추가
             }
 
 
-            //추천 버튼
-
+            function fetchReviews(bookId, sortType = 'recent') {
+                alert(sortType)
+                fetch(`/reviews/${bookId}?sort=${sortType}`)
+                    .then(res => res.text())
+                    .then(html => {
+                        document.querySelector("#review-list").innerHTML = html;
+                    });
+            }
 
 
         </script>

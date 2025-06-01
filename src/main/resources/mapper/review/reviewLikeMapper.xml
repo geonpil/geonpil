@@ -24,4 +24,7 @@
         SELECT COUNT(*) AS likeCount FROM review_likes WHERE review_id = #{reviewId}
     </select>
 
+
+
+
 </mapper>

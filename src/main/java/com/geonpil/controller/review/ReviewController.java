@@ -1,6 +1,6 @@
 package com.geonpil.controller.review;
 
-import ch.qos.logback.core.model.Model;
+import org.springframework.ui.Model;
 import com.geonpil.domain.Review;
 import com.geonpil.dto.review.ReviewRequestDto;
 import com.geonpil.dto.review.ReviewResponseDto;
@@ -59,12 +59,6 @@ public class ReviewController {
         return ResponseEntity.ok(responseDto);
     }
 
-    // 특정 책의 모든 리뷰 조회 (선택적)
-    @GetMapping("/book/{bookId}")
-    public ResponseEntity<List<Review>> getReviews(@PathVariable Long bookId) {
-        List<Review> reviews = reviewService.getReviewsByBookId(bookId);
-        return ResponseEntity.ok(reviews);
-    }
 
     // 리뷰 삭제
     @DeleteMapping("/{reviewId}")

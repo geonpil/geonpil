@@ -9,6 +9,7 @@ import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.UserService;
 import com.geonpil.service.book.BookService;
 import com.geonpil.service.review.ReviewService;
+import com.geonpil.util.mapper.ReviewMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -27,9 +28,12 @@ public class BookDetailController {
     private final ReviewService reviewService;
     private final UserService userService;
     private final ReviewLikeMapper reviewLikeMapper;
+    private final ReviewMapperUtil reviewMapperUtil;
 
     @GetMapping("/{bookId}")
-    public String getBookDetail(@PathVariable Long bookId,@AuthenticationPrincipal AppUserInfo user, Model model) {
+    public String getBookDetail(@PathVariable Long bookId
+                                ,@AuthenticationPrincipal AppUserInfo user
+                                ,Model model) {
         // 1. 책 상세 정보 조회
         Book book = bookService.getBookById(bookId);
         if (book == null) {
@@ -38,28 +42,10 @@ public class BookDetailController {
 
 
         // 2. 리뷰 목록 조회
+
         List<Review> reviews = reviewService.getReviewsByBookId(bookId);
 
-        List<ReviewResponseDto> reviewDtos = reviews.stream()
-                .map(review -> {
-
-                    boolean liked = false;
-                            if(user != null){
-                                liked = reviewLikeMapper.existsByReviewIdAndUserId(review.getReviewId(), user.getId());
-                            }
-                    return ReviewResponseDto.builder()
-                            .reviewId(review.getReviewId())
-                            .userId(review.getUserId())
-                            .bookId(review.getBookId())
-                            .username(userService.getUserNicknameByUserId(review.getUserId()))
-                            .rating(review.getRating())
-                            .content(review.getContent())
-                            .createdAt(review.getCreatedAt())
-                            .likedByCurrentUser(liked)
-                            .likeCount(reviewLikeMapper.countByReviewId(review.getReviewId()))
-                            .build();
-                        })
-                .collect(Collectors.toList());
+        List<ReviewResponseDto> reviewDtos = reviewMapperUtil.convertToResponseDto(reviews, user);
 
 
         // 3. 평균 평점 계산 (없으면 0)

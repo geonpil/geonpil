@@ -23,6 +23,13 @@
         ORDER BY created_at DESC
     </select>
 
+
+    <select id="getReviewsSortedByLikes" parameterType="long" resultMap="ReviewResultMap">
+        SELECT * FROM reviews
+        WHERE book_id = #{bookId} AND is_deleted = 0
+        ORDER BY like_count DESC, created_at DESC
+    </select>
+
     <insert id="insertReview" parameterType="com.geonpil.domain.Review" useGeneratedKeys="true" keyProperty="reviewId" keyColumn = "review_id">
         INSERT INTO reviews (book_id, user_id, rating, content, created_at, updated_at)
         VALUES (#{bookId}, #{userId}, #{rating}, #{content}, NOW(), NOW())
@@ -32,6 +39,21 @@
         UPDATE reviews
         SET is_deleted = true, updated_at = NOW()
         WHERE review_id = #{id}
+    </update>
+
+
+
+    <update id ="increaseLikeCount" parameterType="Long">
+        UPDATE reviews
+        SET like_count = like_count + 1
+        WHERE review_id = #{reviewId};
+    </update>
+
+
+    <update id ="decreaseLikeCount" parameterType="Long">
+        UPDATE reviews
+        SET like_count = like_count - 1
+        WHERE review_id = #{reviewId} AND like_count > 0;
     </update>
 
 </mapper>

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -15,9 +16,17 @@ public class ReviewService {
 
     private final ReviewMapper reviewMapper;
 
-
     public List<Review> getReviewsByBookId(Long bookId) {
         return reviewMapper.findByBookId(bookId);
+
+    }
+
+    public List<Review> getReviewsByBookId(Long bookId, String SortType) {
+        return switch (SortType) {
+            case "likes" -> reviewMapper.getReviewsSortedByLikes(bookId);
+            case "recent" -> reviewMapper.findByBookId(bookId);
+            default -> throw new IllegalArgumentException("Invalid sort type");
+        };
     }
 
     public void addReview(Review review,  @AuthenticationPrincipal AppUserInfo user) {
