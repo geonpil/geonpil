@@ -77,7 +77,6 @@
                                 <i class="fa-solid fa-trash delete-icon"></i>
                             </button>
                         </th:block>
-                        </article>
                     </div>
                 </div>
             </div>
@@ -299,6 +298,54 @@
                         });
                 }
 
+                //댓글달기
+                document.addEventListener("click", (e) => {
+                    if (e.target.matches(".reply-toggle-btn")) {
+                        const reviewId = e.target.dataset.reviewId;
+                        const replyForm = document.querySelector(`.reply-form-wrapper[data-review-id="${reviewId}"]`);
+                        if (replyForm) {
+                            replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
+                        }
+                    }
+
+                    if (e.target.matches(".submit-reply-btn")) {
+                        const form = e.target.closest("form");
+                        const reviewId = form.querySelector("input[name='reviewId']").value;
+                       // const parentId = form.querySelector("input[name='parentId']").value;
+                        const content = form.querySelector("textarea[name='commentContent']").value;
+
+                        if (!content.trim()) {
+                            alert("내용을 입력해주세요.");
+                            return;
+                        }
+
+
+
+                        fetch("/api/reviews/comments", {
+                            method: "POST",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({ reviewId, content })
+                        })
+                        .then((res) => {
+                            if (res.status === 401) {
+                                alert("로그인이 필요합니다.");
+                                window.location.href = "/login";
+                                return;
+                            }
+                            return res.json();
+                        })
+                        .then((comment) => {
+                            if (!comment) return;
+                            appendComment(comment);
+                            form.querySelector("textarea").value = "";
+                            form.parentElement.style.display = "none";
+                        }).catch((err) => {
+                            alert("에러 발생");
+                            console.error(err);
+                        });
+                    }
+                });
+
             });
 
 
@@ -307,11 +354,13 @@
 
                 const card = document.createElement("article");
                 card.className = "review-card animate-in";
+                card.setAttribute("data-review-id", review.reviewId);
 
                 const isLiked = review.likedByCurrentUser;
                 const iconClass = isLiked ? "fa-solid" : "fa-regular";
                 const likedClass = isLiked ? "review-liked" : "";
                 const canDelete = (typeof currentUserId !== 'undefined') && (review.userId === currentUserId);
+                const canReply = (typeof currentUserId !== 'undefined') && (currentUserId != null);
                 const createdAtFormatted = formatDateTime(review.createdAt);
 
                 card.innerHTML = `
@@ -331,8 +380,28 @@
                                         <i class="fa-solid fa-trash delete-icon"></i>
                                     </button>
                                 ` : ''}
+
+                                 ${canReply ? `
+                                    <button type="button" class="reply-toggle-btn"
+                                            data-review-id="${review.reviewId}" data-parent-id="">
+                                        답글
+                                    </button>
+                                    <div class="reply-form-wrapper" style="display: none;"
+                                         data-review-id="${review.reviewId}" data-parent-id="">
+                                        <form class="reply-form" onsubmit="return false;">
+                                            <input type="hidden" name="reviewId" value="${review.reviewId}" />
+                                            <textarea name="commentContent" class="comment-input" placeholder="답글을 입력하세요..."></textarea>
+                                            <button type="submit" class="submit-reply-btn btn btn-primary">등록</button>
+                                        </form>
+                                    </div>
+                                ` : ''}
+
+                                <div class="review-comments"></div>
+
                                 `;
                 reviewList.prepend(card); // 최신순으로 맨 위에 추가
+
+                showToast("댓글이 등록되었어요!");
             }
 
 
@@ -343,6 +412,32 @@
                     .then(html => {
                         document.querySelector("#review-list").innerHTML = html;
                     });
+            }
+
+
+
+            function appendComment(comment) {
+                const reviewCommentsDiv = document.querySelector(`.review-card[data-review-id="${comment.reviewId}"] .review-comments`);
+                if (!reviewCommentsDiv) return;
+
+                const createdAtFormatted = formatDateTime(comment.createdAt);
+
+
+                const commentHtml = `
+                    <div class="review-comment animate-in"">
+                        <div class="review-reply-wrapper">
+                            <div class="reply-meta">
+                                <span class="reply-author">${comment.username}</span>
+                                <span class="reply-time">${createdAtFormatted}</span>
+                            </div>
+                            <div class="comment-content">${comment.content}</div>
+                        </div>
+                    </div>
+                    `;
+
+                reviewCommentsDiv.insertAdjacentHTML("beforeend", commentHtml);
+
+                showToast("댓글이 등록되었어요!");
             }
 
 

@@ -2,12 +2,15 @@ package com.geonpil.controller.book;
 
 import com.geonpil.domain.Book;
 import com.geonpil.domain.Review;
+import com.geonpil.domain.ReviewComment;
 import com.geonpil.domain.entity.BookEntity;
+import com.geonpil.dto.review.ReviewCommentDto;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.UserService;
 import com.geonpil.service.book.BookService;
+import com.geonpil.service.review.ReviewCommentService;
 import com.geonpil.service.review.ReviewService;
 import com.geonpil.util.mapper.ReviewMapperUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class BookDetailController {
     private final UserService userService;
     private final ReviewLikeMapper reviewLikeMapper;
     private final ReviewMapperUtil reviewMapperUtil;
+    private final ReviewCommentService reviewCommentService;
 
     @GetMapping("/{bookId}")
     public String getBookDetail(@PathVariable Long bookId
@@ -44,14 +48,31 @@ public class BookDetailController {
         // 2. 리뷰 목록 조회
 
         List<Review> reviews = reviewService.getReviewsByBookId(bookId);
-
         List<ReviewResponseDto> reviewDtos = reviewMapperUtil.convertToResponseDto(reviews, user);
 
 
-        // 3. 평균 평점 계산 (없으면 0)
+        // 3. 각 리뷰에 댓글 리스트 설정
+        for (ReviewResponseDto reviewDto : reviewDtos) {
+            List<ReviewComment> comments = reviewCommentService.getCommentsByReviewId(reviewDto.getReviewId());
+            List<ReviewCommentDto> commentDtos = comments.stream()
+                    .map(comment -> ReviewCommentDto.builder()
+                            .reviewCommentId(comment.getReviewCommentId())
+                            .reviewId(comment.getReviewId())
+                            .parentId(comment.getParentId())
+                            .userId(comment.getUserId())
+                            .username(userService.getUserNicknameByUserId(comment.getUserId()))
+                            .content(comment.getContent())
+                            .createdAt(comment.getCreatedAt())
+                            .build())
+                    .collect(Collectors.toList());
+            reviewDto.setReviewCommentDtos(commentDtos);
+        }
+
+
+        // 4. 평균 평점 계산 (없으면 0)
         double averageRating = reviewService.calculateAverageRating(reviews);
 
-        // 4. 모델에 데이터 주입
+        // 5. 모델에 데이터 주입
         model.addAttribute("book", book);
         model.addAttribute("reviews", reviewDtos);
         model.addAttribute("avgRating", averageRating);

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geonpil.mapper.review.ReviewCommentMapper">
+
+    <resultMap id="ReviewCommentResultMap" type="com.geonpil.domain.ReviewComment">
+        <id property="reviewCommentId" column="review_comment_id"/>
+        <result property="reviewId" column="review_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+
+    <!-- 1. 특정 리뷰의 댓글 전체 조회 (원댓글 + 대댓글 포함) -->
+    <select id="findReviewCommentByReviewId" parameterType="long" resultMap="ReviewCommentResultMap">
+        SELECT
+            review_comment_id,
+            review_id,
+            parent_id,
+            user_id,
+            content,
+            created_at,
+            is_deleted
+        FROM review_comments
+        WHERE review_id = #{reviewId}
+          AND is_deleted = FALSE
+        ORDER BY created_at ASC
+    </select>
+
+    <!-- 2. 댓글 등록 -->
+    <insert id="insertReviewComment" parameterType="com.geonpil.domain.ReviewComment" useGeneratedKeys="true" keyProperty="reviewCommentId">
+        INSERT INTO review_comments (
+            review_id,
+            parent_id,
+            user_id,
+            content,
+            created_at
+        ) VALUES (
+                     #{reviewId},
+                     #{parentId},
+                     #{userId},
+                     #{content},
+                     #{createdAt}
+                 )
+    </insert>
+
+    <!-- 3. 소프트 삭제 -->
+    <update id="softDeleteReviewComment" parameterType="long">
+        UPDATE review_comments
+        SET is_deleted = TRUE
+        WHERE id = #{commentId}
+    </update>
+
+</mapper>

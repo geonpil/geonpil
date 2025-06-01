@@ -359,4 +359,72 @@
 }
 /* END : 책 리뷰 - 정렬 버튼 */
 
+
+/* START : 책 리뷰 - 대댓글  */
+.review-reply-wrapper {
+    background-color: #f1f4f9; /* 더 진한 연블루 톤 */
+    border-left: 4px solid #4a90e2; /* 포인트 컬러 강조 */
+    padding: 12px 16px;
+    margin: 14px 0 14px 30px; /* 왼쪽 여백 증가 */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* 부드러운 그림자 */
+    font-size: 0.95rem;
+    position: relative;
+}
+
+.review-reply-wrapper::before {
+    content: "\f3e5"; /* FontAwesome reply 아이콘 */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #4a90e2;
+    position: absolute;
+    top: 9px;
+    left: -25px;
+    font-size: 16px;
+    transform: rotate(180deg);
+}
+
+.review-reply-wrapper .reply-meta {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+.review-reply-wrapper .reply-author {
+    color: #2c3e50;
+}
+
+.review-reply-wrapper .reply-time {
+    font-size: 0.85em;
+    color: #777;
+}
+
+.review-reply-wrapper .reply-content {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #111;
+}
+
+.animate-in {
+    animation: fadeInSlideUp 0.5s ease forwards;
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* END : 책 리뷰 - 대댓글 버튼 */
+
+
+
 /* END : 책 리뷰 */

@@ -14,7 +14,5 @@ public interface ReviewLikeMapper {
 
     void deleteLike(@Param("reviewId") Long reviewId, @Param("userId") Long userId);
 
-
-
     int countByReviewId(@Param("reviewId") Long reviewId);
 }

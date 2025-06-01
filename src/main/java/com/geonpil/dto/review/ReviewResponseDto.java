@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,5 +20,7 @@ public class ReviewResponseDto {
     private LocalDateTime createdAt;
     private int likeCount;
     private boolean likedByCurrentUser;
+
+    private List<ReviewCommentDto> reviewCommentDtos;
 
 }
