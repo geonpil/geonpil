@@ -56,4 +56,12 @@
         WHERE review_id = #{reviewId} AND like_count > 0;
     </update>
 
+
+
+    <select id="existsByUserIdAndBookId" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM reviews
+            WHERE user_id = #{userId} AND book_id = #{bookId} AND is_deleted = false
+        )
+    </select>
 </mapper>

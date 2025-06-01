@@ -30,6 +30,10 @@ public class ReviewService {
     }
 
     public void addReview(Review review,  @AuthenticationPrincipal AppUserInfo user) {
+        if (hasUserReviewedBook(user.getId(), review.getBookId())) {
+            throw new IllegalStateException("이미 리뷰를 작성하셨습니다.");
+        }
+
         review.setUserId(user.getId());
         reviewMapper.insertReview(review);
     }
@@ -55,6 +59,10 @@ public class ReviewService {
         ) / 100.0;
     }
 
+
+    public boolean hasUserReviewedBook(Long userId, Long bookId) {
+        return reviewMapper.existsByUserIdAndBookId(userId, bookId);
+    }
 
 
 }

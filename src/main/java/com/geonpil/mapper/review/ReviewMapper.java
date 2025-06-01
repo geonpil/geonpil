@@ -15,5 +15,7 @@ public interface ReviewMapper {
     void increaseLikeCount(Long reviewId);
     void decreaseLikeCount(Long reviewId);
 
+    boolean existsByUserIdAndBookId(Long userId, Long bookId);
+
 
 }

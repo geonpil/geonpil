@@ -39,7 +39,12 @@ public class ReviewController {
         review.setCreatedAt(LocalDateTime.now());
         review.setUpdatedAt(LocalDateTime.now());
 
-        reviewService.addReview(review, user);
+
+        try {
+            reviewService.addReview(review, user);
+        } catch ( IllegalStateException e ) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
 
 
 

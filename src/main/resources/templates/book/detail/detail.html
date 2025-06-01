@@ -162,6 +162,10 @@
                                 alert("로그인이 필요합니다.");
                                 window.location.href = "/login";
                                 return;
+                            } else if (response.status === 409) {
+                                const error = await response.text();
+                                alert(error);
+                                return;
                             }
 
                             if (response.ok) {
