@@ -308,4 +308,33 @@
 }
 /* END : 책 리뷰 - 좋아요 버튼 */
 
+/* STRAT : 책 리뷰 - 삭제 버튼 */
+/* 삭제 버튼 기본 스타일 */
+.book-detail-container .review-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 4px 6px;
+    transition: transform 0.2s ease;
+}
+
+.book-detail-container .review-delete-btn:hover {
+    transform: scale(1.1);
+}
+
+/* 아이콘 색상 */
+.book-detail-container .review-delete-btn .delete-icon {
+    color: #999;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.book-detail-container .review-delete-btn:hover .delete-icon {
+    color: #e74c3c; /* 빨간색 강조 */
+}
+/* END : 책 리뷰 - 삭제 버튼 */
+
 /* END : 책 리뷰 */

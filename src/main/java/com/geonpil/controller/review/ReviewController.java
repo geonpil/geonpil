@@ -45,6 +45,7 @@ public class ReviewController {
 
 
         ReviewResponseDto responseDto = ReviewResponseDto.builder()
+                                        .userId(review.getUserId())
                                         .reviewId(review.getReviewId())
                                         .bookId(review.getBookId())
                                         .username(user.getNickname())

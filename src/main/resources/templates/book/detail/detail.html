@@ -77,7 +77,9 @@
 
                     <!--삭제 버튼-->
                     <th:block th:if="${currentUserId == review.userId}">
-                        <button class="delete-btn" th:attr="data-review-id=${review.reviewId}">🗑️ 삭제</button>
+                        <button class="delete-btn review-delete-btn"  th:attr="data-review-id=${review.reviewId}">
+                            <i class="fa-solid fa-trash delete-icon"></i>
+                        </button>
                     </th:block>
 
                 </article>
@@ -89,7 +91,7 @@
     <th:block layout:fragment="script">
         <script src="/js/toastMessage.js"></script>
         <script>
-            const currentUserId = [[${currentUserId}]];
+            const currentUserId = [[${currentUserId} ?: 'null']];
 
             document.addEventListener("DOMContentLoaded", () => {
                 //리뷰 별 애니메이션
@@ -195,7 +197,7 @@
                     });
                 }
 
-
+                //좋아요
                 document.addEventListener("click", async (e) => {
                     const likeBtn = e.target.closest(".like-btn");
                     if (!likeBtn) return;
@@ -278,7 +280,6 @@
                 const canDelete = (typeof currentUserId !== 'undefined') && (review.userId === currentUserId);
 
 
-
                 card.innerHTML = `
                                     <p><strong>${review.username}</strong> 님의 평가</p>
                                     <p>⭐ ${review.rating}점</p>
@@ -289,7 +290,10 @@
                                         <span class="like-count">${review.likeCount}</span>
                                     </button>
                                 ${canDelete ? `
-                                    <button class="delete-btn" data-review-id="${review.reviewId}">🗑️ 삭제</button>
+                                    <button class="delete-btn review-delete-btn" data-review-id="${review.reviewId}">
+                                        <i class="fa-solid fa-trash delete-icon"></i>
+                                    </button>
+</button>
                                 ` : ''}
                                 `;
 
