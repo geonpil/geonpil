@@ -173,6 +173,10 @@
 
                                 document.querySelector(".book-reviews h1 span").innerHTML = avgRating;
 
+                                const commentEmpty = document.querySelector(".comment-empty")
+
+                                if(commentEmpty) {commentEmpty.remove();}
+
                                 //초기화
                                 document.getElementById("reviewContent").value = "";
                                 ratingInput.value = "0";
