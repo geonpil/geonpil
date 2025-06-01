@@ -355,7 +355,7 @@
 .review-sort-filter {
         display: flex;
         gap: 10px;
-        margin: 10px 0;
+        padding : 15px;
 }
 /* END : 책 리뷰 - 정렬 버튼 */
 

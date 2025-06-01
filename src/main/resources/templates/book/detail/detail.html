@@ -33,7 +33,7 @@
 
             <!-- 리뷰 작성 -->
             <th:block sec:authorize="isAuthenticated()">
-                <form class="review-form border-bottom" id="reviewForm" style="margin-bottom: 15px;"
+                <form class="review-form border-bottom" id="reviewForm"
                       onsubmit="return false;">
                     <div class="rating-group">
                         <div class="rating-stars" id="ratingStars">
@@ -60,15 +60,16 @@
             </th:block>
 
 
-            <div th:if="${#lists.isEmpty(reviews)}" class="comment-empty">
-                등록된 리뷰가 없습니다.
+            <div class="review-sort-filter border-bottom">
+                <button class="sort-btn active" data-sort="recent">최신순</button>
+                <button class="sort-btn" data-sort="likes">추천순</button>
             </div>
-            <div th:if="${not #lists.isEmpty(reviews)}" class=review-wrapper>
-                <div class="review-sort-filter">
-                    <button class="sort-btn active" data-sort="recent">최신순</button>
-                    <button class="sort-btn" data-sort="likes">추천순</button>
+
+            <div id="review-list">
+                <div th:if="${#lists.isEmpty(reviews)}" class="comment-empty">
+                    등록된 리뷰가 없습니다.
                 </div>
-                <div id="review-list">
+                <div th:if="${not #lists.isEmpty(reviews)}" class=review-wrapper>
                     <div th:replace="~{/book/detail/_review-list-fragment :: reviewListFragment}">
 
                         <!--삭제 버튼-->
@@ -294,7 +295,16 @@
                     fetch(`/reviews/${bookId}?sort=${sortType}`)
                         .then(res => res.text())
                         .then(html => {
-                            document.querySelector("#review-list").innerHTML = html;
+                            const reviewListEl = document.querySelector("#review-list");
+                            reviewListEl.innerHTML = html;
+
+                            const hasReview = reviewListEl.querySelector(".review-card") !== null;
+
+                            if (!hasReview) {
+                                reviewListEl.innerHTML = `
+                                                            <div class="comment-empty">등록된 리뷰가 없습니다.</div>
+                                                        `;
+                            }
                         });
                 }
 
@@ -311,7 +321,7 @@
                     if (e.target.matches(".submit-reply-btn")) {
                         const form = e.target.closest("form");
                         const reviewId = form.querySelector("input[name='reviewId']").value;
-                       // const parentId = form.querySelector("input[name='parentId']").value;
+                        // const parentId = form.querySelector("input[name='parentId']").value;
                         const content = form.querySelector("textarea[name='commentContent']").value;
 
                         if (!content.trim()) {
@@ -320,26 +330,25 @@
                         }
 
 
-
                         fetch("/api/reviews/comments", {
                             method: "POST",
                             headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({ reviewId, content })
+                            body: JSON.stringify({reviewId, content})
                         })
-                        .then((res) => {
-                            if (res.status === 401) {
-                                alert("로그인이 필요합니다.");
-                                window.location.href = "/login";
-                                return;
-                            }
-                            return res.json();
-                        })
-                        .then((comment) => {
-                            if (!comment) return;
-                            appendComment(comment);
-                            form.querySelector("textarea").value = "";
-                            form.parentElement.style.display = "none";
-                        }).catch((err) => {
+                            .then((res) => {
+                                if (res.status === 401) {
+                                    alert("로그인이 필요합니다.");
+                                    window.location.href = "/login";
+                                    return;
+                                }
+                                return res.json();
+                            })
+                            .then((comment) => {
+                                if (!comment) return;
+                                appendComment(comment);
+                                form.querySelector("textarea").value = "";
+                                form.parentElement.style.display = "none";
+                            }).catch((err) => {
                             alert("에러 발생");
                             console.error(err);
                         });
@@ -413,7 +422,6 @@
                         document.querySelector("#review-list").innerHTML = html;
                     });
             }
-
 
 
             function appendComment(comment) {

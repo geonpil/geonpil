@@ -1,90 +1,90 @@
 
-    <article th:fragment="reviewListFragment" th:each="review : ${reviews}" class="review-card" th:attr="data-review-id=${review.reviewId}">
-        <div class="review-header">
-            <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
-            <div th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}">작성시간</div>
-        </div>
-        <p>⭐ <span th:text="${review.rating}">5</span>점</p>
-        <p th:text="${review.content}">좋은 책입니다.</p>
-        <button class="like-btn review-like-btn"
-                th:classappend="${review.likedByCurrentUser} ? 'review-liked' : ''"
-                th:attr="data-review-id=${review.reviewId}">
-            <i th:class="'like-icon review-like-icon fa-thumbs-up ' + (${review.likedByCurrentUser} ? 'fa-solid' : 'fa-regular')"></i>
-            <span class="like-count" th:text="${review.likeCount} ?: 0">0</span>
+<article th:fragment="reviewListFragment" th:each="review : ${reviews}" class="review-card" th:attr="data-review-id=${review.reviewId}">
+    <div class="review-header">
+        <p><strong th:text="${review.username}">닉네임</strong> 님의 평가</p>
+        <div th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm:ss')}">작성시간</div>
+    </div>
+    <p>⭐ <span th:text="${review.rating}">5</span>점</p>
+    <p th:text="${review.content}">좋은 책입니다.</p>
+    <button class="like-btn review-like-btn"
+            th:classappend="${review.likedByCurrentUser} ? 'review-liked' : ''"
+            th:attr="data-review-id=${review.reviewId}">
+        <i th:class="'like-icon review-like-icon fa-thumbs-up ' + (${review.likedByCurrentUser} ? 'fa-solid' : 'fa-regular')"></i>
+        <span class="like-count" th:text="${review.likeCount} ?: 0">0</span>
+    </button>
+
+    <!--삭제 버튼-->
+    <th:block th:if="${currentUserId == review.userId}">
+        <button class="delete-btn review-delete-btn" th:attr="data-review-id=${review.reviewId}">
+            <i class="fa-solid fa-trash delete-icon"></i>
         </button>
+    </th:block>
+    <!--답글버튼 버튼-->
 
-        <!--삭제 버튼-->
-        <th:block th:if="${currentUserId == review.userId}">
-            <button class="delete-btn review-delete-btn" th:attr="data-review-id=${review.reviewId}">
-                <i class="fa-solid fa-trash delete-icon"></i>
-            </button>
-        </th:block>
-        <!--답글버튼 버튼-->
-
-        <th:block th:if="${currentUserId != null}">
-            <button type="button" class="reply-toggle-btn"  th:attr="data-review-id=${review.reviewId}, data-parent-id=null">답글</button>
-            <div class="reply-form-wrapper" style="display: none;"
-                 th:attr="data-review-id=${review.reviewId}">
-                <form class="reply-form" onsubmit="return false;">
-                    <input type="hidden" name="reviewId" th:value="${review.reviewId}" />
+    <th:block th:if="${currentUserId != null}">
+        <button type="button" class="reply-toggle-btn"  th:attr="data-review-id=${review.reviewId}, data-parent-id=null">답글</button>
+        <div class="reply-form-wrapper" style="display: none;"
+             th:attr="data-review-id=${review.reviewId}">
+            <form class="reply-form" onsubmit="return false;">
+                <input type="hidden" name="reviewId" th:value="${review.reviewId}" />
                 <!--    <input type="hidden" name="parentId" th:value="" />-->
-                    <textarea name="commentContent" class="comment-input" placeholder="답글을 입력하세요..."></textarea>
-                    <button type="submit" class="submit-reply-btn btn btn-primary">등록</button>
+                <textarea name="commentContent" class="comment-input" placeholder="답글을 입력하세요..."></textarea>
+                <button type="submit" class="submit-reply-btn btn btn-primary">등록</button>
+            </form>
+        </div>
+    </th:block>
+
+
+
+    <!-- 댓글 목록 -->
+    <div class="review-comments">
+        <div th:each="comment : ${review.reviewCommentDtos}" th:if="${comment.parentId == null}" class="review-comment">
+            <div class="review-reply-wrapper">
+                <div class="reply-meta">
+                    <span class="reply-author" th:text="${comment.username}">작성자</span>
+                    <span class="reply-time" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">시간</span>
+                </div>
+                <div class="reply-content" th:text="${comment.content}">내용</div>
+                <!--                    <button type="button" class="reply-toggle-btn"
+                                            th:attr="data-review-id=${review.reviewId}, data-parent-id=${comment.reviewCommentId}">
+                                        답글 달기
+                                    </button>-->
+            </div>
+
+            <!-- 대댓글 버튼 -->
+
+
+            <!-- 대댓글 입력창 -->
+            <div class="reply-form-wrapper" style="display: none;"
+                 th:attr="data-review-id=${review.reviewId}, data-parent-id=${comment.reviewCommentId}">
+                <form class="reply-form" onsubmit="return false;">
+                    <textarea name="commentContent" placeholder="답글을 입력하세요..."></textarea>
+                    <button type="submit" class="submit-reply-btn">등록</button>
                 </form>
             </div>
-        </th:block>
 
+            <!-- 대댓글 목록 -->
+            <!--                <div class="replies" th:each="reply : ${review.reviewCommentDtos}" th:if="${reply.parentId == comment.reviewCommentId}">
+                                <p style="margin-left: 20px;"><strong th:text="${reply.username}"></strong>: <span th:text="${reply.content}"></span></p>
 
+                                &lt;!&ndash; 중첩 답글 버튼 (선택사항) &ndash;&gt;
+                                <button type="button" class="reply-toggle-btn"
+                                        th:attr="data-review-id=${review.reviewId}, data-parent-id=${reply.reviewCommentId}"
+                                        style="margin-left: 20px;">
+                                    답글 달기
+                                </button>
 
-        <!-- 댓글 목록 -->
-        <div class="review-comments">
-            <div th:each="comment : ${review.reviewCommentDtos}" th:if="${comment.parentId == null}" class="review-comment">
-                <div class="review-reply-wrapper">
-                    <div class="reply-meta">
-                        <span class="reply-author" th:text="${comment.username}">작성자</span>
-                        <span class="reply-time" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">시간</span>
-                    </div>
-                    <div class="reply-content" th:text="${comment.content}">내용</div>
-<!--                    <button type="button" class="reply-toggle-btn"
-                            th:attr="data-review-id=${review.reviewId}, data-parent-id=${comment.reviewCommentId}">
-                        답글 달기
-                    </button>-->
-                </div>
-
-                <!-- 대댓글 버튼 -->
-
-
-                <!-- 대댓글 입력창 -->
-                <div class="reply-form-wrapper" style="display: none;"
-                     th:attr="data-review-id=${review.reviewId}, data-parent-id=${comment.reviewCommentId}">
-                    <form class="reply-form" onsubmit="return false;">
-                        <textarea name="commentContent" placeholder="답글을 입력하세요..."></textarea>
-                        <button type="submit" class="submit-reply-btn">등록</button>
-                    </form>
-                </div>
-
-                <!-- 대댓글 목록 -->
-<!--                <div class="replies" th:each="reply : ${review.reviewCommentDtos}" th:if="${reply.parentId == comment.reviewCommentId}">
-                    <p style="margin-left: 20px;"><strong th:text="${reply.username}"></strong>: <span th:text="${reply.content}"></span></p>
-
-                    &lt;!&ndash; 중첩 답글 버튼 (선택사항) &ndash;&gt;
-                    <button type="button" class="reply-toggle-btn"
-                            th:attr="data-review-id=${review.reviewId}, data-parent-id=${reply.reviewCommentId}"
-                            style="margin-left: 20px;">
-                        답글 달기
-                    </button>
-
-                    &lt;!&ndash; 중첩 답글 입력창 &ndash;&gt;
-                    <div class="reply-form-wrapper" style="display: none; margin-left: 20px;"
-                         th:attr="data-review-id=${review.reviewId}, data-parent-id=${reply.reviewCommentId}">
-                        <form class="reply-form" onsubmit="return false;">
-                            <textarea name="commentContent" placeholder="답글을 입력하세요..."></textarea>
-                            <button type="submit" class="submit-reply-btn">등록</button>
-                        </form>
-                    </div>
-                </div>-->
-            </div>
+                                &lt;!&ndash; 중첩 답글 입력창 &ndash;&gt;
+                                <div class="reply-form-wrapper" style="display: none; margin-left: 20px;"
+                                     th:attr="data-review-id=${review.reviewId}, data-parent-id=${reply.reviewCommentId}">
+                                    <form class="reply-form" onsubmit="return false;">
+                                        <textarea name="commentContent" placeholder="답글을 입력하세요..."></textarea>
+                                        <button type="submit" class="submit-reply-btn">등록</button>
+                                    </form>
+                                </div>
+                            </div>-->
         </div>
+    </div>
 
 
-    </article>
+</article>
