@@ -19,8 +19,9 @@
             <i class="fa-solid fa-trash delete-icon"></i>
         </button>
     </th:block>
-    <!--답글버튼 버튼-->
 
+
+    <!--답글버튼 버튼-->
     <th:block th:if="${currentUserId != null}">
         <button type="button" class="reply-toggle-btn"  th:attr="data-review-id=${review.reviewId}, data-parent-id=null">답글</button>
         <div class="reply-form-wrapper" style="display: none;"
@@ -44,11 +45,8 @@
                     <span class="reply-author" th:text="${comment.username}">작성자</span>
                     <span class="reply-time" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">시간</span>
                 </div>
+                <div class="reply-content" th:text="${comment.content}" thsdfre>내용</div>
                 <div class="reply-content" th:text="${comment.content}">내용</div>
-                <!--                    <button type="button" class="reply-toggle-btn"
-                                            th:attr="data-review-id=${review.reviewId}, data-parent-id=${comment.reviewCommentId}">
-                                        답글 달기
-                                    </button>-->
             </div>
 
             <!-- 대댓글 버튼 -->
@@ -63,26 +61,6 @@
                 </form>
             </div>
 
-            <!-- 대댓글 목록 -->
-            <!--                <div class="replies" th:each="reply : ${review.reviewCommentDtos}" th:if="${reply.parentId == comment.reviewCommentId}">
-                                <p style="margin-left: 20px;"><strong th:text="${reply.username}"></strong>: <span th:text="${reply.content}"></span></p>
-
-                                &lt;!&ndash; 중첩 답글 버튼 (선택사항) &ndash;&gt;
-                                <button type="button" class="reply-toggle-btn"
-                                        th:attr="data-review-id=${review.reviewId}, data-parent-id=${reply.reviewCommentId}"
-                                        style="margin-left: 20px;">
-                                    답글 달기
-                                </button>
-
-                                &lt;!&ndash; 중첩 답글 입력창 &ndash;&gt;
-                                <div class="reply-form-wrapper" style="display: none; margin-left: 20px;"
-                                     th:attr="data-review-id=${review.reviewId}, data-parent-id=${reply.reviewCommentId}">
-                                    <form class="reply-form" onsubmit="return false;">
-                                        <textarea name="commentContent" placeholder="답글을 입력하세요..."></textarea>
-                                        <button type="submit" class="submit-reply-btn">등록</button>
-                                    </form>
-                                </div>
-                            </div>-->
         </div>
     </div>
 

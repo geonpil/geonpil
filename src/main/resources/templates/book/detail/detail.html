@@ -71,13 +71,6 @@
                 </div>
                 <div th:if="${not #lists.isEmpty(reviews)}" class=review-wrapper>
                     <div th:replace="~{/book/detail/_review-list-fragment :: reviewListFragment}">
-
-                        <!--삭제 버튼-->
-                        <th:block th:if="${currentUserId == review.userId}">
-                            <button class="delete-btn review-delete-btn" th:attr="data-review-id=${review.reviewId}">
-                                <i class="fa-solid fa-trash delete-icon"></i>
-                            </button>
-                        </th:block>
                     </div>
                 </div>
             </div>

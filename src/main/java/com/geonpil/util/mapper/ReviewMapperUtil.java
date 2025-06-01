@@ -36,6 +36,7 @@ public class ReviewMapperUtil {
                             .createdAt(review.getCreatedAt())
                             .likedByCurrentUser(liked)
                             .likeCount(reviewLikeMapper.countByReviewId(review.getReviewId()))
+                            .isDeleted(review.getIsDeleted())
                             .build();
                 })
                 .collect(Collectors.toList());

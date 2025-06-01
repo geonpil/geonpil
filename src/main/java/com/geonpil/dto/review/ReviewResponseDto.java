@@ -20,6 +20,7 @@ public class ReviewResponseDto {
     private LocalDateTime createdAt;
     private int likeCount;
     private boolean likedByCurrentUser;
+    private boolean isDeleted;
 
     private List<ReviewCommentDto> reviewCommentDtos;
 
