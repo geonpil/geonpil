@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,10 +44,10 @@ public class ReviewService {
     }
 
 
-
-
-
-
+    public double getAverageRating(Long bookId) {
+        return Optional.ofNullable(reviewMapper.getAverageRatingByBookId(bookId))
+                .orElse(0.0);
+    }
 
     public double calculateAverageRating(List<Review> reviews) {
         return reviews.isEmpty()

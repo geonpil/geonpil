@@ -18,4 +18,7 @@ public interface ReviewMapper {
     boolean existsByUserIdAndBookId(Long userId, Long bookId);
 
 
+    Double getAverageRatingByBookId(Long bookId);
+
+
 }

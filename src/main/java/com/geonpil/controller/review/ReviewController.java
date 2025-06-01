@@ -77,9 +77,7 @@ public class ReviewController {
     @GetMapping("/average")
     @ResponseBody
     public double getAverageRating(@RequestParam Long bookId) {
-        List<Review> reviews = reviewService.getReviewsByBookId(bookId);
-        return reviewService.calculateAverageRating(reviews);
-
+        return reviewService.getAverageRating(bookId);
     }
 
     //리뷰 좋아요

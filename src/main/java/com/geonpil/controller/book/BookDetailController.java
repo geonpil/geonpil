@@ -70,7 +70,7 @@ public class BookDetailController {
 
 
         // 4. 평균 평점 계산 (없으면 0)
-        double averageRating = reviewService.calculateAverageRating(reviews);
+        double averageRating = reviewService.getAverageRating(bookId);
 
         // 5. 모델에 데이터 주입
         model.addAttribute("book", book);

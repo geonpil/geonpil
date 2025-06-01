@@ -71,6 +71,7 @@
                 </div>
                 <div th:if="${not #lists.isEmpty(reviews)}" class=review-wrapper>
                     <div th:replace="~{/book/detail/_review-list-fragment :: reviewListFragment}">
+
                     </div>
                 </div>
             </div>
@@ -167,10 +168,8 @@
                                 appendReview(newReview)
                                 showToast("리뷰가 등록되었어요!");
 
-                                const avgRes = await fetch(`/api/reviews/average?bookId=${bookId}`);
-                                const avgRating = await avgRes.text();
+                                const avgRating = getAvgRating(bookId);
 
-                                document.querySelector(".book-reviews h1 span").innerHTML = avgRating;
 
                                 const commentEmpty = document.querySelector(".comment-empty")
 
@@ -264,6 +263,9 @@
                         if (res.ok) {
                             // 삭제 성공 시 UI에서 제거
                             deleteBtn.closest(".review-card").remove();
+                            //리뷰 평점 재반영
+                            getAvgRating(bookId);
+
                             showToast("리뷰가 삭제되었어요!", "deleted");
                         } else {
                             alert("삭제에 실패했어요.");
@@ -443,6 +445,12 @@
                 reviewCommentsDiv.insertAdjacentHTML("beforeend", commentHtml);
 
                 showToast("댓글이 등록되었어요!");
+            }
+
+
+            async function getAvgRating(bookId) {
+                const avgRes = await fetch(`/api/reviews/average?bookId=${bookId}`);
+                document.querySelector(".book-reviews h1 span").innerHTML = await avgRes.text();
             }
 
 
