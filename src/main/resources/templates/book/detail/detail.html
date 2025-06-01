@@ -88,6 +88,7 @@
 
     <th:block layout:fragment="script">
         <script src="/js/toastMessage.js"></script>
+        <script src="/js/utils/dateFomatter.js"></script>
         <script>
             const currentUserId = [[${currentUserId != null ? currentUserId : 'null'}]];
             const bookId = [[${book.bookId}]];
@@ -310,10 +311,13 @@
                 const iconClass = isLiked ? "fa-solid" : "fa-regular";
                 const likedClass = isLiked ? "review-liked" : "";
                 const canDelete = (typeof currentUserId !== 'undefined') && (review.userId === currentUserId);
-
+                const createdAtFormatted = formatDateTime(review.createdAt);
 
                 card.innerHTML = `
-                                    <p><strong>${review.username}</strong> 님의 평가</p>
+                                    <div class="review-header">
+                                        <p><strong>${review.username}</strong> 님의 평가</p>
+                                        <div>${createdAtFormatted}</div>
+                                    </div>
                                     <p>⭐ ${review.rating}점</p>
                                     <p>${review.content}</p>
 
