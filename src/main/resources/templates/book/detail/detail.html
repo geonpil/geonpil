@@ -60,24 +60,23 @@
             </th:block>
 
 
-            <div id="reviewList">
-                <div th:if="${#lists.isEmpty(reviews)}" class="comment-empty">
-                    등록된 리뷰가 없습니다.
+            <div th:if="${#lists.isEmpty(reviews)}" class="comment-empty">
+                등록된 리뷰가 없습니다.
+            </div>
+            <div class=review-wrapper>
+                <div class="review-sort-filter">
+                    <button class="sort-btn active" data-sort="recent">최신순</button>
+                    <button class="sort-btn" data-sort="likes">추천순</button>
                 </div>
-                <div class=review-wrapper>
-                    <div class="review-sort-filter">
-                        <button class="sort-btn active" data-sort="recent">최신순</button>
-                        <button class="sort-btn" data-sort="likes">추천순</button>
-                    </div>
-                    <div id= "review-list">
-                        <div th:replace = "~{/book/detail/_review-list-fragment :: reviewListFragment}">
+                <div id="review-list">
+                    <div th:replace="~{/book/detail/_review-list-fragment :: reviewListFragment}">
 
-                            <!--삭제 버튼-->
-                            <th:block th:if="${currentUserId == review.userId}">
-                                <button class="delete-btn review-delete-btn" th:attr="data-review-id=${review.reviewId}">
-                                    <i class="fa-solid fa-trash delete-icon"></i>
-                                </button>
-                            </th:block>
+                        <!--삭제 버튼-->
+                        <th:block th:if="${currentUserId == review.userId}">
+                            <button class="delete-btn review-delete-btn" th:attr="data-review-id=${review.reviewId}">
+                                <i class="fa-solid fa-trash delete-icon"></i>
+                            </button>
+                        </th:block>
                         </article>
                     </div>
                 </div>
@@ -90,7 +89,9 @@
         <script src="/js/toastMessage.js"></script>
         <script src="/js/utils/dateFomatter.js"></script>
         <script>
-            const currentUserId = [[${currentUserId != null ? currentUserId : 'null'}]];
+            const currentUserId = [[${currentUserId != null ? currentUserId : 'null'
+            }]]
+            ;
             const bookId = [[${book.bookId}]];
 
             document.addEventListener("DOMContentLoaded", () => {
@@ -302,7 +303,7 @@
 
 
             function appendReview(review) {
-                const reviewList = document.getElementById("reviewList");
+                const reviewList = document.getElementById("review-list");
 
                 const card = document.createElement("article");
                 card.className = "review-card animate-in";
