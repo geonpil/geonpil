@@ -63,7 +63,7 @@
             <div th:if="${#lists.isEmpty(reviews)}" class="comment-empty">
                 등록된 리뷰가 없습니다.
             </div>
-            <div class=review-wrapper>
+            <div th:if="${not #lists.isEmpty(reviews)}" class=review-wrapper>
                 <div class="review-sort-filter">
                     <button class="sort-btn active" data-sort="recent">최신순</button>
                     <button class="sort-btn" data-sort="likes">추천순</button>
