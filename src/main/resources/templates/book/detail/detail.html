@@ -243,7 +243,7 @@
 
             //리뷰삭제
             document.addEventListener("click", async (e) => {
-                const deleteBtn = e.target.closest(".delete-btn");
+                const deleteBtn = e.target.closest(".review-delete-btn");
                 if (!deleteBtn) return;
 
                 const reviewId = deleteBtn.dataset.reviewId;
@@ -336,6 +336,34 @@
                 }
             });
 
+
+            //댓글삭제
+            document.querySelector('.review-comments').addEventListener('click', function (e) {
+                const deleteBtn = e.target.closest('.reviewComment-delete-btn');
+
+
+                if (deleteBtn) {
+                    const commentId = deleteBtn.dataset.reviewcommentId;
+
+                    if (confirm("댓글을 삭제하시겠습니까?")) {
+                        fetch(`/api/reviews/comments/${commentId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(res => {
+                            if (res.ok) {
+                                e.target.closest(".reply-form-wrapper").remove();
+                                showToast("리뷰 댓글이 삭제되었어요!", "deleted");
+                            } else {
+                                res.text().then(text => alert(text));
+                            }
+                        });
+                    }
+
+                }
+            });
+
         });
 
 
@@ -399,10 +427,10 @@
             document.querySelectorAll(".reply-toggle-btn").forEach(btn => {
                 btn.addEventListener("click", () => {
                     const reviewId = btn.dataset.reviewId;
-                    const form = document.querySelector(`.reply-form-wrapper[data-review-id="${reviewId}"]`);
+                    const form = document.querySelector(`.reply-form[data-review-id="${reviewId}"]`);
                     if (form) {
                         const isVisible = form.style.display !== "none";
-                        document.querySelectorAll(".reply-form-wrapper").forEach(f => f.style.display = "none");
+                        document.querySelectorAll(".reply-form").forEach(f => f.style.display = "none");
                         form.style.display = isVisible ? "none" : "block";
                     }
                 });
@@ -426,17 +454,26 @@
 
             const createdAtFormatted = formatDateTime(comment.createdAt);
 
+            const canDelete = (typeof currentUserId !== 'undefined') && (comment.userId === currentUserId);
+
 
             const commentHtml = `
-                <div class="review-comment animate-in"">
-                    <div class="review-reply-wrapper">
-                        <div class="reply-meta">
-                            <span class="reply-author">${comment.username}</span>
-                            <span class="reply-time">${createdAtFormatted}</span>
+                    <div class="reply-form-wrapper animate-in">
+                        <div class="review-comment">
+                            <div class="review-reply-wrapper">
+                                <div class="reply-meta">
+                                    <span class="reply-author">${comment.username}</span>
+                                    <span class="reply-time">${createdAtFormatted}</span>
+                                </div>
+                                <div class="reply-content">${comment.content}</div>
+                                ${canDelete ? `
+                                <div class="reply-footer">
+                                <button class="reviewComment-delete-btn" data-reviewcomment-id="${comment.reviewCommentId}">
+                                    <i class="fa-solid fa-trash delete-icon"></i>
+                                </button>` : ''}
+                            </div>
                         </div>
-                        <div class="comment-content">${comment.content}</div>
                     </div>
-                </div>
                 `;
 
             reviewCommentsDiv.insertAdjacentHTML("beforeend", commentHtml);

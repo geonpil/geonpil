@@ -11,7 +11,10 @@ import com.geonpil.service.review.ReviewCommentService;
 import com.geonpil.service.review.ReviewLikeService;
 import com.geonpil.service.review.ReviewService;
 import com.geonpil.util.mapper.ReviewMapperUtil;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -21,13 +24,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews")
 public class ReviewCommentController {
 
 
-    private final ReviewCommentService ReviewCommentService;
+    private final ReviewCommentService reviewCommentService;
 
 
     //리뷰 댓글 달기
@@ -41,7 +45,7 @@ public class ReviewCommentController {
         reviewComment.setUserId(user.getId());
         reviewComment.setContent(dto.getContent());
         reviewComment.setCreatedAt(LocalDateTime.now());
-        ReviewCommentService.save(reviewComment);
+        reviewCommentService.save(reviewComment);
 
 
         // 응답용 DTO 생성
@@ -58,6 +62,20 @@ public class ReviewCommentController {
         return ResponseEntity.ok(responseDto);
     }
 
+    //리뷰 댓글 삭제
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<?> deleteReviewComment(@PathVariable Long commentId,
+                                                 @AuthenticationPrincipal AppUserInfo userInfo) {
+        try {
+            reviewCommentService.deleteComment(commentId, userInfo.getId());
+            return ResponseEntity.ok("댓글이 삭제되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
+        } catch (Exception e) {
+            log.error("댓글 삭제 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 삭제 중 오류 발생");
+        }
+    }
 
 
 }

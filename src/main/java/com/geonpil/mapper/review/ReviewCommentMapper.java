@@ -12,4 +12,5 @@ public interface ReviewCommentMapper {
     List<ReviewComment> findReviewCommentByReviewId(Long reviewId);
     void insertReviewComment(ReviewComment comment);
     void softDeleteReviewComment(Long reivewCommentId);
+    ReviewComment findReviewCommentById(Long commentId);
 }

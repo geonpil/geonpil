@@ -83,6 +83,7 @@ mybatis:
 logging:
   level:
     org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter: INFO
+    com.geonpil: debug
 
 kakao:
   api:
