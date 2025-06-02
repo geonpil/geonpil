@@ -1,6 +1,7 @@
 package com.geonpil.controller;
 
 import com.geonpil.domain.ContestPost;
+import com.geonpil.security.AppUserInfo;
 import com.geonpil.security.CustomUserDetails;
 import com.geonpil.service.ContestService;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class ContestRestController {
 
     @PostMapping
     public ResponseEntity<String> create(@RequestBody ContestPost contest
-                                        , @AuthenticationPrincipal CustomUserDetails user) {
+                                        , @AuthenticationPrincipal AppUserInfo user) {
         contest.setUserId(user.getId());
         contestService.saveContest(contest, contest.getCategoryIds()); // board + contest_post 저장
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
@@ -35,7 +36,7 @@ public class ContestRestController {
 
     @PutMapping("/update")
     public ResponseEntity<String> update(@RequestBody ContestPost contest
-            , @AuthenticationPrincipal CustomUserDetails user) {
+            , @AuthenticationPrincipal AppUserInfo user) {
         contest.setUserId(user.getId());
         contestService.updateContestPost(contest, user.getId()); // board + contest_post 저장
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
