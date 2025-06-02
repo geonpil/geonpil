@@ -1,12 +1,15 @@
 package com.geonpil.controller.review;
 
 import com.geonpil.domain.Review;
+import com.geonpil.domain.ReviewComment;
+import com.geonpil.dto.review.ReviewCommentDto;
 import com.geonpil.dto.review.ReviewRequestDto;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.mapper.review.ReviewMapper;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.UserService;
+import com.geonpil.service.review.ReviewCommentService;
 import com.geonpil.service.review.ReviewLikeService;
 import com.geonpil.service.review.ReviewService;
 import com.geonpil.util.mapper.ReviewMapperUtil;
@@ -32,8 +35,9 @@ public class ReviewViewController {
     private final UserService userService;
     private final ReviewLikeMapper reviewLikeMapper;
     private final ReviewMapperUtil reviewMapperUtil;
+    private final ReviewCommentService reviewCommentService;
 
-    // 특정 책의 모든 리뷰 조회 (선택적)
+    // 특정 책의 모든 리뷰 조회
     @GetMapping("/{bookId}")
     public String getReviews(@PathVariable Long bookId,
                              @RequestParam(defaultValue = "recent") String sort,
@@ -43,13 +47,15 @@ public class ReviewViewController {
         List<Review> reviews = reviewService.getReviewsByBookId(bookId, sort);
 
         List<ReviewResponseDto> reviewDtos = reviewMapperUtil.convertToResponseDto(reviews, user);
+        reviewMapperUtil.attachCommentsToReviews(reviewDtos);
+        List<ReviewResponseDto> visibleReviews = reviewMapperUtil.filterVisibleReviewsWithComments(reviewDtos);
 
-        model.addAttribute("reviews", reviewDtos);
+
+        model.addAttribute("reviews", visibleReviews);
         if (user != null) {
             model.addAttribute("currentUserId", user.getId());
         }
 
         return "book/detail/_review-list-fragment :: reviewListFragment";
     }
-
 }

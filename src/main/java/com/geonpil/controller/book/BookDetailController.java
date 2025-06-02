@@ -52,21 +52,8 @@ public class BookDetailController {
 
 
         // 3. 각 리뷰에 댓글 리스트 설정
-        for (ReviewResponseDto reviewDto : reviewDtos) {
-            List<ReviewComment> comments = reviewCommentService.getCommentsByReviewId(reviewDto.getReviewId());
-            List<ReviewCommentDto> commentDtos = comments.stream()
-                    .map(comment -> ReviewCommentDto.builder()
-                            .reviewCommentId(comment.getReviewCommentId())
-                            .reviewId(comment.getReviewId())
-                            .parentId(comment.getParentId())
-                            .userId(comment.getUserId())
-                            .username(userService.getUserNicknameByUserId(comment.getUserId()))
-                            .content(comment.getContent())
-                            .createdAt(comment.getCreatedAt())
-                            .build())
-                    .collect(Collectors.toList());
-            reviewDto.setReviewCommentDtos(commentDtos);
-        }
+        reviewMapperUtil.attachCommentsToReviews(reviewDtos);
+        List<ReviewResponseDto> visibleReviews = reviewMapperUtil.filterVisibleReviewsWithComments(reviewDtos);
 
 
         // 4. 평균 평점 계산 (없으면 0)
@@ -74,7 +61,7 @@ public class BookDetailController {
 
         // 5. 모델에 데이터 주입
         model.addAttribute("book", book);
-        model.addAttribute("reviews", reviewDtos);
+        model.addAttribute("reviews", visibleReviews);
         model.addAttribute("avgRating", averageRating);
         if (user != null) {
             model.addAttribute("currentUserId", user.getId());

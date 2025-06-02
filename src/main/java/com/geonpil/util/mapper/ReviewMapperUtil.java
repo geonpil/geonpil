@@ -1,10 +1,13 @@
 package com.geonpil.util.mapper;
 
 import com.geonpil.domain.Review;
+import com.geonpil.domain.ReviewComment;
+import com.geonpil.dto.review.ReviewCommentDto;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.UserService;
+import com.geonpil.service.review.ReviewCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,7 @@ public class ReviewMapperUtil {
 
     private final UserService userService;
     private final ReviewLikeMapper reviewLikeMapper;
+    private final ReviewCommentService reviewCommentService;
 
     public List<ReviewResponseDto> convertToResponseDto(List<Review> reviews, AppUserInfo user) {
         return reviews.stream()
@@ -41,4 +45,35 @@ public class ReviewMapperUtil {
                 })
                 .collect(Collectors.toList());
     }
+
+
+    public void attachCommentsToReviews(List<ReviewResponseDto> reviewDtos) {
+        for (ReviewResponseDto reviewDto : reviewDtos) {
+            List<ReviewComment> comments = reviewCommentService.getCommentsByReviewId(reviewDto.getReviewId());
+            List<ReviewCommentDto> commentDtos = comments.stream()
+                    .map(comment -> ReviewCommentDto.builder()
+                            .reviewCommentId(comment.getReviewCommentId())
+                            .reviewId(comment.getReviewId())
+                            .parentId(comment.getParentId())
+                            .userId(comment.getUserId())
+                            .username(userService.getUserNicknameByUserId(comment.getUserId()))
+                            .content(comment.getContent())
+                            .createdAt(comment.getCreatedAt())
+                            .build())
+                    .collect(Collectors.toList());
+            reviewDto.setReviewCommentDtos(commentDtos);
+        }
+    }
+
+
+    public List<ReviewResponseDto> filterVisibleReviewsWithComments(List<ReviewResponseDto> reviewDtos) {
+        return reviewDtos.stream()
+                .filter(review ->
+                        !review.isDeleted() ||
+                                (review.getReviewCommentDtos() != null && !review.getReviewCommentDtos().isEmpty())
+                )
+                .collect(Collectors.toList());
+    }
+
+
 }
