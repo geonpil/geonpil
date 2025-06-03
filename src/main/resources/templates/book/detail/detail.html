@@ -16,15 +16,24 @@
 
     <div class="book-detail-container">
         <!-- 왼쪽: 책 정보 -->
-        <aside class="book-info card-wrapper">
-            <img th:src="${book.thumbnail}" alt="책 표지" class="book-cover"/>
-            <div class="book-meta">
-                <h2 th:text="${book.title}">책 제목</h2>
-                <p><strong>저자:</strong> <span th:text="${book.authors}">저자</span></p>
-                <p><strong>출판사:</strong> <span th:text="${book.publisher}">출판사</span></p>
-                <p><strong>ISBN:</strong> <span th:text="${book.isbn}">ISBN</span></p>
-                <p><strong>책소개:</strong></p>
-                <p th:text="${book.contents}">줄거리 내용</p>
+        <aside class="book-info">
+            <div class="card-wrapper">
+                <img th:src="${book.thumbnail}" alt="책 표지" class="book-cover"/>
+                <div class="book-meta">
+                    <h2 th:text="${book.title}">책 제목</h2>
+                    <p><strong>저자:</strong> <span th:text="${book.authors}">저자</span></p>
+                    <p><strong>출판사:</strong> <span th:text="${book.publisher}">출판사</span></p>
+                    <p><strong>ISBN:</strong> <span th:text="${book.isbn}">ISBN</span></p>
+                    <p><strong>책소개:</strong></p>
+                    <p th:text="${book.contents}">줄거리 내용</p>
+                </div>
+            </div>
+
+            <!-- 목록버튼 -->
+            <div class="back-to-list">
+                <a th:href="@{/api/search(query=${query}, page=${page})}" class="basic-btn">
+                    목록으로
+                </a>
             </div>
         </aside>
         <!-- 오른쪽: 리뷰 -->
@@ -69,6 +78,8 @@
             </div>
         </section>
     </div>
+
+
 </div>
 
 <th:block layout:fragment="script">

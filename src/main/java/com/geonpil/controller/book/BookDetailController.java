@@ -19,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,8 @@ public class BookDetailController {
     @GetMapping("/{bookId}")
     public String getBookDetail(@PathVariable Long bookId
                                 ,@AuthenticationPrincipal AppUserInfo user
+                                , @RequestParam String query
+                                , @RequestParam(defaultValue = "1") int page
                                 ,Model model) {
         // 1. 책 상세 정보 조회
         Book book = bookService.getBookById(bookId);
@@ -61,6 +65,8 @@ public class BookDetailController {
 
         // 5. 모델에 데이터 주입
         model.addAttribute("book", book);
+        model.addAttribute("query", query);
+        model.addAttribute("page", page);
         model.addAttribute("reviews", visibleReviews);
         model.addAttribute("avgRating", averageRating);
         if (user != null) {
@@ -72,8 +78,13 @@ public class BookDetailController {
 
 
     @GetMapping("/isbn/{isbn}")
-    public String fetchOrRedirect(@PathVariable String isbn) {
+    public String fetchOrRedirect(@PathVariable String isbn
+                                 ,@RequestParam(required = false) String query
+                                 , @RequestParam(required = false, defaultValue = "1") int page ) {
         Book book = bookService.getOrFetchBookByIsbn(isbn);
-        return "redirect:/books/" + book.getBookId();
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+
+
+        return "redirect:/books/" + book.getBookId() + "?query=" + encodedQuery + "&page=" + page;
     }
 }

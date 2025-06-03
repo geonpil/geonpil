@@ -5,7 +5,7 @@
     <!-- ✅ 책 리스트 -->
     <ul class="book-list">
         <li th:each="book : ${books}">
-            <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
+            <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn}, query = ${param.query}, page = ${param.page})}" style="text-decoration: none; color: inherit;">
                 <div style="display: flex; gap: 1rem; align-items: center;">
                     <!-- 썸네일 -->
                     <img th:src="${book.thumbnail}" alt="책 표지" width="100" height="150" style="object-fit: cover;"/>
