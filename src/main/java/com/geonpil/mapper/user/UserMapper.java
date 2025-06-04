@@ -1,4 +1,4 @@
-package com.geonpil.mapper;
+package com.geonpil.mapper.user;
 
 import com.geonpil.domain.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -32,4 +32,7 @@ public interface UserMapper {
 
     String getUserNicknameById(long id);
 
+    Optional<User> findUserById(long id);
+
+    void softDeleteUserId(Long id);
 }

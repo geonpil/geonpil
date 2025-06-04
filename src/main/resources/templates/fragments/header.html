@@ -51,10 +51,14 @@
 
           <!-- 로그인 사용자 -->
           <th:block sec:authorize="isAuthenticated()">
-            <span style="color: white;" th:text="${nickname}"></span>님
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-              <button type="submit" style="background:none; border:none; color:white; cursor:pointer; font-size:0.95rem;">로그아웃</button>
-            </form>
+            <div class="user-menu-wrapper">
+              <button id="userDropdownToggle" class="user-nickname-btn" th:text="${nickname} +' 님'">닉네임</button>
+              <ul id="userDropdown" class="user-dropdown hidden">
+                <li><a th:href="@{/mypage}">마이페이지</a></li>
+                <li><a th:href="@{/my-posts}">내가 쓴 글</a></li>
+                <li><a th:href="@{/logout}">로그아웃</a></li>
+              </ul>
+            </div>
           </th:block>
 
         </div>
@@ -62,7 +66,25 @@
       </div>
     </div>
   </header>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleBtn = document.getElementById("userDropdownToggle");
+      const dropdown = document.getElementById("userDropdown");
+
+      toggleBtn.addEventListener("click", function () {
+        dropdown.classList.toggle("hidden");
+      });
+
+      // 드롭다운 밖 클릭 시 닫기
+      document.addEventListener("click", function (e) {
+        if (!toggleBtn.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add("hidden");
+        }
+      });
+    });
+  </script>
 </th:block>
+
 </body>
-</html>
 </html>

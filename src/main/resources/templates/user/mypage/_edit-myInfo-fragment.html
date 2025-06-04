@@ -1,0 +1,10 @@
+<th:block th:fragment = "editMyInfoFragment(user)">
+    <form th:action="@{/api/users/me}" method="post">
+        <label>닉네임</label>
+        <input type="text" name="nickname" th:value="${user.nickname}" required />
+        <!-- 이메일은 읽기전용 표시 -->
+        <p>이메일: <strong th:text="${user.email}"></strong></p>
+        <button type="submit">정보 수정</button>
+        <a th:href="@{/withdraw}" class="btn btn-danger">회원 탈퇴</a>
+    </form>
+</th:block>

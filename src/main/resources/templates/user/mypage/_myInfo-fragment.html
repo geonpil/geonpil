@@ -1,0 +1,11 @@
+<th:block th:fragment="myInfoFragment(user)" xmlns:th="http://www.w3.org/1999/html">
+    <div class="user-info-box">
+        <p><strong>이메일:</strong> <span th:text="${user.email}">example@naver.com</span></p>
+        <p><strong>가입 방식:</strong>
+            <span th:if="${user.provider != null}" th:text="'소셜 가입 (' + ${user.provider} + ')'">소셜</span>
+            <span th:unless="${user.provider != null}">자체 회원가입</span>
+        </p>
+        <p><strong>닉네임:</strong> <span th:text="${user.nickname}">닉네임</span></p>
+        <p><strong>가입일:</strong> <span th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span></p>
+    </div>
+</th:block>

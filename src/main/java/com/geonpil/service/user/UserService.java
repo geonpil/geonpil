@@ -1,7 +1,7 @@
-package com.geonpil.service;
+package com.geonpil.service.user;
 
 import com.geonpil.domain.User;
-import com.geonpil.mapper.UserMapper;
+import com.geonpil.mapper.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,6 +36,7 @@ public class UserService {
         return userMapper.findByNickname(nickname) != null;
     }
 
+
     public Optional<User> findByEmail(String email) {
         return userMapper.findByEmail(email);
     }
@@ -45,9 +46,15 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(newPassword);
         userMapper.updatePasswordByEmail(email, encodedPassword);
     }
-
+    // 유저닉네임 가져오기
     public String getUserNicknameByUserId(Long userId) {
         return userMapper.getUserNicknameById(userId);
+    }
+
+
+    public User findUserById(Long userId) {
+        Optional<User> userOptional = userMapper.findUserById(userId);
+        return userOptional.orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
     }
 
 

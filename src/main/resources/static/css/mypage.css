@@ -1,0 +1,10 @@
+.mypage-wrapper {
+max-width: 800px;
+
+}
+
+
+.tab-btn.active {
+    background: #357edd;
+    color: white;
+}

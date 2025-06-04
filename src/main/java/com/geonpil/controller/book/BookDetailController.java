@@ -2,13 +2,10 @@ package com.geonpil.controller.book;
 
 import com.geonpil.domain.Book;
 import com.geonpil.domain.Review;
-import com.geonpil.domain.ReviewComment;
-import com.geonpil.domain.entity.BookEntity;
-import com.geonpil.dto.review.ReviewCommentDto;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.service.UserService;
+import com.geonpil.service.user.UserService;
 import com.geonpil.service.book.BookService;
 import com.geonpil.service.review.ReviewCommentService;
 import com.geonpil.service.review.ReviewService;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/books") // RESTful URL 구조 개선

@@ -1,29 +1,21 @@
 package com.geonpil.controller.review;
 
 import com.geonpil.domain.Review;
-import com.geonpil.domain.ReviewComment;
-import com.geonpil.dto.review.ReviewCommentDto;
-import com.geonpil.dto.review.ReviewRequestDto;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
-import com.geonpil.mapper.review.ReviewMapper;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.service.UserService;
+import com.geonpil.service.user.UserService;
 import com.geonpil.service.review.ReviewCommentService;
 import com.geonpil.service.review.ReviewLikeService;
 import com.geonpil.service.review.ReviewService;
 import com.geonpil.util.mapper.ReviewMapperUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor

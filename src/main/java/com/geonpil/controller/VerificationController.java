@@ -2,11 +2,10 @@ package com.geonpil.controller;
 
 import com.geonpil.domain.User;
 import com.geonpil.service.MailService;
-import com.geonpil.service.UserService;
+import com.geonpil.service.user.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<div layout:fragment="meta">
+    <title>마이페이지</title>
+</div>
+<div layout:fragment="css">
+    <link rel="stylesheet" href="/css/mypage.css"/>
+</div>
+
+<div layout:fragment="content">
+    <section class="mypage-container">
+        <div class ="mypage-wrapper card-wrapper">
+            <div class="tabs">
+                <button class="btn basic-btn-border tab-btn active" data-target="view">회원 정보</button>
+                <button class="btn basic-btn-border tab-btn" data-target="edit">회원 정보 수정</button>
+                <button class="btn basic-btn-border tab-btn" data-target="password">비밀번호 변경</button>
+            </div>
+
+
+            <div class = "mypage-content">
+                <div class="tab-content" id="view" th:include="user/mypage/_myInfo-fragment :: myInfoFragment(${user})"></div>
+                <div class="tab-content hidden" id="edit" th:include="user/mypage/_edit-myInfo-fragment :: editMyInfoFragment(${user})"></div>
+                <div class="tab-content hidden" id="password" th:include="user/mypage/_edit-password-fragment :: editPasswordFragment"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabButtons = document.querySelectorAll(".tab-btn");
+            const tabContents = document.querySelectorAll(".tab-content");
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const targetId = this.dataset.target;
+
+                    tabButtons.forEach(b => b.classList.remove("active"));
+                    tabContents.forEach(c => c.classList.add("hidden"));
+
+                    this.classList.add("active");
+                    document.getElementById(targetId).classList.remove("hidden");
+                });
+            });
+        });
+    </script>
+</th:block>
+</html>

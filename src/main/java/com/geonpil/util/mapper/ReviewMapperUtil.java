@@ -6,7 +6,7 @@ import com.geonpil.dto.review.ReviewCommentDto;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.service.UserService;
+import com.geonpil.service.user.UserService;
 import com.geonpil.service.review.ReviewCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
