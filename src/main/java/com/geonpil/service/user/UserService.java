@@ -78,6 +78,11 @@ public class UserService {
             throw new IllegalArgumentException("확인 비밀번호가 일치하지 않아요.");
         }
 
+        if (user.getProvider() != null) {
+            throw new IllegalStateException("소셜 로그인 사용자(예: 네이버, 카카오)는 비밀번호를 변경할 수 없습니다.<br>\n" +
+                    "계정 관련 설정은 해당 로그인 제공 사이트에서 변경해주세요.");
+        }
+
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         userMapper.updatePassword(userId, encodedNewPassword);
     }
