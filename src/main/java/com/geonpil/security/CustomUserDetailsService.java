@@ -1,8 +1,9 @@
 package com.geonpil.security;
 
-import com.geonpil.domain.User;
-import com.geonpil.mapper.UserMapper;
+import com.geonpil.domain.user.User;
+import com.geonpil.mapper.user.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +18,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("email:" + email);
+
         User user = userMapper.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다: " + email));
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다." + email));
+
+        System.out.println("user:" + user.isDeleted());
+
+
+        if (user.isDeleted()) {
+            throw new DisabledException("탈퇴한 계정입니다.");
+        }
+
         return new CustomUserDetails(user);
     }
 }

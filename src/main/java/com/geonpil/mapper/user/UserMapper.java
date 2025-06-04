@@ -1,6 +1,6 @@
 package com.geonpil.mapper.user;
 
-import com.geonpil.domain.User;
+import com.geonpil.domain.user.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

@@ -1,6 +1,6 @@
 package com.geonpil.controller.user;
 
-import com.geonpil.domain.User;
+import com.geonpil.domain.user.User;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.user.UserService;
 import com.geonpil.service.user.WithdrawlService;

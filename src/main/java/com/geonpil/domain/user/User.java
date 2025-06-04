@@ -1,4 +1,4 @@
-package com.geonpil.domain;
+package com.geonpil.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class User {
     private String provider;
     private String providerId;
     private LocalDateTime createdAt;
-    private boolean deleted;  //삭제 여부
+    private boolean isDeleted;  //삭제 여부
 
     public User(String email, String nickname, String provider, String providerId, String role) {
         this.email = email;
@@ -27,7 +27,7 @@ public class User {
         this.providerId = providerId;
         this.provider = provider;
         this.role = role;
-        this.deleted = false;
+        this.isDeleted = false;
     }
 
 }

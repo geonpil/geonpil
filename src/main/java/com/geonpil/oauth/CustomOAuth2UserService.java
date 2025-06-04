@@ -1,7 +1,7 @@
 //package com.geonpil.oauth;
 //
-//import com.geonpil.domain.User;
-//import com.geonpil.mapper.UserMapper;
+//import com.geonpil.domain.user.User;
+//import com.geonpil.mapper.user.UserMapper;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 //import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

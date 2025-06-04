@@ -1,6 +1,6 @@
 package com.geonpil.service.user;
 
-import com.geonpil.domain.User;
+import com.geonpil.domain.user.User;
 import com.geonpil.mapper.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

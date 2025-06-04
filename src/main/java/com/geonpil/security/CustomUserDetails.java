@@ -1,6 +1,6 @@
 package com.geonpil.security;
 
-import com.geonpil.domain.User;
+import com.geonpil.domain.user.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

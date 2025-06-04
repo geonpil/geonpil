@@ -1,7 +1,7 @@
 package com.geonpil.service;
 
-import com.geonpil.domain.User;
-import com.geonpil.mapper.UserMapper;
+import com.geonpil.domain.user.User;
+import com.geonpil.mapper.user.UserMapper;
 import com.geonpil.security.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -62,11 +61,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // 회원 조회 or 가입 처리
         Optional<User> userOpt = userMapper.findByProviderAndProviderId(registrationId, providerId);
         User user;
-        if (userOpt.isEmpty()) {
-            user = new User(email, nickname, registrationId, providerId, "user");  // 소셜 로그인용 생성자 사용
-            userMapper.insertSocialUser(user);
-        }  else {
+        if (userOpt.isPresent()) {
             user = userOpt.get();
+            if(user.isDeleted()){
+                throw new OAuth2AuthenticationException("탈퇴한 계정입니다. oauth");
+            }
+        }  else {
+            user = new User(email, nickname, registrationId, providerId, "user");  // 소셜 로그인용 생성자 사용
+
+            userMapper.insertSocialUser(user);
         }
 
 

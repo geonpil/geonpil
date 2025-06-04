@@ -1,6 +1,6 @@
 package com.geonpil.controller;
 
-import com.geonpil.domain.User;
+import com.geonpil.domain.user.User;
 import com.geonpil.service.MailService;
 import com.geonpil.service.user.UserService;
 import jakarta.mail.MessagingException;
