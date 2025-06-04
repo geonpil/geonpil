@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -110,5 +111,29 @@ public class UserController {
     public String withdrawComplete() {
         return "user/withdrawal/withdrawal-complete";
     }
+
+
+
+/*    @PostMapping("/mypage/change-password")
+    public String changePassword(@AuthenticationPrincipal AppUserInfo userInfo,
+                                 @RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 RedirectAttributes redirectAttributes) {
+
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("error", "새 비밀번호가 일치하지 않습니다.");
+            return "redirect:/mypage";
+        }
+
+        try {
+            userService.changePassword(userInfo.getId(), currentPassword, newPassword);
+            redirectAttributes.addFlashAttribute("success", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+            return "redirect:/logout";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/mypage";
+        }
+    }*/
 
 }

@@ -1,6 +1,7 @@
 package com.geonpil.service.user;
 
 import com.geonpil.domain.user.User;
+import com.geonpil.dto.user.PasswordChangeRequestDto;
 import com.geonpil.mapper.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,6 +56,30 @@ public class UserService {
     public User findUserById(Long userId) {
         Optional<User> userOptional = userMapper.findUserById(userId);
         return userOptional.orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+    }
+
+    public void changePassword(Long userId, PasswordChangeRequestDto request) {
+        User user = userMapper.findUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+
+        System.out.println("입력한 현재 비밀번호: " + request.getCurrentPassword());
+        System.out.println("DB 저장된 해시 비밀번호: " + user.getPassword());
+
+        boolean matched = passwordEncoder.matches(request.getCurrentPassword(), user.getPassword());
+
+        System.out.println("일치 여부: " + matched);
+
+        if (!matched) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않아요.");
+        }
+
+        if(!request.getNewPassword().equals(request.getConfirmPassword())){
+            throw new IllegalArgumentException("확인 비밀번호가 일치하지 않아요.");
+        }
+
+        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+        userMapper.updatePassword(userId, encodedNewPassword);
     }
 
 
