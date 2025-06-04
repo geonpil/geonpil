@@ -26,8 +26,8 @@
 
             <button class = "basic-btn" type="submit" style="width: 100%;">로그인</button>
 
-            <div th:if="${error}" style="margin-top: 10px; color: red;">
-                <p th:text="${error}"></p>
+            <div th:if="${param.error}" style="margin-top: 10px; color: red;">
+                <p th:text="${param.error}"></p>
             </div>
         </form>
 

@@ -30,6 +30,8 @@ public class SecurityConfig {
 
     private final UserMapper userMapper;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomAuthFailureHandler customAuthFailureHandler;
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService(userMapper);
@@ -59,11 +61,11 @@ public class SecurityConfig {
 //                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .formLogin(login -> login
                         .loginPage("/login")
+                        .failureHandler(customAuthFailureHandler)
                         .loginProcessingUrl("/do-login")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(loginSuccessHandler())
-                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
