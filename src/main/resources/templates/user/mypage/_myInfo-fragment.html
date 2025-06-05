@@ -1,11 +1,31 @@
 <th:block th:fragment="myInfoFragment" xmlns:th="http://www.w3.org/1999/html">
-    <div class="user-info-box">
-        <p><strong>이메일:</strong> <span th:text="${user.email}">example@naver.com</span></p>
-        <p><strong>가입 방식:</strong>
-            <span th:if="${user.provider != null}" th:text="'소셜 가입 (' + ${user.provider} + ')'">소셜</span>
-            <span th:unless="${user.provider != null}">자체 회원가입</span>
-        </p>
-        <p><strong>닉네임:</strong> <span th:text="${user.nickname}">닉네임</span></p>
-        <p><strong>가입일:</strong> <span th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</span></p>
-    </div>
+    <section class="my-info">
+        <div class="info-item email-box">
+            <label>이메일</label>
+            <div th:text="${user.email}">example@naver.com</div>
+        </div>
+
+        <div class="info-item provider-box">
+            <label>가입 방식</label>
+            <div>
+                <div th:if="${user.provider != null}" th:text="'소셜 가입 (' + ${user.provider} + ')'">소셜</div>
+                <div th:unless="${user.provider != null}">자체 회원가입</div>
+            </div>
+        </div>
+
+        <div class="info-item nickname-box">
+            <label>닉네임</label>
+            <div th:text="${user.nickname}">닉네임</div>
+        </div>
+
+        <div class="info-item created-box">
+            <label>가입일</label>
+            <div th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</div>
+        </div>
+
+        <div class="info-item status-box" >
+            <label>상태</label>
+            <div>일반회원</div>
+        </div>
+    </section>
 </th:block>
