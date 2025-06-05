@@ -19,14 +19,6 @@
                 <button class="btn basic-btn-border tab-btn" data-target="password">비밀번호 변경</button>
             </div>
 
-
-<!--            <div class = "mypage-content">
-                <div class="tab-content" id="view" th:include="user/mypage/_myInfo-fragment :: myInfoFragment(${user})"></div>
-                <div class="tab-content hidden" id="edit" th:include="user/mypage/_edit-myInfo-fragment :: editMyInfoFragment(${user})"></div>
-                <div class="tab-content hidden" id="password" th:include="user/mypage/_edit-password-fragment :: editPasswordFragment"></div>
-            </div>-->
-
-
             <div id= "mypage-content" class = "mypage-content">
                 <th:block th:replace = "user/mypage/_myInfo-fragment :: myInfoFragment"></th:block>
             </div>

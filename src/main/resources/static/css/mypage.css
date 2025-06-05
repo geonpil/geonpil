@@ -1,6 +1,5 @@
 .mypage-wrapper {
 max-width: 800px;
-
 }
 
 
@@ -9,7 +8,22 @@ max-width: 800px;
     color: white;
 }
 
+/* START : 회원정보 수정 탭 */
+.tabs {
+    display: flex;
+    flex-wrap: nowrap;       /* 줄바꿈 방지 */
+    overflow-x: auto;        /* 넘치면 가로 스크롤 */
+    gap: 8px;
+    margin-bottom: 12px;
+}
 
+.tabs button {
+    flex: 1 1 auto;           /* 버튼들이 줄어들 수 있도록 */
+    white-space: nowrap;     /* 버튼 내부 텍스트 줄바꿈 방지 */
+    min-width: 100px;         /* 너무 좁아지는 것 방지 */
+}
+
+/* END : 회원정보 수정 탭 */
 /* START : 회원정보 수정 */
 .my-info,
 .edit-info,
