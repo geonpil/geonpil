@@ -12,7 +12,8 @@ max-width: 800px;
 
 /* START : 회원정보 수정 */
 .my-info,
-.edit-info {
+.edit-info,
+.edit-password{
     display: flex;
     flex-direction: column;
     gap: 16px;
