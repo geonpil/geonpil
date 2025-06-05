@@ -1,19 +1,38 @@
 <th:block th:fragment = "editMyInfoFragment">
-    <div>
-        <section>
+    <section class ="edit-info">
+        <div class="info-item email-box">
+            <label for="nickname">이메일</label>
+            <input type="text" th:value="${user.email}" disabled/>
+        </div>
+
+        <div class="info-item nickname-box" >
             <label for="nickname">닉네임</label>
-            <input type="text" id="nickname" name="nickname" th:value="${user.nickname}" required>
+            <div class ="nickname-input flex-wrapper">
+                <div class ="input-box">
+                    <input type="text" id="nickname" name="nickname" th:value="${user.nickname}" required>
+                </div>
+                <div class ="button-box">
+                  <button class = "basic-btn" type="button" id="changeNicknameBtn" disabled>닉네임 변경</button>
+                </div>
+            </div>
             <div id="nicknameCheck" class="hint"></div>
-            <button class = "basic-btn" type="button" id="changeNicknameBtn" disabled>변경</button>
-        </section>
+        </div>
+
+
+        <div class="info-item status-box" >
+            <label for="status">상태</label>
+            <div class ="status-input flex-wrapper">
+                <div class ="input-box">
+                    <strong id = "status">일반회원</strong>
+                </div>
+            </div>
+        </div>
         <!-- 이메일은 읽기전용 표시 -->
 
-        <section>
-            <p>이메일: <strong th:text="${user.email}"></strong></p>
-        </section>
 
-        <section>
-        <a th:href="@{/withdraw}" class="btn btn-danger">회원 탈퇴</a>
-        </section>
-    </div>
+
+        <div class="info-item withdrawal-box">
+             <a th:href="@{/withdraw}" class="btn btn-danger">회원 탈퇴</a>
+        </div>
+    </section>
 </th:block>
