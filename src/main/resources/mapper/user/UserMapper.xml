@@ -84,4 +84,9 @@
         WHERE id = #{userId}
     </update>
 
+
+    <update id="updateNickname">
+        UPDATE users SET nickname = #{newNickname} WHERE id = #{userId}
+    </update>
+
 </mapper>

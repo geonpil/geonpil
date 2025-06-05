@@ -37,4 +37,7 @@ public interface UserMapper {
     void softDeleteUserId(Long id);
 
     void updatePassword(@Param("userId") Long id, @Param("newPassword") String encodedPassword);
+
+    void updateNickname(@Param("userId") Long id, @Param("newNickname") String newNickname);
+
 }

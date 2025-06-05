@@ -1,10 +1,19 @@
-<th:block th:fragment = "editMyInfoFragment(user)">
-    <form th:action="@{/api/users/me}" method="post">
-        <label>닉네임</label>
-        <input type="text" name="nickname" th:value="${user.nickname}" required />
+<th:block th:fragment = "editMyInfoFragment">
+    <div>
+        <section>
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" name="nickname" th:value="${user.nickname}" required>
+            <div id="nicknameCheck" class="hint"></div>
+            <button class = "basic-btn" type="button" id="changeNicknameBtn" disabled>변경</button>
+        </section>
         <!-- 이메일은 읽기전용 표시 -->
-        <p>이메일: <strong th:text="${user.email}"></strong></p>
-        <button type="submit">정보 수정</button>
+
+        <section>
+            <p>이메일: <strong th:text="${user.email}"></strong></p>
+        </section>
+
+        <section>
         <a th:href="@{/withdraw}" class="btn btn-danger">회원 탈퇴</a>
-    </form>
+        </section>
+    </div>
 </th:block>

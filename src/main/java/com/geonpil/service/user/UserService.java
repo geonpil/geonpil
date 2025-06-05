@@ -3,10 +3,21 @@ package com.geonpil.service.user;
 import com.geonpil.domain.user.User;
 import com.geonpil.dto.user.PasswordChangeRequestDto;
 import com.geonpil.mapper.user.UserMapper;
+import com.geonpil.security.AppUserInfo;
+import com.geonpil.security.CustomOAuth2User;
+import com.geonpil.security.CustomUserDetails;
+import com.geonpil.validator.NicknameValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -88,4 +99,50 @@ public class UserService {
     }
 
 
+    public void changeNickname(Long userId, String newNickname) {
+        if (!NicknameValidator.isValid(newNickname)) {
+            throw new IllegalArgumentException("닉네임 형식이 올바르지 않습니다.");
+        }
+
+        if (existsByNickname(newNickname)) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
+
+        userMapper.updateNickname(userId, newNickname);
+
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+        AppUserInfo userInfo = (AppUserInfo) currentAuth.getPrincipal();
+
+        User updatedUser = userMapper.findUserById(userInfo.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
+
+        Authentication newAuth;
+
+        if (userInfo instanceof CustomOAuth2User) {
+            CustomOAuth2User oAuthUser = (CustomOAuth2User) userInfo;
+
+            newAuth = new UsernamePasswordAuthenticationToken(
+                    new CustomOAuth2User(
+                            Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                            oAuthUser.getAttributes(),  // 기존 소셜 정보 유지
+                            "id",
+                            updatedUser.getNickname(),
+                            updatedUser.getId()
+                    ),
+                    currentAuth.getCredentials(),
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+
+        } else {
+            newAuth = new UsernamePasswordAuthenticationToken(
+                    new CustomUserDetails(updatedUser),
+                    currentAuth.getCredentials(),
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+
+    }
 }

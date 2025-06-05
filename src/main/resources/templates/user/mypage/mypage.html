@@ -14,120 +14,63 @@
     <section class="mypage-container">
         <div class ="mypage-wrapper card-wrapper">
             <div class="tabs">
-                <button class="btn basic-btn-border tab-btn active" data-target="view">회원 정보</button>
-                <button class="btn basic-btn-border tab-btn" data-target="edit">회원 정보 수정</button>
+                <button class="btn basic-btn-border tab-btn active" data-target="myInfo">회원 정보</button>
+                <button class="btn basic-btn-border tab-btn" data-target="nickname">회원 정보 수정</button>
                 <button class="btn basic-btn-border tab-btn" data-target="password">비밀번호 변경</button>
             </div>
 
 
-            <div class = "mypage-content">
+<!--            <div class = "mypage-content">
                 <div class="tab-content" id="view" th:include="user/mypage/_myInfo-fragment :: myInfoFragment(${user})"></div>
                 <div class="tab-content hidden" id="edit" th:include="user/mypage/_edit-myInfo-fragment :: editMyInfoFragment(${user})"></div>
                 <div class="tab-content hidden" id="password" th:include="user/mypage/_edit-password-fragment :: editPasswordFragment"></div>
+            </div>-->
+
+
+            <div id= "mypage-content" class = "mypage-content">
+                <th:block th:replace = "user/mypage/_myInfo-fragment :: myInfoFragment"></th:block>
             </div>
         </div>
     </section>
 </div>
 
 <th:block layout:fragment="script">
-    <script>
+    <script type = "module" th:inline="javascript">
+        import { initPasswordChange } from '/js/mypage/password-change.js';
+        import { initNicknameChange } from '/js/mypage/nickname-change.js';
+
         document.addEventListener("DOMContentLoaded", function () {
             const tabButtons = document.querySelectorAll(".tab-btn");
             const tabContents = document.querySelectorAll(".tab-content");
-
-
-            // 비밀번호 체크 위함
-            const newPw = document.getElementById("newPassword");
-            const confirmPw = document.getElementById("confirmPassword");
-            const pwHint = document.getElementById("passwordValidation");
-            const confirmHint = document.getElementById("confirmValidation");
-            const submitBtn = document.getElementById("changePasswordBtn");
-
+            const provider = [[${user.provider}]];
 
             tabButtons.forEach(btn => {
                 btn.addEventListener("click", function () {
-                    const targetId = this.dataset.target;
+                    const target = this.dataset.target;
 
                     tabButtons.forEach(b => b.classList.remove("active"));
                     tabContents.forEach(c => c.classList.add("hidden"));
-
                     this.classList.add("active");
-                    document.getElementById(targetId).classList.remove("hidden");
+
+                    loadFragment(target);
+
                 });
             });
 
+            function loadFragment(target){
+                fetch(`/mypage/fragment/${target}`)
+                    .then(res => res.text())
+                    .then(html => {document.getElementById("mypage-content").innerHTML = html;
 
-            document.querySelector("#changePasswordBtn").addEventListener("click", function () {
-                const currentPassword = document.querySelector("#currentPassword").value;
-                const newPassword = document.querySelector("#newPassword").value;
-                const confirmPassword = document.querySelector("#confirmPassword").value;
-
-                fetch("/api/users/password", {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        currentPassword,
-                        newPassword,
-                        confirmPassword
-                    })
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        alert(data.message);
-                        if (data.success) {
-                            const form = document.createElement('form');
-                            form.method = 'POST';
-                            form.action = '/logout';
-                            document.body.appendChild(form);
-                            form.submit();
-                        }
-                    });
-            });
+                                      if(target === 'nickname') initNicknameChange();
+                                        if(target === 'password' && !provider) initPasswordChange();
+                                     })
 
 
-            function validate() {
-                const pw = newPw.value;
-                const confirm = confirmPw.value;
 
-                const isValidPw = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(pw);
-                const isConfirmed = pw === confirm;
-
-                // 비밀번호 유효성
-                if (isValidPw) {
-                    pwHint.textContent = "사용 가능한 비밀번호입니다.";
-                    pwHint.className = "hint valid";
-                } else {
-                    pwHint.textContent = "영문과 숫자를 포함한 8자 이상이어야 합니다.";
-                    pwHint.className = "hint invalid";
-                }
-
-                // 확인 비밀번호 체크
-                if (confirm.length > 0) {
-                    if (isConfirmed) {
-                        confirmHint.textContent = "비밀번호가 일치합니다.";
-                        confirmHint.className = "hint valid";
-                    } else {
-                        confirmHint.textContent = "비밀번호가 일치하지 않습니다.";
-                        confirmHint.className = "hint invalid";
-                    }
-                } else {
-                    confirmHint.textContent = "";
-                }
-
-                // 버튼 활성화 조건
-                submitBtn.disabled = !(isValidPw && isConfirmed);
             }
 
-            newPw.addEventListener("input", validate);
-            confirmPw.addEventListener("input", validate);
-
-
         });
-
-
-
 
     </script>
 </th:block>

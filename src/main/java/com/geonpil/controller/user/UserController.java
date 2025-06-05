@@ -72,15 +72,6 @@ public class UserController {
     }
 
 
-    //마이페이지 화면
-    @GetMapping("/mypage")
-    public String myPage(@AuthenticationPrincipal AppUserInfo userInfo, Model model) {
-        User user = userService.findUserById(userInfo.getId());
-        model.addAttribute("user", user);
-        return "user/mypage/mypage";  // ex) templates/user/mypage.html
-    }
-
-
     //회원탈퇴 화면
     @GetMapping("/withdraw")
     public String withdrawForm() {
@@ -114,26 +105,6 @@ public class UserController {
 
 
 
-/*    @PostMapping("/mypage/change-password")
-    public String changePassword(@AuthenticationPrincipal AppUserInfo userInfo,
-                                 @RequestParam String currentPassword,
-                                 @RequestParam String newPassword,
-                                 @RequestParam String confirmPassword,
-                                 RedirectAttributes redirectAttributes) {
 
-        if (!newPassword.equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("error", "새 비밀번호가 일치하지 않습니다.");
-            return "redirect:/mypage";
-        }
-
-        try {
-            userService.changePassword(userInfo.getId(), currentPassword, newPassword);
-            redirectAttributes.addFlashAttribute("success", "비밀번호가 변경되었습니다. 다시 로그인해주세요.");
-            return "redirect:/logout";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/mypage";
-        }
-    }*/
 
 }

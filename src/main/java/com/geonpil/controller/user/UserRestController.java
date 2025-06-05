@@ -1,5 +1,6 @@
 package com.geonpil.controller.user;
 
+import com.geonpil.domain.user.User;
 import com.geonpil.dto.user.PasswordChangeRequestDto;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.user.UserService;
@@ -32,5 +33,33 @@ public class UserRestController {
         userService.changePassword(userInfo.getId(), request);
         return ResponseEntity.ok(Map.of("success", true, "message", "비밀번호가 변경되었습니다. 다시 로그인 해주세요!"));
     }
+
+
+
+
+    @PutMapping("/nickname")
+    public ResponseEntity<?> updateNickname(@AuthenticationPrincipal AppUserInfo userInfo,
+                                            @RequestBody Map<String, String> payload) {
+        String nickname = payload.get("nickname");
+
+
+        try {
+            userService.changeNickname(userInfo.getId(), nickname);
+            return ResponseEntity.ok(Map.of("success", true, "message", "닉네임이 변경되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
+        boolean exists = userService.existsByNickname(nickname);
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+
+
 
 }
