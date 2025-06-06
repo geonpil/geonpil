@@ -12,6 +12,7 @@
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
     <link rel="stylesheet" href="/css/contest.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </th:block>
 
 <body>
@@ -65,12 +66,19 @@
                         <span class="info-value">모집요강.pdf</span>
                     </div>
 
-                    <div class="share-buttons">
-                        <button onclick="copyLink()">링크 복사</button>
-                        <a id="kakao-link-btn">
-                            <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" />
-                        </a>
-                        <button onclick="shareToFacebook()">페이스북</button>
+
+                    <div class="info-row">
+                        <div class="info-label">공유하기</div>
+                        <div class="share-buttons">
+                            <button class = "link-copy-btn" onclick="copyLink()">
+                                <i class="fas fa-link"></i>
+                                <div>링크복사</div>
+                            </button>
+                            <button id="kakao-link-btn" type="button" class="kakao-link-btn">
+                                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"  alt ="카카오톡"/>
+                                <div>카카오톡</div>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
