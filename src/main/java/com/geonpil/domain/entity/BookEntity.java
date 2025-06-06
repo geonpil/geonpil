@@ -11,6 +11,8 @@ import java.util.List;
 public class BookEntity {
     private Long bookId;
     private String isbn;
+    private String isbn10;
+    private String isbn13;
     private String title;
     private String authors;       // 문자열로 저장
     private String translators;   // 문자열로 저장

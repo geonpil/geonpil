@@ -8,6 +8,8 @@
     <resultMap id="BookResultMap" type="com.geonpil.domain.entity.BookEntity">
         <id property="bookId" column="book_id"/>
         <result property="isbn" column="isbn"/>
+        <result column="isbn10" property="isbn10"/>
+        <result column="isbn13" property="isbn13"/>
         <result property="title" column="title"/>
         <result property="authors" column="authors"/>
         <result property="publisher" column="publisher"/>
@@ -21,17 +23,21 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
-    <select id="findByIsbn" parameterType="string" resultMap="BookResultMap">
-        SELECT * FROM books WHERE isbn = #{isbn}
+    <select id="findByIsbn10" parameterType="string" resultMap="BookResultMap">
+        SELECT * FROM books WHERE isbn10 = #{isbn10}
+    </select>
+
+    <select id="findByIsbn13" parameterType="string" resultMap="BookResultMap">
+        SELECT * FROM books WHERE isbn13 = #{isbn13}
     </select>
 
     <insert id="insertBook" parameterType="com.geonpil.domain.entity.BookEntity" useGeneratedKeys="true" keyProperty="bookId" keyColumn = "book_id">
         INSERT INTO books (
-        isbn, title, authors, publisher, thumbnail, contents,
+        isbn, isbn10, isbn13, title, authors, publisher, thumbnail, contents,
         datetime, price, sale_price, category, status
         )
         VALUES (
-        #{isbn}, #{title}, #{authors}, #{publisher}, #{thumbnail}, #{contents},
+        #{isbn},#{isbn10},#{isbn13}, #{title}, #{authors}, #{publisher}, #{thumbnail}, #{contents},
         #{datetime}, #{price}, #{salePrice}, #{category}, #{status}
         )
     </insert>

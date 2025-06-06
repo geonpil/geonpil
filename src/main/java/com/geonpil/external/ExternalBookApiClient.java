@@ -27,16 +27,13 @@ public class ExternalBookApiClient {
     private final RestTemplate restTemplate = new RestTemplate();
 
 
-    public Book fetchBookByIsbn(String isbnRaw){
+    public Book fetchBookByIsbn(String filteredIsbn){
 
-        if (isbnRaw == null || isbnRaw.trim().isEmpty()) return null;
-
-        String cleanIsbn = isbnRaw.trim().split(" +")[0].trim();
 
 
         String url = UriComponentsBuilder
                 .fromHttpUrl("https://dapi.kakao.com/v3/search/book")
-                .queryParam("query", cleanIsbn)
+                .queryParam("query", filteredIsbn)
                 .build()
                 .toUriString();
 
@@ -59,6 +56,7 @@ public class ExternalBookApiClient {
             System.out.println("디버그 책:" + docs.size());
             if(docs.isArray() && docs.size() > 0) {
                 Book book = mapper.treeToValue(docs.get(0), Book.class);
+                book.setIsbn(filteredIsbn);
                 return book;
             } else {
                 throw new RuntimeException("도서를 찾을 수 없습니다.");

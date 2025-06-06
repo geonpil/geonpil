@@ -7,7 +7,8 @@ import org.apache.ibatis.annotations.Options;
 
 @Mapper
 public interface BookMapper {
-    BookEntity findByIsbn(String isbn);
+    BookEntity findByIsbn10(String isbn);
+    BookEntity findByIsbn13(String isbn);
     void insertBook(BookEntity book);
     BookEntity findById(Long bookId);
 
