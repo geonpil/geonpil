@@ -40,6 +40,23 @@
                 </form>
             </div>
 
+            <div class="post-share">
+                <div class="info-label">공유하기</div>
+                <div class="share-buttons">
+                    <button class = "link-copy-btn" onclick="copyLink()">
+                        <i class="fas fa-link"></i>
+                        <div>링크복사</div>
+                    </button>
+                    <button id="kakao-link-btn" type="button" class="kakao-link-btn"
+                            th:data-title ="${post.title}"
+                            th:data-desc = "${post.content}"
+                            th:data-url="@{/board/list/detail/{postId}(postId=${post.postId}, boardCode=${boardCode})}">
+                        <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"  alt ="카카오톡"/>
+                        <div>카카오톡</div>
+                    </button>
+                </div>
+            </div>
+
             <div class="alert-box">
                 <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
                 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
@@ -215,6 +232,12 @@
 </div>
 
 <th:block layout:fragment="script">
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script>
+        Kakao.init('11874ab3e4119c5f4875a16ec07ee765'); // 네이티브 앱 키
+    </script>
+    <script src="/js/post/share.js"></script>
+
     <script>
         function submitComment() {
           const content = document.getElementById('commentContent').value;
@@ -356,6 +379,29 @@
                         }
                       });
         }
+
+
+        const kakaoBtn = document.getElementById("kakao-link-btn")
+
+
+        const title = kakaoBtn.dataset.title;
+        const desc = kakaoBtn.dataset.desc.replace(/<[^>]*>/g, '').trim();
+        const pageUrl = kakaoBtn.dataset.url;
+
+        alert(title);
+        alert(desc);
+        alert(pageUrl);
+
+        console.log("desc:", desc, typeof desc);
+
+        initKakaoShare({
+                    title: title,
+                    description: desc,
+                    imageUrl: "", // 이미지 없으면 빈 문자열 or 기본값
+                    pageUrl: pageUrl,
+                    containerId: "#kakao-link-btn"
+                })
+
 
     </script>
 </th:block>

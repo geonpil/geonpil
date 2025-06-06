@@ -482,3 +482,34 @@
 }
 
 /* 카테고리 디자인 끝*/
+
+
+/* START : 공유버튼 */
+.share-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.share-buttons i {
+  font-size: 40px !important; /* ← 이거 중요 */
+}
+
+.kakao-link-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.kakao-link-btn img {
+  width: 48px;
+  height: 48px;
+}
+
+.link-copy-btn {
+  height: 100%;
+}
+/* END : 공유버튼 */
