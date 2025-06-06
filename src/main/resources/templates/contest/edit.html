@@ -176,16 +176,10 @@ document.getElementById("update-btn").addEventListener("click", async function (
     content: editor.getHTML()
   };
 
-  const file = document.getElementById("posterFile").files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      const res = await fetch("/upload-image", {
-        method: "POST",
-        body: formData
-      });
-      const result = await res.json();
-      data.posterUrl = result.url;
+  const posterFile = document.getElementById("posterFile").files[0];
+    if (posterFile) {
+      const posterUrl = await uploadPosterFile(posterFile); // ✅ OK now
+      data.posterUrl = posterUrl.startsWith("http") ? posterUrl : window.location.origin + posterUrl;
     } else {
       data.posterUrl = document.getElementById("existingPosterUrl").value;
     }

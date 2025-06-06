@@ -125,7 +125,7 @@
         const tdd = String(tomorrow.getDate()).padStart(2, '0');
         const tomorrowStr = `${yyyy}-${tmm}-${tdd}`;
 
-<!--        startDate.setAttribute("max", todayStr);     // 시작일은 오늘까지만-->
+//        startDate.setAttribute("max", todayStr);     // 시작일은 오늘까지만-
         endDate.setAttribute("min", tomorrowStr);    // 종료일은 내일부터
       });
 
@@ -167,7 +167,8 @@ document.getElementById("submit-btn").addEventListener("click", async function (
 
       const posterFile = document.getElementById("posterFile").files[0];
       if (posterFile) {
-        data.posterUrl = await uploadPosterFile(posterFile); // ✅ OK now
+        const posterUrl = await uploadPosterFile(posterFile); // ✅ OK now
+        data.posterUrl = posterUrl.startsWith("http") ? posterUrl : window.location.origin + posterUrl;
       }
 
       submitToastEditor(data);

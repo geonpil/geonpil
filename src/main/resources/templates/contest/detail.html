@@ -65,7 +65,13 @@
                         <span class="info-value">모집요강.pdf</span>
                     </div>
 
-                    <!-- 필요한 항목 계속 추가 -->
+                    <div class="share-buttons">
+                        <button onclick="copyLink()">링크 복사</button>
+                        <a id="kakao-link-btn">
+                            <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" />
+                        </a>
+                        <button onclick="shareToFacebook()">페이스북</button>
+                    </div>
                 </div>
 
                 <div class="post-image-wrapper">
@@ -95,13 +101,61 @@
             </th:block>
         </div>
 
+        <input type="hidden" id="post-title" th:value="${post.title}" />
+        <input type="hidden" id="post-subtitle" th:value="${#strings.abbreviate(post.subtitle, 80)}" />
+        <input type="hidden" id="post-image" th:value="${post.posterUrl}" />
+
 
     </div>
 </div>
 
 
 <th:block layout:fragment="script">
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script>
+        Kakao.init('11874ab3e4119c5f4875a16ec07ee765'); // 네이티브 앱 키
+        console.log("카카오 초기화 상태:", Kakao.isInitialized());
+    </script>
+
+    <script>
+        function copyLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert("링크가 복사되었습니다!");
+            }).catch(() => {
+                alert("복사 실패");
+            });
+        }
+
+
+
+        const title = document.getElementById("post-title").value;
+        const subtitle = document.getElementById("post-subtitle").value;
+        const image = document.getElementById("post-image").value;
+        const url = window.location.href;
+
+        Kakao.Share.createDefaultButton({
+            container: '#kakao-link-btn',
+            objectType: 'feed',
+            content: {
+                title: title,
+                description: subtitle,
+                imageUrl: image,
+                link: {
+                    mobileWebUrl: url,
+                    webUrl: url
+                }
+            },
+            buttons: [
+                {
+                    title: '공모전 보러가기',
+                    link: {
+                        mobileWebUrl: url,
+                        webUrl: url
+                    }
+                }
+            ]
+        });
 
     </script>
 </th:block>
