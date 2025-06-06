@@ -12,6 +12,7 @@
 
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </th:block>
 
 <body>
@@ -34,26 +35,26 @@
 
             <div class="post-content toastui-editor-contents" th:utext="${post.content}">내용</div>
 
-            <div class="post-like-wrapper">
+            <div class="post-action-wrapper">
                 <form th:action="@{/board/like/{id}(id=${post.postId}, boardCode=${boardCode})}" method="post">
                     <button type="submit" class="like-btn">👍 추천하기 (<span th:text="${post.likeCount}">0</span>)</button>
                 </form>
-            </div>
 
-            <div class="post-share">
-                <div class="info-label">공유하기</div>
-                <div class="share-buttons">
-                    <button class = "link-copy-btn" onclick="copyLink()">
-                        <i class="fas fa-link"></i>
-                        <div>링크복사</div>
-                    </button>
-                    <button id="kakao-link-btn" type="button" class="kakao-link-btn"
-                            th:data-title ="${post.title}"
-                            th:data-desc = "${post.content}"
-                            th:data-url="@{/board/list/detail/{postId}(postId=${post.postId}, boardCode=${boardCode})}">
-                        <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"  alt ="카카오톡"/>
-                        <div>카카오톡</div>
-                    </button>
+                <div class="share-dropdown">
+                    <button class="dropdown-toggle">📤 공유하기 ▾</button>
+                    <div class="dropdown-menu">
+                        <button class="link-copy-btn" onclick="copyLink()">
+                            <i class="fas fa-link"></i>   링크복사
+                        </button>
+                        <button id="kakao-link-btn"
+                                type="button"
+                                th:data-title="${post.title}"
+                                th:data-desc="${post.content}"
+                                th:data-url="@{/board/list/detail/{postId}(postId=${post.postId}, boardCode=${boardCode})}">
+                            <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" alt="카카오톡" style="width:20px; height:20px; vertical-align:middle; margin-right:4px;"/>
+                            카카오톡
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -388,11 +389,6 @@
         const desc = kakaoBtn.dataset.desc.replace(/<[^>]*>/g, '').trim();
         const pageUrl = kakaoBtn.dataset.url;
 
-        alert(title);
-        alert(desc);
-        alert(pageUrl);
-
-        console.log("desc:", desc, typeof desc);
 
         initKakaoShare({
                     title: title,

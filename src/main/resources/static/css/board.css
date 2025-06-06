@@ -512,4 +512,62 @@
 .link-copy-btn {
   height: 100%;
 }
+
+
+.post-action-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.share-dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 100;
+  min-width: 140px;
+}
+
+.dropdown-menu button {
+  display: flex;
+  align-items: center;           /* ← 수직 정렬 */
+  gap: 8px;                      /* ← 아이콘과 텍스트 간격 */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+}
+
+.dropdown-menu button i,
+.dropdown-menu button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.share-dropdown:hover .dropdown-menu {
+  display: block;
+}
 /* END : 공유버튼 */
