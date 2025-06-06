@@ -27,9 +27,12 @@ public class ExternalBookApiClient {
     private final RestTemplate restTemplate = new RestTemplate();
 
 
-    public Book fetchBookByIsbn(String isbn){
+    public Book fetchBookByIsbn(String isbnRaw){
 
-        String cleanIsbn = isbn.split(" ")[0].trim();
+        if (isbnRaw == null || isbnRaw.trim().isEmpty()) return null;
+
+        String cleanIsbn = isbnRaw.trim().split(" +")[0].trim();
+
 
         String url = UriComponentsBuilder
                 .fromHttpUrl("https://dapi.kakao.com/v3/search/book")
@@ -53,6 +56,7 @@ public class ExternalBookApiClient {
             JsonNode root = mapper.readTree(body);
 
             JsonNode docs = root.path("documents");
+            System.out.println("디버그 책:" + docs.size());
             if(docs.isArray() && docs.size() > 0) {
                 Book book = mapper.treeToValue(docs.get(0), Book.class);
                 return book;
