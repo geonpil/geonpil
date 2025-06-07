@@ -122,19 +122,6 @@
     width: 100%;
 }
 
-@media (max-width: 768px) {
-    .book-detail-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap : 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-        width: 100%;
-
-    }
-
-
-}
 
 
 .book-info,
@@ -150,10 +137,16 @@
     height: fit-content;
 }
 
+
+
 .back-to-list {
     text-align: left;
     margin-top: 1rem; /* 여유 공간 필요시 */
 }
+
+
+
+
 
 .book-cover {
     width: 200px;
@@ -444,3 +437,33 @@
 
 
 /* END : 책 리뷰 */
+
+
+/*==============START : 반응형=========================  */
+
+@media (max-width: 768px) {
+    .book-detail-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap : 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .book-info {
+        position: static;  /* ✅ sticky 해제 */
+    }
+
+    .book-reviews {
+        padding : 0px;
+    }
+
+    .back-to-list {
+        margin-top : 0.25rem;
+    }
+
+    .book-reviews > h1 {
+        padding-top : 1rem;
+    }
+}
