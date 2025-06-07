@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+
+<th:block layout:fragment="meta">
+    <title>버그리포트</title>
+</th:block>
+
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/bugReport.css"/>
+</th:block>
+
+<body>
+<div layout:fragment="content">
+    <div class="bug-container">
+        <!-- 🔝 상단 안내 카드 -->
+        <div class="card bug-info-card">
+            <h2>🔧 버그 제보 안내</h2>
+            <p>
+            <p>
+                발견한 버그 및 개선 사항을 자유롭게 작성해 주세요.
+                특히 <strong>어떤 상황에서 버그가 발생했는지</strong> 함께 적어주시면 문제를 더 정확히 파악하는 데 큰 도움이 됩니다.
+                적극적으로 참여해주시는 분들께는 소정의 상품을 증정하겠습니다.
+                <br>
+                <br>
+
+            <li>현재 네이버 로그인 기능은 테스트 단계로, <strong>사전에 등록된 네이버 아이디만</strong> 사용하실 수 있습니다. 테스트를 원하시는 경우,
+                사용하실 네이버 아이디를 저(규원)에게 알려주시면 등록해드리겠습니다.</li>
+            <li>공유하기의 <strong>"링크복사" 기능</strong>은 개발단개에서는 지원하지 않습니다.</li>
+            <li>모바일 화면에서는 일부 기능이나 레이아웃이 불편하게 보일 수 있습니다. 더 나은 모바일 경험을 위해 개선 작업을 진행 중입니다.</li>
+
+            <br>
+            <br>
+            <ul>
+                예시:
+                <li>"모바일에서 버튼이 눌리지 않아요 (갤럭시 S10, 크롬 앱)"</li>
+                <li>"공모전 포스터가 Safari에서 보이지 않아요"</li>
+                <li>"~~ 페이지 버튼을 들어가면 오류페이지가 나요."</li>
+                <li>"게시글에서 뒤로가기 한 다음 다시 게시글에 들어가면 "목록으로" 버튼이 동작하지 않아요."</li>
+                <li>"책 리뷰 댓글에 스포일러성 댓글 체크가 있었으면 좋겠어요"</li>
+            </ul>
+        </div>
+
+
+
+
+
+
+        <!-- 🔽 하단 댓글 카드 -->
+        <div class="card bug-comment-card">
+            <h3>🐞 제보하기</h3>
+
+            <!-- 댓글 입력 -->
+            <form th:action="@{/bug-report/comment}" method="post" class="comment-form">
+                <label >닉네임</label>
+                <input name = "nickname" placeholder="닉네임을 입력해주세요">
+                <label >제보내용</label>
+                <textarea name="content" placeholder="버그 및 개선 사항을 입력하세요..." required></textarea>
+                <button class = "basic-btn" type="submit">제보 등록</button>
+            </form>
+
+            <!-- 댓글 목록 -->
+            <div class="comment-list">
+                <div th:each="comment : ${comments}" class="comment-item">
+                    <div class="comment-meta">
+                        <div>닉네임 :<span th:text="${comment.nickname}">사용자</span></div>
+                        <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                    </div>
+                    <div class="comment-content" th:text="${comment.content}">내용</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+
+
+    <script>
+
+
+    </script>
+</th:block>
+
+</body>
+</html>

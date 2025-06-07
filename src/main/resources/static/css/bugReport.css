@@ -1,0 +1,68 @@
+.bug-container {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    resize: vertical;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+
+.comment-form input {
+    padding: 12px;
+    border-radius: 8px;
+    min-height: 45px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comment-form button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.comment-item {
+    border-top: 1px solid #eee;
+    background-color: #f8f9fc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+
+}
+
+.comment-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #777;
+
+}
+
