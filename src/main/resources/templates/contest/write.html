@@ -107,30 +107,12 @@
   <!-- 공통 toast editor 초기화 -->
   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
   <script src="/js/toast-editor-rest.js"></script>
+  <script src="/js/contest/setDate.js"></script>
   <script>
-    const startDate= document.getElementById("startDate");
-    const endDate = document.getElementById("endDate");
-    const today = new Date();
+    document.addEventListener("DOMContentLoaded", initContestDateFields);
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const todayStr = `${yyyy}-${mm}-${dd}`;
-
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        const tmm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-        const tdd = String(tomorrow.getDate()).padStart(2, '0');
-        const tomorrowStr = `${yyyy}-${tmm}-${tdd}`;
-
-//        startDate.setAttribute("max", todayStr);     // 시작일은 오늘까지만-
-        endDate.setAttribute("min", tomorrowStr);    // 종료일은 내일부터
-      });
-
-
-document.getElementById("submit-btn").addEventListener("click", async function () {
+    document.getElementById("submit-btn").addEventListener("click", async function () {
       const start = new Date(startDate.value);
       const end = new Date(endDate.value);
       today.setHours(0, 0, 0, 0);
