@@ -44,10 +44,6 @@ a:focus-visible {
 
 /* ========== 배너 영역 ========== */
 
-.banner-section {
-
-}
-
 .banner-container {
 
   margin: 10px auto 15px;
@@ -76,6 +72,74 @@ a:focus-visible {
   height: 180px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+/* PC에서는 원래 그리드 유지 */
+@media (min-width: 769px) {
+  .swiper-wrapper {
+    display: none;
+  }
+}
+
+/* 모바일용 swiper 스타일 */
+@media (max-width: 768px) {
+  .desktop-sub-banner {
+    display: none;
+  }
+
+
+  .mobile-sub-banner.sub-banners {
+    display: block !important;  /* ✅ Swiper 구조 유지 */
+  }
+
+
+  .mobile-sub-banner.swiper-container {
+    position: relative; /* ✅ 기준 기준 기준! */
+    overflow: hidden;
+    width: 100%;
+    padding: 0;
+  }
+
+  .mobile-sub-banner .swiper-wrapper {
+    display: flex;
+  }
+
+  .mobile-sub-banner .swiper-slide {
+    flex-shrink: 0;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .mobile-sub-banner .swiper-slide img {
+    width: calc(100% - 30px);   /* ✅ 양쪽 여백 확보 (12px씩) */
+    margin: 0 12px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .swiper-pagination {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    width: 100%;                 /* ✅ 전체 너비 확보 */
+    display: flex;
+    justify-content: center;     /* ✅ 중앙 정렬 */
+    z-index: 10;
+  }
+
+  .swiper-pagination-bullet {
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+    border-radius: 50%;
+    opacity: 1;
+  }
+
+  .swiper-pagination-bullet-active {
+    background-color: var(--primary-color);
+  }
 }
 
 
