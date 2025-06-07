@@ -20,7 +20,7 @@
                 <div class="contest-subtitle" th:text="${contest.subtitle}">공모전 요약 설명...</div>
                 <div class="contest-host" th:text="'주최: ' + ${contest.hostName}"></div>
                 <div class="dday" th:text="${T(com.geonpil.util.DdayUtils).getLabel(contest.dDay)}"
-                     th:classappend="${contest.dDay == 0} ? ' today' : (${contest.dDay < 0} ? ' expired' : '')">
+                     th:classappend="${T(com.geonpil.util.DdayUtils).getLabelClass(contest.dDay)}">
                 </div>
                 <div class="contest-meta" th:text="'조회수: ' + ${contest.viewCount}">조회수: 1234</div>
                 <div class="contest-meta" th:text="${#dates.format(contest.createdAt, 'yyyy-MM-dd')}"></div>
