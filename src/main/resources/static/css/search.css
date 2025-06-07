@@ -5,17 +5,14 @@
     width : 100%;
     display : flex;
     justify-content : center;
-}
-
-.searchBar-container{
-
+    padding: 0 12px; /* 좌우 여백 추가 */
 }
 
 
 .searchBar-wrapper{
-    width : 800px;
+    width : 100%;
+    max-width : 800px;
     display : flex;
-
 }
 
 /* 책 검색 페이지 시작 */
