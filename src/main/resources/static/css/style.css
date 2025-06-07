@@ -79,6 +79,11 @@ a:focus-visible {
   .swiper-wrapper {
     display: none;
   }
+
+  .mobile-sub-banner .swiper-wrapper,
+  .mobile-sub-banner .swiper-pagination {
+    display: none !important;
+  }
 }
 
 /* 모바일용 swiper 스타일 */
@@ -191,6 +196,8 @@ a:focus-visible {
     margin-top: 8px;
     order: 2;
   }
+
+
 }
 /* END : 헤더  */
 
