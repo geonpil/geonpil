@@ -2,20 +2,12 @@ package com.geonpil.service;
 
 import com.geonpil.domain.*;
 import com.geonpil.mapper.BoardMapper;
-import com.geonpil.mapper.CategoryMapper;
 import com.geonpil.mapper.ContestMapper;
-import com.geonpil.mapper.PostLikeMapper;
-import com.geonpil.security.CustomUserDetails;
-import com.geonpil.util.DateUtils;
-import lombok.RequiredArgsConstructor;
+import com.geonpil.util.DdayUtils;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,7 +42,7 @@ public class ContestService {
 
         //dday 설정
         for (ContestPost post : contestPosts) {
-            post.setDDay(DateUtils.calculateDDay(post.getEndDate()));
+            post.setDDay(DdayUtils.calculateDDay(post.getEndDate()));
         }
 
         return contestPosts;
@@ -87,7 +79,7 @@ public class ContestService {
 
     public ContestPost findContestById(Long postId) {
         ContestPost contestPost = contestMapper.findContestById(postId);
-        contestPost.setDDay(DateUtils.calculateDDay(contestPost.getEndDate()));
+        contestPost.setDDay(DdayUtils.calculateDDay(contestPost.getEndDate()));
         return contestPost;
     }
 
@@ -96,7 +88,7 @@ public class ContestService {
         List<ContestPost> contestPosts = contestMapper.findContestsByPage(offset, size, categoryIds, sort, isClosedIncluded);
 
         for (ContestPost post : contestPosts) {
-            post.setDDay(DateUtils.calculateDDay(post.getEndDate()));
+            post.setDDay(DdayUtils.calculateDDay(post.getEndDate()));
         }
 
         return contestPosts;
@@ -114,7 +106,7 @@ public class ContestService {
 
         //dday 설정
         for (ContestPost post : contestPosts) {
-            post.setDDay(DateUtils.calculateDDay(post.getEndDate()));
+            post.setDDay(DdayUtils.calculateDDay(post.getEndDate()));
         }
 
         return contestPosts;

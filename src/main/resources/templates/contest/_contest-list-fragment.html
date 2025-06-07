@@ -19,9 +19,7 @@
                 <div class="contest-title" th:text="${contest.title}">제목</div>
                 <div class="contest-subtitle" th:text="${contest.subtitle}">공모전 요약 설명...</div>
                 <div class="contest-host" th:text="'주최: ' + ${contest.hostName}"></div>
-                <div class="dday"
-                     th:text="${contest.dDay > 0} ? 'D-' + ${contest.dDay}
-                             : (${contest.dDay == 0} ? '오늘 마감' : '마감')"
+                <div class="dday" th:text="${T(com.geonpil.util.DdayUtils).getLabel(contest.dDay)}"
                      th:classappend="${contest.dDay == 0} ? ' today' : (${contest.dDay < 0} ? ' expired' : '')">
                 </div>
                 <div class="contest-meta" th:text="'조회수: ' + ${contest.viewCount}">조회수: 1234</div>
