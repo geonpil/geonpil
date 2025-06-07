@@ -8,11 +8,15 @@
     <title>건필 - 공모전</title>
 </th:block>
 
+<th:block layout:fragment="css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</th:block>
+
 <body>
 <div layout:fragment="content">
-    <div class="board-header" th:text = "${boardName}">게시판 이름</div>
-    <div class="board-wrapper">
-        <div class="board-container">
+    <div class="board-header" th:text="${boardName}">게시판 이름</div>
+    <div class="board-container">
+        <div class="board-wrapper">
             <div class="category-filter">
                 <!-- 전체 버튼 -->
                 <button class="category-btn"
@@ -44,106 +48,103 @@
         </div>
 
 
-
-
         <div class="board-banner">배너자리</div>
 
     </div>
 </div>
-    <th:block layout:fragment="script">
-        <script>
+<th:block layout:fragment="script">
+    <script>
 
-            document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
 
             // ✅ '전체' 버튼에 .active 클래스 부여
             const allBtn = document.querySelector('.category-btn[data-id=""]');
             if (allBtn) allBtn.classList.add("active");
 
-            });
+        });
 
-    const selectedCategories = new Set();
+        const selectedCategories = new Set();
 
-    function toggleCategory(btn) {
-      const id = btn.dataset.id;
+        function toggleCategory(btn) {
+            const id = btn.dataset.id;
 
-      document.querySelector('.category-btn[data-id=""]').classList.remove("active");
+            document.querySelector('.category-btn[data-id=""]').classList.remove("active");
 
-      if (selectedCategories.has(id)) {
-        selectedCategories.delete(id);
-        btn.classList.remove("active");
-      } else {
-        selectedCategories.add(id);
-        btn.classList.add("active");
-      }
+            if (selectedCategories.has(id)) {
+                selectedCategories.delete(id);
+                btn.classList.remove("active");
+            } else {
+                selectedCategories.add(id);
+                btn.classList.add("active");
+            }
 
-      fetchFilteredPosts();
-    }
+            fetchFilteredPosts();
+        }
 
-    function fetchFilteredPosts(page = 1) {
-      const params = new URLSearchParams();
+        function fetchFilteredPosts(page = 1) {
+            const params = new URLSearchParams();
 
-      highlightSelectedButtons()
+            highlightSelectedButtons()
 
-      if (selectedCategories.size > 0) {
-        params.set("categoryIds", Array.from(selectedCategories).join(","));
-      }
+            if (selectedCategories.size > 0) {
+                params.set("categoryIds", Array.from(selectedCategories).join(","));
+            }
 
-      const boardCode = new URLSearchParams(window.location.search).get("boardCode");
-      if (boardCode) {
-        params.set("boardCode", boardCode);
-      }
+            const boardCode = new URLSearchParams(window.location.search).get("boardCode");
+            if (boardCode) {
+                params.set("boardCode", boardCode);
+            }
 
-      params.set("page", page);
+            params.set("page", page);
 
-      fetch("/board/list/fragment?" + params.toString())
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("post-list").innerHTML = html;
-        })
-        .catch(err => console.error("게시글 불러오기 실패", err));
-    }
-
-
-    function selectAllCategories(btn) {
-          // 모든 카테고리 버튼 비활성화
-          document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
-
-          // 전체 버튼만 활성화
-          btn.classList.add("active");
-
-          // 선택된 카테고리 Set 비우기
-          selectedCategories.clear();
-
-          // 전체 게시글 요청
-          fetchFilteredPosts();
+            fetch("/board/list/fragment?" + params.toString())
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById("post-list").innerHTML = html;
+                })
+                .catch(err => console.error("게시글 불러오기 실패", err));
         }
 
 
+        function selectAllCategories(btn) {
+            // 모든 카테고리 버튼 비활성화
+            document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
 
-function highlightSelectedButtons() {
-  const allBtn = document.querySelector('.category-btn[data-id=""]');
+            // 전체 버튼만 활성화
+            btn.classList.add("active");
 
-  document.querySelectorAll(".category-btn").forEach(btn => {
-    const id = btn.dataset.id;
+            // 선택된 카테고리 Set 비우기
+            selectedCategories.clear();
 
-    if (id === "") {
-      // 전체 버튼은 선택된 카테고리가 아무것도 없을 때만 활성화
-      if (selectedCategories.size === 0) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    } else {
-      // 일반 카테고리 버튼
-      if (selectedCategories.has(id)) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    }
-  });
-}
-        </script>
-    </th:block>
+            // 전체 게시글 요청
+            fetchFilteredPosts();
+        }
+
+
+        function highlightSelectedButtons() {
+            const allBtn = document.querySelector('.category-btn[data-id=""]');
+
+            document.querySelectorAll(".category-btn").forEach(btn => {
+                const id = btn.dataset.id;
+
+                if (id === "") {
+                    // 전체 버튼은 선택된 카테고리가 아무것도 없을 때만 활성화
+                    if (selectedCategories.size === 0) {
+                        btn.classList.add("active");
+                    } else {
+                        btn.classList.remove("active");
+                    }
+                } else {
+                    // 일반 카테고리 버튼
+                    if (selectedCategories.has(id)) {
+                        btn.classList.add("active");
+                    } else {
+                        btn.classList.remove("active");
+                    }
+                }
+            });
+        }
+    </script>
+</th:block>
 </body>
 </html>
