@@ -40,8 +40,11 @@
                     </div>
                     <div class="info-row">
                         <span class="info-label">신청기간</span>
-                        <span class="info-value"  th:text="${#temporals.format(post.startDate, 'yyyy-MM-dd')} + ' ~ ' + ${#temporals.format(post.endDate, 'yyyy-MM-dd')}">
-                        <span class="dday" th:text = "${post.dDay}"> </span>
+                        <span class="info-value"     th:text="${post.endDate == null} ?
+                                                              ${#temporals.format(post.startDate, 'yyyy-MM-dd')} + ' ~ 마감 미정' :
+                                                              ${#temporals.format(post.startDate, 'yyyy-MM-dd')} + ' ~ ' + ${#temporals.format(post.endDate, 'yyyy-MM-dd')}">
+                        </span>
+                        <span class="dday" th:text = "${post.dDay} == '-999' ? '마감 미정' : 'D-' + ${post.dDay} " > </span>
                     </span>
                     </div>
                     <div class="info-row">
