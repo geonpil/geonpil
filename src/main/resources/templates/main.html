@@ -41,9 +41,9 @@
                    th:each="post : ${communityPosts}">
                     <span class="category" th:text="|[${post.categoryName}]|">카테고리</span>
                     <span class="title-wrapper">
-            <span class="title" th:text="${post.title}">제목</span>
-            <span class="commentCount" th:text="|[${post.commentCount}]|">조회수</span>
-          </span>
+                        <span class="title" th:text="${post.title}">제목</span>
+                        <span class="commentCount" th:text="|[${post.commentCount}]|">조회수</span>
+                    </span>
                     <span class="nickname" th:text="${post.nickname}">작성자</span>
                 </a>
             </div>
