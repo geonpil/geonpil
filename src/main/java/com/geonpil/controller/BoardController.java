@@ -180,7 +180,7 @@ public class BoardController {
         model.addAttribute("page", pageResult.getPage());
         model.addAttribute("totalPages", pageResult.getTotalPages());
 
-        return "board/post-list :: postListFragment";
+        return "board/_post-list-fragment :: postListFragment";
     }
 
 }
