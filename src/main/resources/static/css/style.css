@@ -78,7 +78,61 @@ a:focus-visible {
   border-radius: 8px;
 }
 
-/* ========== 푸터 ========== */
+
+
+/* START : 헤더  */
+/* 공통 */
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left a {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  gap: 8px;
+}
+
+.header-center, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: row;
+  }
+
+  .header-left {
+    flex: 1;
+  }
+
+  .header-right {
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .header-center {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+    order: 2;
+  }
+}
+/* END : 헤더  */
+
+
+
+/* START : 푸터  */
 footer {
   background-color: var(--primary-color);
   color: white;
@@ -87,6 +141,7 @@ footer {
   font-size: 0.9rem;
   margin-top: 60px;
 }
+/* END : 푸터  */
 
 
 /* 버그 관련 임시 css */
