@@ -36,13 +36,21 @@
 
 
         <div class="sort-filter">
-            <button class="sort-btn" data-sort="recent" onclick="changeSort(this)">최신순</button>
-            <button class="sort-btn" data-sort="deadline" onclick="changeSort(this)">마감 임박순</button>
+            <div class ="sort-buttons">
+                <button class="sort-btn" data-sort="recent" onclick="changeSort(this)">최신순</button>
+                <button class="sort-btn" data-sort="deadline" onclick="changeSort(this)">마감 임박순</button>
+            </div>
+
+
+            <label for ="isClosedIncluded" class="closed-checkbox">
+                <input type="checkbox" id="isClosedIncluded" onclick = "changeShow()">
+                <span>마감된 공모전 포함</span>
+            </label>
         </div>
 
 
 
-        <div th:replace="~{contest/contest-list :: contestListFragment(${contests}, ${currentPage}, ${totalPages}, ${boardCode})}">
+        <div th:replace="~{contest/_contest-list-fragment :: contestListFragment(${contests}, ${currentPage}, ${totalPages}, ${boardCode})}">
         </div>
 
 
@@ -85,6 +93,7 @@
 
         const selectedCategories = new Set();
         let currentSort = "recent";
+        let isClosedIncluded =  document.getElementById("isClosedIncluded").checked;
 
 
         function toggleCategory(btn) {
@@ -137,6 +146,10 @@
 
           params.set("page", page);
           params.set("sort", currentSort);
+          params.set("isClosedIncluded", isClosedIncluded);
+
+
+
 
           fetch("/contest/list/fragment?" + params.toString())
             .then(res => res.text())
@@ -157,6 +170,12 @@
           currentSort = btn.dataset.sort;
           fetchFilteredPosts(); // 정렬 기준 포함해서 재요청
         }
+
+        function changeShow() {
+            isClosedIncluded =  document.getElementById("isClosedIncluded").checked;
+            fetchFilteredPosts()
+        }
+
     </script>
 </th:block>
 </body>

@@ -41,9 +41,10 @@ public class ContestController {
         int pageSize = 8;
         List<Long> categoryIds = new ArrayList<>();
         String sort = "recent";
+        boolean isClosedIncluded = false;
 
 
-        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort);
+        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort, isClosedIncluded);
         
         //카테고리목록 가져오기
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
@@ -101,10 +102,11 @@ public class ContestController {
                                @RequestParam(required = false) List<Long> categoryIds,
                                @RequestParam(value = "page", defaultValue = "1") int page,
                                @RequestParam("sort") String sort,
+                               @RequestParam("isClosedIncluded") boolean isClosedIncluded,
                                Model model) {
         int pageSize = 8;
 
-        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort);
+        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort, isClosedIncluded);
 
         int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds);
 
@@ -114,6 +116,6 @@ public class ContestController {
         model.addAttribute("boardCode",boardCode);
 
 
-        return "contest/contest-list :: contestListFragment";
+        return "contest/_contest-list-fragment :: contestListFragment";
     }
 }

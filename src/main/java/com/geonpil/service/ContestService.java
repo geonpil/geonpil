@@ -91,9 +91,9 @@ public class ContestService {
         return contestPost;
     }
 
-    public List<ContestPost> findContestsByPage(int page, int size, List<Long> categoryIds, String sort) {
+    public List<ContestPost> findContestsByPage(int page, int size, List<Long> categoryIds, String sort,boolean isClosedIncluded) {
         int offset = (page - 1) * size;
-        List<ContestPost> contestPosts = contestMapper.findContestsByPage(offset, size, categoryIds, sort);
+        List<ContestPost> contestPosts = contestMapper.findContestsByPage(offset, size, categoryIds, sort, isClosedIncluded);
 
         for (ContestPost post : contestPosts) {
             post.setDDay(DateUtils.calculateDDay(post.getEndDate()));

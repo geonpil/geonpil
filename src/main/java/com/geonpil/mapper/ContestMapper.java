@@ -21,7 +21,8 @@ public interface ContestMapper {
     List<ContestPost> findContestsByPage(@Param("offset") int offset,
                                          @Param("size") int size,
                                          @Param("categoryIds") List<Long> categoryIds,
-                                         @Param("sort") String sort)
+                                         @Param("sort") String sort,
+                                        @Param("isClosedIncluded") boolean isClosedIncluded)
             ;
 
     void updateContestPost(ContestPost contestPost);

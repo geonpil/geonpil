@@ -154,6 +154,9 @@
         LEFT JOIN category cat ON cc.category_id = cat.category_id
         WHERE b.board_code = 3
         AND b.is_deleted = 0
+        <if test = "!isClosedIncluded">
+        AND (end_date >= CURDATE() OR end_date is null)
+        </if>
         GROUP BY b.post_id
         <if test="categoryIds != null and categoryIds.size > 0">
             HAVING
