@@ -420,16 +420,20 @@
 /* 공모전 최신순, 마감순 필터 끝 */
 
 /* 디데이 디자인 시작*/
-.dday {
-    font-weight: bold;
+.dday-unknown {
+    color: #999;
 }
-
-.dday.today {
-    color: #e67300; /* 오렌지 */
+.dday-normal {
+    color: #2563eb; /* 파란색 */
 }
-
-.dday.expired {
-    color: #cc0000; /* 빨강 */
+.dday-warning {
+    color: #f59e0b; /* 노랑 */
+}
+.dday-today {
+    color: #ea580c; /* 주황 */
+}
+.dday-passed {
+    color: #dc2626; /* 빨강 */
 }
 
 /* 디데이 디자인 끝*/
