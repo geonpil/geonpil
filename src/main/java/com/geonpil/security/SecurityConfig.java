@@ -51,7 +51,7 @@ public class SecurityConfig {
                                 "/", "/signup", "/login","/find-password","/withdrawal-complete"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
-                                "/api/search/**", "/books/**","/reviews/**"
+                                "/api/search/**", "/books/**","/reviews/**","/bug-report/**"
                         ).permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**","/fonts/**"
                                         ,"/favicon.ico").permitAll()
