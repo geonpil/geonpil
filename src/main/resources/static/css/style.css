@@ -88,4 +88,27 @@ footer {
   margin-top: 60px;
 }
 
+
+/* 버그 관련 임시 css */
+.bug-report-btn-wrapper {
+  position: fixed;
+  bottom: 36px;
+  right: 36px;
+  z-index: 9999;
+}
+
+.bug-report-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: background-color 0.2s;
+}
+
+.bug-report-btn:hover {
+  background-color: #d32f2f;
+}
 /* 중복 제거로 header, nav 관련 스타일은 layout.css에서 관리 */
