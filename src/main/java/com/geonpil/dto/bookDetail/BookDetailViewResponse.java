@@ -1,10 +1,6 @@
 package com.geonpil.dto.bookDetail;
 
-import com.geonpil.dto.bookSearch.BookEntity;
-import com.geonpil.dto.bookSearch.Meta;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class BookDetailViewResponse {

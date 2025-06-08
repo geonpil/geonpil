@@ -1,6 +1,6 @@
 package com.geonpil.mapper.book;
 
-import com.geonpil.dto.bookSearch.BookEntity;
+import com.geonpil.dto.bookDetail.BookEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

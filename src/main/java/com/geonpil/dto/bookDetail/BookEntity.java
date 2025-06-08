@@ -1,9 +1,8 @@
-package com.geonpil.dto.bookSearch;
+package com.geonpil.dto.bookDetail;
 
 import lombok.Data;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Data
 public class BookEntity {

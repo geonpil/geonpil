@@ -2,9 +2,7 @@ package com.geonpil.util.converter;
 
 import com.geonpil.domain.Book;
 import com.geonpil.dto.bookDetail.BookDetailViewResponse;
-import com.geonpil.dto.bookSearch.BookEntity;
-import com.geonpil.dto.bookSearch.BookSearchResponse;
-import com.geonpil.dto.bookSearch.BookSearchViewResponse;
+import com.geonpil.dto.bookDetail.BookEntity;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

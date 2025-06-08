@@ -1,9 +1,7 @@
 package com.geonpil.controller.book;
 
-import com.geonpil.domain.Book;
 import com.geonpil.domain.Review;
 import com.geonpil.dto.bookDetail.BookDetailViewResponse;
-import com.geonpil.dto.bookSearch.BookEntity;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
