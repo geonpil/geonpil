@@ -51,6 +51,7 @@ public class BookConverterUtil {
         book.setCategory(entity.getCategory());
         book.setStatus(entity.getStatus());
         book.setCreatedAt(entity.getCreatedAt());
+        book.setRating(entity.getRating());
 
         return book;
     }
@@ -73,6 +74,7 @@ public class BookConverterUtil {
         dto.setStatus(book.getStatus());
         dto.setUrl(book.getUrl());
         dto.setProcessedAutors(book.getProcessedAutors());
+        dto.setRating(book.getRating());
         return dto;
     }
 

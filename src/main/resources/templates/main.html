@@ -67,6 +67,8 @@
                                 <div class="book-title clamp-2"><strong  th:text="${book.title}">제목</strong></div>
                                 <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
                             </div>
+
+                            <p>⭐<span th:text = "${book.rating}"></span></p>
                         </a>
                     </div>
                 </div>

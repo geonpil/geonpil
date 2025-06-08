@@ -21,6 +21,7 @@
         <result property="category" column="category"/>
         <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>
+        <result property="rating" column="rating"/>
     </resultMap>
 
     <select id="findByIsbn10" parameterType="string" resultMap="BookResultMap">
@@ -51,13 +52,20 @@
 
     <select id="findLastestReviewedBook" resultMap="BookResultMap">
         SELECT b.*
+             , rating
         FROM books b
                  JOIN (
-            SELECT DISTINCT r.book_id, MAX(r.created_at) as latest_review_date
+            SELECT DISTINCT r.book_id, MAX(r.created_at) AS latest_review_date
             FROM reviews r
             WHERE r.is_deleted = false
             GROUP BY r.book_id
         ) latest_reviews ON b.book_id = latest_reviews.book_id
+                 LEFT JOIN (
+            SELECT DISTINCT r.book_id, ROUND(AVG(r.rating), 2) AS rating
+            FROM reviews r
+            WHERE r.is_deleted = false
+            GROUP BY r.book_id
+        ) rating_reviews ON b.book_id = rating_reviews.book_id
         ORDER BY latest_reviews.latest_review_date DESC
         LIMIT 16;
     </select>

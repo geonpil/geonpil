@@ -18,4 +18,5 @@ public class BookDetailViewResponse {
     private String status;
     private String url;
     private String processedAutors;
+    private double rating;
 }

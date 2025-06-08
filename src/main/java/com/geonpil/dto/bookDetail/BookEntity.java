@@ -22,4 +22,5 @@ public class BookEntity {
     private String category;
     private String status;
     private OffsetDateTime createdAt;
+    private double rating;
 }

@@ -27,6 +27,7 @@ public class Book {
     private String url;
     private OffsetDateTime createdAt;
     private String processedAutors;// 작가 가공 ex 홍길동 외 2명
+    private double rating;
 
     public void setAuthors(List<String> authors) {
         this.authors = authors;
