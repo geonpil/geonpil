@@ -145,6 +145,28 @@
     width: 150px;
     height: 350px;
 }
+
+
+/* 태블릿 (예: 769px ~ 1024px) */
+@media (max-width: 1024px) {
+    .book-list {
+        grid-template-columns: repeat(4, 1fr); /* ✅ 태블릿에서 4열 */
+    }
+}
+
+/* 작은 태블릿 ~ 큰 모바일 (예: 600px ~ 768px) */
+@media (max-width: 768px) {
+    .book-list {
+        grid-template-columns: repeat(3, 1fr); /* ✅ 작은 태블릿/가로폰에서 3열 */
+    }
+}
+
+/* 모바일 (예: ~599px) */
+@media (max-width: 599px) {
+    .book-list {
+        grid-template-columns: repeat(2, 1fr); /* ✅ 모바일 2열 */
+    }
+}
 /* 책 검색 끝 */
 
 
