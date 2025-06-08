@@ -38,7 +38,7 @@
 
 
                 <nav id = "pagination-area" class="pagination-area">
-                    <div th:replace = "~{book/search/_pagination-fragment :: paginationFragment}"></div>
+                    <div th:replace = "~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}"></div>
                 </nav>
 
             </div>
@@ -66,27 +66,6 @@
           fetchFilteredPosts(page, query);
         });
 
-
-        function fetchFilteredPosts(page, query) {
-            const newUrl = `/api/search?query=${encodeURIComponent(query)}&page=${page}`;
-
-          // ✅ 주소창만 업데이트 (리로드 안 됨)
-          history.pushState({}, '', newUrl);
-
-            fetch(`/api/search/fragment/result?query=${encodeURIComponent(query)}&page=${page}`)
-                .then(res => res.text())
-                .then(html => {
-                    document.querySelector("#book-list-area").innerHTML = html;
-                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-
-            fetch(`/api/search/fragment/pagination?query=${encodeURIComponent(query)}&page=${page}`)
-                .then(res => res.text())
-                .then(html => {
-                    document.querySelector("#pagination-area").innerHTML = html;
-                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-                 }
     </script>
 </th:block>
 

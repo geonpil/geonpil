@@ -1,19 +1,10 @@
 <!-- 게시글 목록 + 페이지네이션 조각 -->
-<div id="post-list" class="board-list" th:fragment="postListFragment(posts, page, totalPages, boardCode)">
-    <div class="board-list-header">
-        <span>카테고리</span>
-        <span>제목</span>
-        <span>작성자</span>
-        <span>작성일</span>
-        <span>조회</span>
-        <span>추천</span>
-    </div>
-
+<div id="post" class = "post" th:fragment="postListFragment(posts, page, totalPages, boardCode)">
     <div th:if="${#lists.isEmpty(posts)}" class="empty-message">
         등록된 글이 없어요.
     </div>
 
-    <div class="board-row" th:each="post : ${posts}">
+    <div class="post-row" th:each="post : ${posts}">
         <span class="category" th:text="${post.categoryName}">일반</span>
         <span class="title">
       <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
@@ -34,7 +25,7 @@
         </div>
     </div>
 
-    <div class="board-footer">
+  <!--  <div class="board-footer">
         <div class="pagination">
             <button type="button" th:if="${page > 1}" th:text="'◀ 이전'"
                     th:onclick="'fetchFilteredPosts(' + (${page} - 1) + ')'"></button>
@@ -49,5 +40,5 @@
             <button type="button" th:if="${page < totalPages}" th:text="'다음 ▶'"
                     th:onclick="'fetchFilteredPosts(' + (${page} + 1) + ')'"></button>
         </div>
-    </div>
+    </div>-->
 </div>

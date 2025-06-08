@@ -13,6 +13,7 @@
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/board/detail.css">
 </th:block>
 
 <body>
@@ -21,7 +22,7 @@
     <!-- 📌 게시글 내용 -->
 
     <div class="post-container">
-        <div class="post-wrapper">
+        <div class="post-wrapper card">
             <span class="post-category" th:text="${post.categoryName}">[리뷰]</span>
             <h2 class="post-title" th:text="${post.title}">제목</h2>
 
@@ -66,7 +67,7 @@
         </div>
 
         <!-- 댓글 영역 -->
-        <div class="comment-wrapper">
+        <div class="comment-wrapper card">
             <h3 class="comment-title">댓글</h3>
 
             <!-- 댓글 목록 -->

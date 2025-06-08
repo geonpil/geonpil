@@ -10,13 +10,14 @@
 
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/board/list.css">
 </th:block>
 
 <body>
 <div layout:fragment="content">
     <div class="board-header" th:text="${boardName}">게시판 이름</div>
-    <div class="board-container" style="gap :30px">
-        <div class="board-wrapper">
+    <div class="board-section" style="gap :30px">
+        <div class="board-container">
             <div class="category-filter">
                 <!-- 전체 버튼 -->
                 <button class="category-btn"
@@ -35,15 +36,29 @@
                 </button>
             </div>
 
-            <div id="post-list" class="board-list"
-                 th:replace="~{board/_post-list-fragment :: postListFragment(${posts}, ${page}, ${totalPages}, ${boardCode})}">
+            <div class="posts-wrapper card">
+                <div class="posts-header">
+                    <span>카테고리</span>
+                    <span>제목</span>
+                    <span>작성자</span>
+                    <span>작성일</span>
+                    <span>조회</span>
+                    <span>추천</span>
+                </div>
+                <div id="post-list" class="post-list"
+                     th:include="~{board/_post-list-fragment :: postListFragment(${posts}, ${page}, ${totalPages}, ${boardCode})}">
+                </div>
             </div>
 
+            <div id="pagination-area">
+                <div th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}">
+            </div>
+
+            </div>
 
             <div class="write-btn">
                 <a th:href="@{/board/write(boardCode=${boardCode})}" class="basic-btn">✍ 글쓰기</a>
             </div>
-
 
         </div>
 
@@ -53,6 +68,8 @@
     </div>
 </div>
 <th:block layout:fragment="script">
+    <script src="/js/board/board.js"></script>
+    <script src="/js/commons/pagination.js"></script>
     <script>
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -80,7 +97,7 @@
 
             fetchFilteredPosts();
         }
-
+/*
         function fetchFilteredPosts(page = 1) {
             const params = new URLSearchParams();
 
@@ -103,7 +120,7 @@
                     document.getElementById("post-list").innerHTML = html;
                 })
                 .catch(err => console.error("게시글 불러오기 실패", err));
-        }
+        }*/
 
 
         function selectAllCategories(btn) {

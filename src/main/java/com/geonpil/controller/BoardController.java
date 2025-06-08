@@ -4,12 +4,14 @@ import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Category;
 import com.geonpil.domain.Comment;
 import com.geonpil.domain.PageResult;
+import com.geonpil.dto.commons.PageInfo;
 import com.geonpil.resolver.BoardNameResolver;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.security.CustomOAuth2User;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
+import com.geonpil.util.PaginationUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,7 @@ import com.geonpil.security.CustomUserDetails;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.geonpil.util.PaginationUtil.buildPageInfo;
 
 
 @Controller
@@ -47,9 +50,15 @@ public class BoardController {
                        @RequestParam(value = "page", defaultValue = "1") int page,
                                                         Model model) {
 
-        int size = 10;
 
-        PageResult<BoardDTO> pageResult= boardService.findByPage(boardCode,categoryIds, page,size);
+        PageResult<BoardDTO> pageResult= boardService.findByPage(boardCode,categoryIds, page, 10);
+
+
+        int pageGroupSize = 5; // 한 번에 보여줄 페이지 수
+        int currentPage = page; // 요청받은 페이지
+        int totalPages = pageResult.getTotalPages();   // 전체 페이지 수
+
+        PageInfo pageInfo = buildPageInfo(currentPage, totalPages, pageGroupSize,"");
 
 
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
@@ -61,6 +70,10 @@ public class BoardController {
         model.addAttribute("page", pageResult.getPage());
         model.addAttribute("totalPages", pageResult.getTotalPages());
         model.addAttribute("boardName", BoardNameResolver.resolve(boardCode));
+
+        //페이지네이션 관련
+        model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("action", "board"); // 또는 "book"
         return "board/list"; // templates/board/list.html
     }
 
@@ -175,12 +188,54 @@ public class BoardController {
 
         PageResult<BoardDTO> pageResult = boardService.findByPage(boardCode, categoryIds, page, size);
 
+        int pageGroupSize = 5; // 한 번에 보여줄 페이지 수
+        int currentPage = page; // 요청받은 페이지
+        int totalPages = pageResult.getTotalPages();   // 전체 페이지 수
+
+        PageInfo pageInfo = buildPageInfo(currentPage, totalPages, pageGroupSize,"");
+
+
         model.addAttribute("posts", pageResult.getPosts());
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("page", pageResult.getPage());
         model.addAttribute("totalPages", pageResult.getTotalPages());
 
+        model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("action", "board"); // 또는 "book"
+
+
         return "board/_post-list-fragment :: postListFragment";
     }
+
+
+    // 게시글 페이지네이션 fragment 반환
+    @GetMapping("/list/fragment/pagination")
+    public String getPaginationFragment(@RequestParam("boardCode") int boardCode,
+                               @RequestParam(required = false) List<Long> categoryIds,
+                               @RequestParam(value = "page", defaultValue = "1") int page,
+                               Model model) {
+        int size = 10;
+
+        PageResult<BoardDTO> pageResult = boardService.findByPage(boardCode, categoryIds, page, size);
+
+        int pageGroupSize = 5; // 한 번에 보여줄 페이지 수
+        int currentPage = page; // 요청받은 페이지
+        int totalPages = pageResult.getTotalPages();   // 전체 페이지 수
+
+        PageInfo pageInfo = buildPageInfo(currentPage, totalPages, pageGroupSize,"");
+
+
+        model.addAttribute("posts", pageResult.getPosts());
+        model.addAttribute("boardCode", boardCode);
+        model.addAttribute("page", pageResult.getPage());
+        model.addAttribute("totalPages", pageResult.getTotalPages());
+
+        model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("action", "board"); // 또는 "book"
+
+
+        return "commons/_pagination-fragment :: paginationFragment";
+    }
+
 
 }

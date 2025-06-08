@@ -1,0 +1,23 @@
+<div th:fragment = "paginationFragment(pageInfo, action)" class="pagination" th:if="${pageInfo.totalPages > 1}">
+    <button type="button"
+            th:if="${pageInfo.hasPrevGroup}"
+            class="page-button"
+            th:attr="data-page=${pageInfo.startPage - 1}, data-action=${action}, data-query=${pageInfo.query}">
+        ◀
+    </button>
+
+    <button type="button"
+            th:each="i : ${#numbers.sequence(pageInfo.startPage, pageInfo.endPage)}"
+            th:text="${i}"
+            th:classappend="${i == pageInfo.currentPage} ? 'active'"
+            class="page-button"
+            th:attr="data-page=${i}, data-action=${action}, data-query=${pageInfo.query}">
+    </button>
+
+    <button type="button"
+            th:if="${pageInfo.hasNextGroup}"
+            class="page-button"
+            th:attr="data-page=${pageInfo.endPage + 1}, data-action=${action}, data-query=${pageInfo.query}">
+        ▶
+    </button>
+</div>

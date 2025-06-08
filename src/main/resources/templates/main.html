@@ -11,6 +11,7 @@
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="/css/main/latestBooks.css"/>
+    <link rel="stylesheet" href="/css/main/main.css"/>
     <!-- Swiper JS -->
 </th:block>
 
@@ -51,8 +52,8 @@
     </section>
 
     <!--책추천-->
-    <section class="latest-books-section">
-        <div class ="latest-books-container card" style ="margin-bottom: 0px;">
+    <section class="latest-books-section card">
+        <div class ="latest-books-container" style ="margin-bottom: 0px;">
             <header class ="latest-books-header card-header">최근 리뷰가 달린 책</header>
 
             <div class="swiper-container book-carousel">
@@ -111,9 +112,9 @@
                    th:each="post : ${challengePosts}">
                     <span class="category" th:text="|[${post.categoryName}]|">카테고리</span>
                     <span class="title-wrapper">
-            <span class="title" th:text="${post.title}">제목</span>
-            <span class="commentCount" th:text="|[${post.commentCount}]|">조회수</span>
-          </span>
+                    <span class="title" th:text="${post.title}">제목</span>
+                    <span class="commentCount" th:text="|[${post.commentCount}]|">조회수</span>
+                  </span>
                     <span class="nickname" th:text="${post.nickname}">작성자</span>
                 </a>
             </div>
