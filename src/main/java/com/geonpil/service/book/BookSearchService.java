@@ -11,6 +11,7 @@ import com.geonpil.dto.bookSearch.BookSearchResponse;
 import com.geonpil.dto.bookSearch.BookSearchViewResponse;
 import com.geonpil.util.converter.BookConverterUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookSearchService {
+
+    private final ObjectMapper mapper;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
@@ -53,7 +56,6 @@ public class BookSearchService {
 
 
         try{
-            ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Optional: 날짜 포맷 개선
 
