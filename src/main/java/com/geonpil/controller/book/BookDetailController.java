@@ -2,6 +2,8 @@ package com.geonpil.controller.book;
 
 import com.geonpil.domain.Book;
 import com.geonpil.domain.Review;
+import com.geonpil.dto.bookDetail.BookDetailViewResponse;
+import com.geonpil.dto.bookSearch.BookEntity;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
@@ -39,7 +41,7 @@ public class BookDetailController {
                                 , @RequestParam(defaultValue = "1") int page
                                 ,Model model) {
         // 1. 책 상세 정보 조회
-        Book book = bookService.getBookById(bookId);
+        BookDetailViewResponse book = bookService.getBookById(bookId);
         if (book == null) {
             return "error/404"; // 책이 없는 경우 예외 처리
         }

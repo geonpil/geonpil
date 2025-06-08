@@ -1,11 +1,16 @@
 package com.geonpil.util.converter;
 
 import com.geonpil.domain.Book;
+import com.geonpil.dto.bookDetail.BookDetailViewResponse;
 import com.geonpil.dto.bookSearch.BookEntity;
+import com.geonpil.dto.bookSearch.BookSearchResponse;
+import com.geonpil.dto.bookSearch.BookSearchViewResponse;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookConverterUtil {
 
@@ -25,8 +30,6 @@ public class BookConverterUtil {
         entity.setCategory(dto.getCategory());
         entity.setStatus("ACTIVE"); // 기본 상태
         entity.setCreatedAt(OffsetDateTime.now());
-        entity.setProcessedAutors(getDisplayAuthor(dto.getAuthors()));
-
 
         return entity;
     }
@@ -39,12 +42,8 @@ public class BookConverterUtil {
         book.setBookId(entity.getBookId());
         book.setIsbn(entity.getIsbn());
         book.setTitle(entity.getTitle());
-
-        // authors: 문자열 → List<String>
-        List<String> authors = entity.getAuthors() != null ?
-                Arrays.asList(entity.getAuthors().split(",\\s*")) : null;
-        book.setAuthors(authors);
-
+        book.setAuthors(parseCommaSeparated(entity.getAuthors()));
+        book.setTranslators(parseCommaSeparated(entity.getTranslators()));
         book.setPublisher(entity.getPublisher());
         book.setThumbnail(entity.getThumbnail());
         book.setContents(entity.getContents());
@@ -59,9 +58,41 @@ public class BookConverterUtil {
     }
 
 
-    public static String getDisplayAuthor(List<String> authors) {
-        if (authors == null || authors.isEmpty()) return "작자 미상";
-        if (authors.size() == 1) return authors.get(0);
-        return authors.get(0) + " 외 " + (authors.size() - 1) + "명";
+
+    public static BookDetailViewResponse toDetailView(Book book) {
+        BookDetailViewResponse dto = new BookDetailViewResponse();
+        dto.setBookId(book.getBookId());
+        dto.setTitle(book.getTitle());
+        dto.setAuthors(book.getAuthorsString());
+        dto.setTranslators(book.getTranslatorsString());
+        dto.setPublisher(book.getPublisher());
+        dto.setContents(book.getContents());
+        dto.setThumbnail(book.getThumbnail());
+        dto.setIsbn(book.getIsbn());
+        dto.setPrice(book.getPrice());
+        dto.setSalePrice(book.getSalePrice());
+        dto.setCategory(book.getCategory());
+        dto.setStatus(book.getStatus());
+        dto.setUrl(book.getUrl());
+        dto.setProcessedAutors(book.getProcessedAutors());
+        return dto;
     }
+
+
+/*    public static BookSearchViewResponse toSearchDetailView(BookSearchResponse bookSearchResponse) {
+        BookSearchViewResponse dto = new BookSearchViewResponse();
+        dto.setMeta(bookSearchResponse.getMeta());
+        dto.setBooks(bookSearchResponse.getDocuments());
+        return dto;
+    }*/
+
+
+    public static List<String> parseCommaSeparated(String str) {
+        if (str == null || str.isBlank()) return new ArrayList<>();
+        return Arrays.stream(str.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+    }
+
 }

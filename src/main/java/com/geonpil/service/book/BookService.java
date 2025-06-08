@@ -1,6 +1,7 @@
 package com.geonpil.service.book;
 
 import com.geonpil.domain.Book;
+import com.geonpil.dto.bookDetail.BookDetailViewResponse;
 import com.geonpil.dto.bookSearch.BookEntity;
 import com.geonpil.external.ExternalBookApiClient;
 import com.geonpil.mapper.book.BookMapper;
@@ -8,8 +9,7 @@ import com.geonpil.util.IsbnUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.geonpil.util.converter.BookConverterUtil.toDomain;
-import static com.geonpil.util.converter.BookConverterUtil.toEntity;
+import static com.geonpil.util.converter.BookConverterUtil.*;
 
 @Service
 @RequiredArgsConstructor
@@ -18,25 +18,25 @@ public class BookService {
     private final ExternalBookApiClient externalBookApiClient;
 
 
-    public Book getBookById(Long bookId) {
-        return toDomain(bookMapper.findById(bookId));
+    public BookDetailViewResponse getBookById(Long bookId) {
+        return toDetailView(toDomain(bookMapper.findById(bookId)));
     }
 
     public Book getOrFetchBookByIsbn(String rawIsbn) {
         String filteredIsbn = extractIsbn13IfExists(rawIsbn);
 
-        BookEntity book;
+        Book book;
 
         // isbn으로 찾고 없으면 books에서 바로 return
         if (filteredIsbn.length() == 13) {
-            book = bookMapper.findByIsbn13(filteredIsbn) ;
+            book = toDomain(bookMapper.findByIsbn13(filteredIsbn));
         } else if (filteredIsbn.length() == 10) {
-            book = bookMapper.findByIsbn10(filteredIsbn) ;
+            book = toDomain(bookMapper.findByIsbn10(filteredIsbn));
         } else {
             throw new IllegalArgumentException("ISBN 길이가 유효하지 않습니다: " + filteredIsbn);
         }
 
-        if(book != null) return toDomain(book);
+        if(book != null) return book;
 
 
         //없으면 isbn으로 api 요청보내서 찾아온다음 books에 insert
@@ -52,7 +52,7 @@ public class BookService {
         System.out.println("Generated ID: " + fetched.getBookId());
 
 
-        return toDomain(fetchedBookEntity);
+        return fetched;
     }
 
     private String extractIsbn13IfExists(String rawIsbn) {

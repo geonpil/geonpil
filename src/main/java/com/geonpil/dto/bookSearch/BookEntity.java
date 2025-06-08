@@ -3,6 +3,7 @@ package com.geonpil.dto.bookSearch;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 public class BookEntity {
@@ -22,5 +23,4 @@ public class BookEntity {
     private String category;
     private String status;
     private OffsetDateTime createdAt;
-    private String processedAutors;// 작가 가공 ex 홍길동 외 2명
 }

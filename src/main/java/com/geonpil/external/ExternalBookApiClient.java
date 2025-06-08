@@ -29,8 +29,6 @@ public class ExternalBookApiClient {
 
     public Book fetchBookByIsbn(String filteredIsbn){
 
-
-
         String url = UriComponentsBuilder
                 .fromHttpUrl("https://dapi.kakao.com/v3/search/book")
                 .queryParam("query", filteredIsbn)

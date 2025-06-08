@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.geonpil.domain.Book;
+import com.geonpil.dto.bookDetail.BookDetailViewResponse;
 import com.geonpil.dto.bookSearch.BookEntity;
 import com.geonpil.dto.bookSearch.BookSearchResponse;
 import com.geonpil.dto.bookSearch.BookSearchViewResponse;
@@ -69,11 +70,12 @@ public class BookSearchService {
             BookSearchResponse result = mapper.readValue(body, BookSearchResponse.class);
 
 
-            List<BookEntity> processedBooks = new ArrayList<>();
+            List<BookDetailViewResponse> processedBooks = new ArrayList<>();
 
             for(Book book :  result.getDocuments()){
-                BookEntity bookEntity = BookConverterUtil.toEntity(book);
-                processedBooks.add(bookEntity);
+                BookDetailViewResponse bookView = BookConverterUtil.toDetailView(book) ;
+
+                processedBooks.add(bookView);
             }
 
             BookSearchViewResponse bookSearchViewResponse = new BookSearchViewResponse();
