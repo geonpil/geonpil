@@ -33,9 +33,31 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.search-content {
+/*.search-content {
+    height: 1150px;         !* ✅ 원하는 고정 높이 지정 *!
+    overflow-y: auto;
+}*/
 
+.clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
 }
+
+.clamp-1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
 
 .book-list-area {
     padding : 5px 25px;
@@ -96,17 +118,32 @@
 }
 
 
-.book-list li {
+
+.book-list{
+    display: grid;
+    grid-template-columns : repeat(5, 1fr);
+}
+
+.book-list > div {
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     border-radius: 8px;
     padding: 0.5rem;
 }
 
-.book-list li:hover {
+.book-list > div:hover {
     background-color: #f0f4ff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transform: translateY(-3px);
     cursor: pointer;
+}
+
+
+.book-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 150px;
+    height: 350px;
 }
 /* 책 검색 끝 */
 

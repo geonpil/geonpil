@@ -3,23 +3,21 @@
     <div th:text="'전체 결과 : ' + ${pageableCount} + '건'">메타정보</div>
 
     <!-- ✅ 책 리스트 -->
-    <ul class="book-list">
-        <li th:each="book : ${books}">
+    <div class="book-list">
+        <div th:each="book : ${books}">
             <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn}, query = ${param.query}, page = ${param.page})}" style="text-decoration: none; color: inherit;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
+                <div class="book-card">
                     <!-- 썸네일 -->
-                    <img th:src="${book.thumbnail}" alt="책 표지" width="100" height="150" style="object-fit: cover;"/>
+                    <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
 
                     <!-- 책 정보 -->
                     <div>
-                        <strong th:text="${book.title}">제목</strong><br/>
-                        <span th:text="${book.publisher}">출판사</span><br/>
-                        <span th:text="${book.authors}">저자</span><br/>
-                        <span th:text="${book.contents}">콘텐츠</span><br/>
-                        <span th:text="${book.isbn}">test</span>
+                        <div class="clamp-2"><strong  th:text="${book.title}">제목</strong></div>
+                        <div class="clamp-1" th:text="${book.publisher}">출판사</div>
+                        <div class="clamp-2" th:text="${book.authors}">저자</div>
                     </div>
                 </div>
             </a>
-        </li>
-    </ul>
+        </div>
+    </div>
 </div>
