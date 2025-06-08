@@ -3,19 +3,21 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
-<head>
-    <title>건필 메인</title>
-</head>
+<th:block layout:fragment="meta">
+    <title>건필</title>
+</th:block>
+
+
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="/css/main/latestBooks.css"/>
     <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 </th:block>
 
 <body>
 <div layout:fragment="content">
     <div th:replace = "~{fragments/search-bar :: searchBar(${query})}"></div>
-    <section class=banner-section>
+    <section class="banner-section">
         <div class="banner-container">
             <div class="main-banner">
                 <a href="https://www.daesan.or.kr/daesan-award/2025/creative-fund.html" target='_blank'><img
@@ -46,6 +48,33 @@
             <div class="swiper-pagination"></div>
         </div>
 
+    </section>
+
+    <!--책추천-->
+    <section class="latest-books-section">
+        <div class ="latest-books-container card">
+            <header class ="latest-books-header card-header">최근 리뷰가 달린 책</header>
+
+            <div class="swiper-container book-carousel">
+                <div class ="latest-books-wrapper swiper-wrapper" th:fragment="lastestBooksFragment()">
+                    <div class="latest-book-card swiper-slide" th:each="book : ${lastestReviewedBooks}">
+                            <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
+                            <!-- 썸네일 -->
+                            <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
+
+                            <!-- 책 정보 -->
+                            <div>
+                                <div class="book-title clamp-2"><strong  th:text="${book.title}">제목</strong></div>
+                                <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
     </section>
 
     <div class="main-section">
@@ -126,8 +155,9 @@
     </div>
 </div>
 <th:block layout:fragment="script">
-    <script src = "/js/bookSearch.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src = "/js/swiper/swiper.js"></script>
+    <script src = "/js/bookSearch.js"></script>
 </th:block>
 </body>
 </html>

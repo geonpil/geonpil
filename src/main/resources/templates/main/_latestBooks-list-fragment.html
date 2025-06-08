@@ -1,0 +1,11 @@
+<div th:fragment="lastestBooksFragment()" class="latest-book-card swiper-slide" th:each="book : ${lastestReviewedBooks}">
+        <!-- 썸네일 -->
+        <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
+
+        <!-- 책 정보 -->
+        <div>
+            <div class="book-title clamp-2"><strong  th:text="${book.title}">제목</strong></div>
+            <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
+        </div>
+</div>
+

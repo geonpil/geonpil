@@ -1,0 +1,59 @@
+.latest-books-header {
+
+}
+
+
+.latest-books-section{
+    overflow: hidden;
+}
+
+.latest-books-container {
+    box-sizing: border-box;
+}
+
+.latest-books-wrapper {
+    display: flex;
+    gap : 5px;
+
+}
+
+
+.book-carousel {
+    width: 100%;
+    padding: 10px 0;
+    position: relative; /* 중요! 화살표 위치 기준 */
+}
+
+.book-carousel .swiper-slide {
+    flex-shrink: 0;
+}
+
+.latest-book-card {
+    width: 150px;
+    text-align: center;
+}
+
+
+.book-carousel .swiper-button-prev,
+.book-carousel .swiper-button-next {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.book-carousel .swiper-button-prev {
+    left: 0;
+}
+
+.book-carousel .swiper-button-next {
+    right: 0;
+}

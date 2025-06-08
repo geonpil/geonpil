@@ -49,4 +49,17 @@
         WHERE book_id = #{bookId}
     </select>
 
+    <select id="findLastestReviewedBook" resultMap="BookResultMap">
+        SELECT b.*
+        FROM books b
+                 JOIN (
+            SELECT DISTINCT r.book_id, MAX(r.created_at) as latest_review_date
+            FROM reviews r
+            WHERE r.is_deleted = false
+            GROUP BY r.book_id
+        ) latest_reviews ON b.book_id = latest_reviews.book_id
+        ORDER BY latest_reviews.latest_review_date DESC
+        LIMIT 16;
+    </select>
+
 </mapper>

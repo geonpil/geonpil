@@ -35,7 +35,7 @@ public class BookDetailController {
     @GetMapping("/{bookId}")
     public String getBookDetail(@PathVariable Long bookId
                                 ,@AuthenticationPrincipal AppUserInfo user
-                                , @RequestParam String query
+                                , @RequestParam(required = false) String query
                                 , @RequestParam(defaultValue = "1") int page
                                 ,Model model) {
         // 1. 책 상세 정보 조회
@@ -78,8 +78,12 @@ public class BookDetailController {
                                  ,@RequestParam(required = false) String query
                                  , @RequestParam(required = false, defaultValue = "1") int page ) {
         BookDetailViewResponse book = bookService.getOrFetchBookByIsbn(isbn);
-        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
 
+        if(query == null) {
+            return "redirect:/books/" + book.getBookId();
+        }
+
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
 
         return "redirect:/books/" + book.getBookId() + "?query=" + encodedQuery + "&page=" + page;
     }

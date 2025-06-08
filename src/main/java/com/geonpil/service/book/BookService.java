@@ -9,6 +9,9 @@ import com.geonpil.util.IsbnUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.geonpil.util.converter.BookConverterUtil.*;
 
 @Service
@@ -60,6 +63,21 @@ public class BookService {
         return bookDetailViewResponse;
     }
 
+
+    public List<BookDetailViewResponse> getLatestReviewedBookById() {
+        List<BookEntity> lastestBookEntities = bookMapper.findLastestReviewedBook();
+
+
+        List<BookDetailViewResponse> lastestBooks = new ArrayList<BookDetailViewResponse>();
+        for(BookEntity bookEntity : lastestBookEntities) {
+            BookDetailViewResponse book = toDetailView(toDomain(bookEntity));
+            lastestBooks.add(book);
+        }
+
+
+        return lastestBooks;
+    }
+
     private String extractIsbn13IfExists(String rawIsbn) {
         if (rawIsbn == null || rawIsbn.trim().isEmpty()) return null;
 
@@ -72,5 +90,6 @@ public class BookService {
 
         return parts[0].trim(); // 없으면 첫 번째 (보통 10자리)
     }
+
 
 }

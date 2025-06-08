@@ -47,7 +47,6 @@ a:focus-visible {
 .banner-container {
 
   margin: 10px auto 15px;
-  padding: 0 20px;
   max-width: var(--container-width);
 }
 
@@ -76,7 +75,7 @@ a:focus-visible {
 
 /* PC에서는 원래 그리드 유지 */
 @media (min-width: 769px) {
-  .swiper-wrapper {
+  .mobile-sub-banner .swiper-wrapper {
     display: none;
   }
 

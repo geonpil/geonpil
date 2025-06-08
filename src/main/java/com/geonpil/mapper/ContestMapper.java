@@ -40,6 +40,8 @@ public interface ContestMapper {
 
 
     void deleteCategoriesByPostId(Long postId);
+
+
 }
 
 

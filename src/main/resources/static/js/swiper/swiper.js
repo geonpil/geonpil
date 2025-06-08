@@ -1,25 +1,47 @@
- window.addEventListener("load", function () {
-    const swiper = new Swiper(".mobile-sub-banner", {
-    slidesPerView: 1,
-    spaceBetween: 0,
-    loop: true,
-    centeredSlides: false,
-    autoplay: {
-        delay: 3000,       // ⏱️ 3초마다 전환
-        disableOnInteraction: false, // 사용자 스와이프 후에도 계속 자동재생
-    },
-    pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-                dynamicBullets: false,
-                renderBullet: function (index, className) {
-                    return `<span class="${className}"></span>`;
-             },
-},
-});
+window.addEventListener("load", function () {
+    new Swiper(".mobile-sub-banner", {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: true,
+        centeredSlides: false,
+        autoplay: {
+            delay: 3000,       // ⏱️ 3초마다 전환
+            disableOnInteraction: false, // 사용자 스와이프 후에도 계속 자동재생
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: false,
+            renderBullet: function (index, className) {
+                return `<span class="${className}"></span>`;
+            },
+        },
+    });
 
-    // ✅ Swiper 수동 업데이트 (DOM 로딩 지연 대응)
-    setTimeout(() => {
-    swiper.update();
-}, 200); // DOM, 이미지 레이아웃 반영 후
+    new Swiper(".book-carousel", {
+        slidesPerView: 6,
+        spaceBetween: 1,
+        navigation: {
+            nextEl: ".book-carousel .swiper-button-next",
+            prevEl: ".book-carousel .swiper-button-prev"
+        },
+        autoplay: {
+            delay: 2000,       // ⏱️ 3초마다 전환
+            disableOnInteraction: false, // 사용자 스와이프 후에도 계속 자동재생
+        },
+        breakpoints: {
+            1024: {
+                slidesPerView: 7,
+            },
+            768: {
+                slidesPerView: 5,
+            },
+            480: {
+                slidesPerView: 3,
+            }
+        },
+        loop: true
+    });
+
+
 });
