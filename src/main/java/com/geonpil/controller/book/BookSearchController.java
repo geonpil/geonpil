@@ -22,7 +22,7 @@ public class BookSearchController {
             @RequestParam String query,
             @RequestParam(defaultValue = "1") int page,
             Model model) {
-        prepareModel(query, page, 10, model, true, true);
+        prepareModel(query, page, 15, model, true, true);
         return "book/search/search-result";
     }
 
@@ -34,7 +34,7 @@ public class BookSearchController {
             @RequestParam(defaultValue = "1") int page,
             Model model) {
 
-        prepareModel(query, page, 10, model, true, false);
+        prepareModel(query, page, 15, model, true, false);
         return "book/search/_result-fragment :: resultFragment";
 
     }
