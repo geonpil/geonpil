@@ -22,37 +22,42 @@ public class BookService {
         return toDetailView(toDomain(bookMapper.findById(bookId)));
     }
 
-    public Book getOrFetchBookByIsbn(String rawIsbn) {
+    public BookDetailViewResponse getOrFetchBookByIsbn(String rawIsbn) {
         String filteredIsbn = extractIsbn13IfExists(rawIsbn);
 
-        Book book;
+        BookEntity bookEntity = null;
 
         // isbn으로 찾고 없으면 books에서 바로 return
         if (filteredIsbn.length() == 13) {
-            book = toDomain(bookMapper.findByIsbn13(filteredIsbn));
+            bookEntity = bookMapper.findByIsbn13(filteredIsbn) ;
         } else if (filteredIsbn.length() == 10) {
-            book = toDomain(bookMapper.findByIsbn10(filteredIsbn));
+            bookEntity = bookMapper.findByIsbn10(filteredIsbn);
         } else {
             throw new IllegalArgumentException("ISBN 길이가 유효하지 않습니다: " + filteredIsbn);
         }
 
-        if(book != null) return book;
+        if(bookEntity != null) {
+            return toDetailView(toDomain(bookEntity));
+        }
 
 
         //없으면 isbn으로 api 요청보내서 찾아온다음 books에 insert
         Book fetched = externalBookApiClient.fetchBookByIsbn(filteredIsbn);
+
+        System.out.println("디버그 " + fetched.getBookId());
 
         BookEntity fetchedBookEntity = toEntity(fetched);
         fetchedBookEntity.setIsbn(filteredIsbn);
         fetchedBookEntity.setIsbn10(IsbnUtil.extractIsbn10(rawIsbn));
         fetchedBookEntity.setIsbn13(IsbnUtil.extractIsbn13(rawIsbn));
         bookMapper.insertBook(fetchedBookEntity);
+        BookDetailViewResponse bookDetailViewResponse = toDetailView(toDomain(fetchedBookEntity));
 
 
-        System.out.println("Generated ID: " + fetched.getBookId());
+        System.out.println("Generated ID: " + bookDetailViewResponse.getBookId());
 
 
-        return fetched;
+        return bookDetailViewResponse;
     }
 
     private String extractIsbn13IfExists(String rawIsbn) {

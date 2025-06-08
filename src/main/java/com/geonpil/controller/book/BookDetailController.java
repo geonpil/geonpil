@@ -79,7 +79,7 @@ public class BookDetailController {
     public String fetchOrRedirect(@PathVariable String isbn
                                  ,@RequestParam(required = false) String query
                                  , @RequestParam(required = false, defaultValue = "1") int page ) {
-        Book book = bookService.getOrFetchBookByIsbn(isbn);
+        BookDetailViewResponse book = bookService.getOrFetchBookByIsbn(isbn);
         String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
 
 
