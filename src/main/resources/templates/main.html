@@ -101,7 +101,7 @@
                        th:href="@{/contest/detail/{id}(id=${contest.postId}, boardCode=${contest.boardCode})}"
                        th:each="contest : ${contestPost}">
                         <div class="contest-poster">
-                            <img th:src="@{${contest.posterUrl}}" alt="공모전 포스터">
+                            <img th:src="@{${contest.posterUrl}}" onerror="this.onerror=null; this.src='/images/commons/no-poster.png';" alt ="공모전 포스터" >
                         </div>
                         <div class="main-contest-info">
                             <div class="main-contest-category" th:text="'[' + ${contest.categoryNames}+ ']'"></div>

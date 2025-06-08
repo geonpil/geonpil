@@ -11,7 +11,7 @@
              th:attr="data-id=${contest.postId}"
              th:unless="${#lists.isEmpty(contests)}">
             <div class="poster-thumb-wrapper">
-                <img th:src="@{${contest.posterUrl}}" alt="포스터" class="poster-thumb">
+                <img th:src="@{${contest.posterUrl}}" onerror="this.onerror=null; this.src='/images/commons/no-poster.png';" alt="포스터" class="poster-thumb">
             </div>
 
             <div class="contest-info">
