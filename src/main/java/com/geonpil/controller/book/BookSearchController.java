@@ -18,12 +18,14 @@ public class BookSearchController {
 
     private final BookSearchService bookSearchService;
 
+    int pageSize = 15;
+
     @GetMapping("")
     public String searchBooks(
             @RequestParam String query,
             @RequestParam(defaultValue = "1") int page,
             Model model) {
-        prepareModel(query, page, 15, model, true, true);
+        prepareModel(query, page, pageSize, model, true, true);
         return "book/search/search-result";
     }
 
@@ -35,7 +37,7 @@ public class BookSearchController {
             @RequestParam(defaultValue = "1") int page,
             Model model) {
 
-        prepareModel(query, page, 15, model, true, false);
+        prepareModel(query, page, pageSize, model, true, false);
         return "book/search/_result-fragment :: resultFragment";
 
     }
@@ -49,7 +51,7 @@ public class BookSearchController {
             @RequestParam(defaultValue = "1") int page,
             Model model) {
 
-        prepareModel(query, page, 15, model, false, true);
+        prepareModel(query, page, pageSize, model, false, true);
         return "book/search/_pagination-fragment :: paginationFragment";
 
     }
