@@ -50,7 +50,7 @@ public class ContestController {
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
 
         // 전체페이지 가지고 오기
-        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds);
+        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds, isClosedIncluded);
 
         model.addAttribute("categories", categories);
         model.addAttribute("contests", contests);
@@ -108,7 +108,7 @@ public class ContestController {
 
         List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort, isClosedIncluded);
 
-        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds);
+        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds, isClosedIncluded);
 
         model.addAttribute("contests", contests);
         model.addAttribute("currentPage", page);

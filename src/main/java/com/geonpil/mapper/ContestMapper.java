@@ -36,7 +36,9 @@ public interface ContestMapper {
 
 
     int contestCountAll(@Param("boardCode") int boardCode
-            , @Param("categoryIds") List<Long> categoryIds);
+            , @Param("categoryIds") List<Long> categoryIds
+            , @Param("isClosedIncluded") boolean isClosedIncluded);
+
 
 
     void deleteCategoriesByPostId(Long postId);

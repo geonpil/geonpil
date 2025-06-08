@@ -235,6 +235,9 @@
         </if>
         WHERE b.board_code = #{boardCode}
         AND b.is_deleted = 0
+        <if test = "!isClosedIncluded">
+            AND (end_date >= CURDATE() OR end_date is null)
+        </if>
         <if test="categoryIds != null and categoryIds.size > 0">
             AND cc.category_id IN
             <foreach item="id" collection="categoryIds" open="(" separator="," close=")">

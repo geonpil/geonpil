@@ -94,9 +94,9 @@ public class ContestService {
         return contestPosts;
     }
 
-    public int getTotalPageCount(int pageSize, int boardCode, List<Long> categoryIds) {
+    public int getTotalPageCount(int pageSize, int boardCode, List<Long> categoryIds, boolean isClosedIncluded) {
 
-        int totalCount = contestMapper.contestCountAll(boardCode, categoryIds);
+        int totalCount = contestMapper.contestCountAll(boardCode, categoryIds, isClosedIncluded);
         return (int) Math.ceil((double) totalCount / pageSize);
     }
 
