@@ -8,8 +8,8 @@ import com.geonpil.util.IsbnUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.geonpil.util.mapper.BookMapperUtil.toDomain;
-import static com.geonpil.util.mapper.BookMapperUtil.toEntity;
+import static com.geonpil.util.converter.BookConverterUtil.toDomain;
+import static com.geonpil.util.converter.BookConverterUtil.toEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +43,7 @@ public class BookService {
         Book fetched = externalBookApiClient.fetchBookByIsbn(filteredIsbn);
 
         BookEntity fetchedBookEntity = toEntity(fetched);
+        fetchedBookEntity.setIsbn(filteredIsbn);
         fetchedBookEntity.setIsbn10(IsbnUtil.extractIsbn10(rawIsbn));
         fetchedBookEntity.setIsbn13(IsbnUtil.extractIsbn13(rawIsbn));
         bookMapper.insertBook(fetchedBookEntity);

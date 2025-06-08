@@ -53,11 +53,8 @@ public class ExternalBookApiClient {
             JsonNode root = mapper.readTree(body);
 
             JsonNode docs = root.path("documents");
-            System.out.println("디버그 책:" + docs.size());
             if(docs.isArray() && docs.size() > 0) {
-                Book book = mapper.treeToValue(docs.get(0), Book.class);
-                book.setIsbn(filteredIsbn);
-                return book;
+                return mapper.treeToValue(docs.get(0), Book.class);
             } else {
                 throw new RuntimeException("도서를 찾을 수 없습니다.");
             }
