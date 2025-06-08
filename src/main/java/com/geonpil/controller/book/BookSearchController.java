@@ -49,7 +49,7 @@ public class BookSearchController {
             @RequestParam(defaultValue = "1") int page,
             Model model) {
 
-        prepareModel(query, page, 10, model, false, true);
+        prepareModel(query, page, 15, model, false, true);
         return "book/search/_pagination-fragment :: paginationFragment";
 
     }
