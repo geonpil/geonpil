@@ -218,6 +218,7 @@
         LEFT JOIN category cat ON cc.category_id = cat.category_id
         WHERE b.board_code = 3
         AND b.is_deleted = 0
+        AND (end_date >= CURDATE() OR end_date is null)
         GROUP BY b.post_id
         ORDER BY b.created_at DESC
         LIMIT #{limit}
