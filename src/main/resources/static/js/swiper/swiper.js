@@ -38,6 +38,9 @@ window.addEventListener("load", function () {
             },
             480: {
                 slidesPerView: 3,
+            },
+            360: {
+                slidesPerView: 2,
             }
         },
         loop: true
