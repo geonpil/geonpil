@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.geonpil.domain.Book;
+import com.geonpil.dto.bookSearch.BookEntity;
 import com.geonpil.dto.bookSearch.BookSearchResponse;
+import com.geonpil.dto.bookSearch.BookSearchViewResponse;
+import com.geonpil.util.converter.BookConverterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -18,6 +22,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import org.springframework.http.HttpHeaders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BookSearchService {
@@ -27,7 +34,7 @@ public class BookSearchService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public BookSearchResponse searchBooks(String query,int page, int size) {
+    public BookSearchViewResponse searchBooks(String query,int page, int size) {
         String url = UriComponentsBuilder
                 .fromHttpUrl("https://dapi.kakao.com/v3/search/book")
                 .queryParam("query", query)
@@ -55,12 +62,29 @@ public class BookSearchService {
             JsonNode docs = root.path("documents");
             JsonNode metaNode = root.path("meta");
 
+
+
             BookSearchResponse result = mapper.readValue(body, BookSearchResponse.class);
 
-            return result;
+
+            List<BookEntity> processedBooks = new ArrayList<>();
+
+            for(Book book :  result.getDocuments()){
+                BookEntity bookEntity = BookConverterUtil.toEntity(book);
+                processedBooks.add(bookEntity);
+            }
+
+            BookSearchViewResponse bookSearchViewResponse = new BookSearchViewResponse();
+
+            bookSearchViewResponse.setMeta(result.getMeta());
+            bookSearchViewResponse.setBooks(processedBooks);
+
+            return bookSearchViewResponse;
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("JSON 파싱 실패", e);
         }
     }
+
+
 }

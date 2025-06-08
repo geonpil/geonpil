@@ -9,7 +9,7 @@ import com.geonpil.service.user.UserService;
 import com.geonpil.service.book.BookService;
 import com.geonpil.service.review.ReviewCommentService;
 import com.geonpil.service.review.ReviewService;
-import com.geonpil.util.mapper.ReviewMapperUtil;
+import com.geonpil.util.converter.ReviewConverterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -29,7 +29,7 @@ public class BookDetailController {
     private final ReviewService reviewService;
     private final UserService userService;
     private final ReviewLikeMapper reviewLikeMapper;
-    private final ReviewMapperUtil reviewMapperUtil;
+    private final ReviewConverterUtil reviewMapperUtil;
     private final ReviewCommentService reviewCommentService;
 
     @GetMapping("/{bookId}")

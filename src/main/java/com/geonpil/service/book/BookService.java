@@ -1,7 +1,7 @@
 package com.geonpil.service.book;
 
 import com.geonpil.domain.Book;
-import com.geonpil.domain.entity.BookEntity;
+import com.geonpil.dto.bookSearch.BookEntity;
 import com.geonpil.external.ExternalBookApiClient;
 import com.geonpil.mapper.book.BookMapper;
 import com.geonpil.util.IsbnUtil;

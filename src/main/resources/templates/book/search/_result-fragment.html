@@ -12,9 +12,9 @@
 
                     <!-- 책 정보 -->
                     <div>
-                        <div class="clamp-2"><strong  th:text="${book.title}">제목</strong></div>
-                        <div class="clamp-1" th:text="${book.publisher}">출판사</div>
-                        <div class="clamp-2" th:text="${book.authors}">저자</div>
+                        <div class="book-title clamp-2"><strong  th:text="${book.title}">제목</strong></div>
+                        <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
+                        <div class="book-publisher clamp-1" th:text="${book.publisher}">출판사</div>
                     </div>
                 </div>
             </a>

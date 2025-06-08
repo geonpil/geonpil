@@ -1,4 +1,4 @@
-package com.geonpil.util.mapper;
+package com.geonpil.util.converter;
 
 import com.geonpil.domain.Review;
 import com.geonpil.domain.ReviewComment;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class ReviewMapperUtil {
+public class ReviewConverterUtil {
 
     private final UserService userService;
     private final ReviewLikeMapper reviewLikeMapper;

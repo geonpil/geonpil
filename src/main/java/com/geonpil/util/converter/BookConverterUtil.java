@@ -1,13 +1,13 @@
-package com.geonpil.util.mapper;
+package com.geonpil.util.converter;
 
 import com.geonpil.domain.Book;
-import com.geonpil.domain.entity.BookEntity;
+import com.geonpil.dto.bookSearch.BookEntity;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-public class BookMapperUtil {
+public class BookConverterUtil {
 
 
     public static BookEntity toEntity(Book dto) {
@@ -25,6 +25,8 @@ public class BookMapperUtil {
         entity.setCategory(dto.getCategory());
         entity.setStatus("ACTIVE"); // 기본 상태
         entity.setCreatedAt(OffsetDateTime.now());
+        entity.setProcessedAutors(getDisplayAuthor(dto.getAuthors()));
+
 
         return entity;
     }
@@ -54,5 +56,12 @@ public class BookMapperUtil {
         book.setCreatedAt(entity.getCreatedAt());
 
         return book;
+    }
+
+
+    public static String getDisplayAuthor(List<String> authors) {
+        if (authors == null || authors.isEmpty()) return "작자 미상";
+        if (authors.size() == 1) return authors.get(0);
+        return authors.get(0) + " 외 " + (authors.size() - 1) + "명";
     }
 }

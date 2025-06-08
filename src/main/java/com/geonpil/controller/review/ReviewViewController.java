@@ -8,7 +8,7 @@ import com.geonpil.service.user.UserService;
 import com.geonpil.service.review.ReviewCommentService;
 import com.geonpil.service.review.ReviewLikeService;
 import com.geonpil.service.review.ReviewService;
-import com.geonpil.util.mapper.ReviewMapperUtil;
+import com.geonpil.util.converter.ReviewConverterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ public class ReviewViewController {
     private final ReviewLikeService reviewLikeService;
     private final UserService userService;
     private final ReviewLikeMapper reviewLikeMapper;
-    private final ReviewMapperUtil reviewMapperUtil;
+    private final ReviewConverterUtil reviewMapperUtil;
     private final ReviewCommentService reviewCommentService;
 
     // 특정 책의 모든 리뷰 조회

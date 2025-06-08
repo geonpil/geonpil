@@ -1,6 +1,7 @@
 package com.geonpil.controller.book;
 
 import com.geonpil.dto.bookSearch.BookSearchResponse;
+import com.geonpil.dto.bookSearch.BookSearchViewResponse;
 import com.geonpil.dto.bookSearch.Meta;
 import com.geonpil.service.book.BookSearchService;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +56,8 @@ public class BookSearchController {
 
 
 
-    private BookSearchResponse prepareModel(String query, int page, int pageSize, Model model, boolean includeBooks, boolean includePagination) {
-        BookSearchResponse result = bookSearchService.searchBooks(query, page, pageSize);
+    private BookSearchViewResponse prepareModel(String query, int page, int pageSize, Model model, boolean includeBooks, boolean includePagination) {
+        BookSearchViewResponse result = bookSearchService.searchBooks(query, page, pageSize);
         Meta meta = result.getMeta();
 
         int groupSize = 10;
@@ -66,7 +67,7 @@ public class BookSearchController {
         int endPage = Math.min(startPage + groupSize - 1, totalPages);
 
         if (includeBooks) {
-            model.addAttribute("books", result.getDocuments());
+            model.addAttribute("books", result.getBooks());
             model.addAttribute("pageableCount", meta.getPageable_count());
         }
 
