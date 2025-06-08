@@ -26,8 +26,6 @@ public class MainController {
         model.addAttribute("challengePosts", boardService.getLatestPosts(2, 10));
         model.addAttribute("contestPost", contestService.findLatestContest(6));
 
-        System.out.println("디버그2 :" + bookService.getLatestReviewedBookById().get(0).getThumbnail());
-
         model.addAttribute("lastestReviewedBooks", bookService.getLatestReviewedBookById());
 
         return "main"; // templates/main.htmlurn "main"; // templates/main.html
