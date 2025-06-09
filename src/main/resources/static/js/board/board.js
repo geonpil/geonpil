@@ -12,7 +12,7 @@ function fetchBoardPosts(page = 1) {
 
     params.set("page", page);
 
-    const newUrl = `/api/search?query=${encodeURIComponent(query)}&page=${page}`;
+    const newUrl = `/board/list?` + params.toString();
     history.pushState({}, '', newUrl);
 
 
@@ -27,4 +27,16 @@ function fetchBoardPosts(page = 1) {
         .then(html => {
             document.getElementById("pagination-area").innerHTML = html;
         });
+
+    window.addEventListener("popstate", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const page = parseInt(urlParams.get("page")) || 1;
+
+        // ✅ 선택된 카테고리 복원 (선택사항)
+        const categoryIdString = urlParams.get("categoryIds") || "";
+        selectedCategories = new Set(categoryIdString.split(",").filter(Boolean));
+        highlightSelectedButtons(); // UI 반영 함수
+
+        fetchBoardPosts(page);
+    });
 }

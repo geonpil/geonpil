@@ -6,13 +6,17 @@
 
 
 .post-container {
+    display: flex;
+    flex-direction : column;
+    justify-content: center;
+    align-items: center;
     padding : 20px;
     width: 100%;
 }
 
 .comment-wrapper {
     max-width: 800px;
-    margin: 0 auto 10px;
+    width: 100%;
     padding: 20px;
 }
 
