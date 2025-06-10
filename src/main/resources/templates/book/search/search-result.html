@@ -48,25 +48,8 @@
 </div>
 
 <th:block layout:fragment="script">
-    <script src = "/js/bookSearch.js"></script>
-    <script>
-        document.getElementById("pagination-area").addEventListener("click", function (e) {
-            if(e.target.classList.contains("page-button")) {
-                const page = parseInt(e.target.dataset.page);
-                const query = e.target.dataset.query;
-                fetchFilteredPosts(page, query);
-            }
-        });
-
-
-        window.addEventListener("popstate", function () {
-          const urlParams = new URLSearchParams(window.location.search);
-          const query = urlParams.get("query") || "";
-          const page = parseInt(urlParams.get("page")) || 1;
-          fetchFilteredPosts(page, query);
-        });
-
-    </script>
+    <script src = "/js/book/book.js"></script>
+    <script src = "/js/commons/pagination.js"></script>
 </th:block>
 
 
