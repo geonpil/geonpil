@@ -1,6 +1,7 @@
 package com.geonpil.controller;
 
 import com.geonpil.domain.*;
+import com.geonpil.dto.commons.PageInfo;
 import com.geonpil.resolver.BoardNameResolver;
 import com.geonpil.security.CustomUserDetails;
 import com.geonpil.service.BoardService;
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.geonpil.util.PaginationUtil.buildPageInfo;
 
 
 @Controller
@@ -52,11 +55,18 @@ public class ContestController {
         // 전체페이지 가지고 오기
         int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds, isClosedIncluded);
 
+        PageInfo pageInfo = buildPageInfo(page, totalPages, 5,"");
+
+        System.out.println("디버그 :" + pageInfo.getTotalPages());
+
         model.addAttribute("categories", categories);
         model.addAttribute("contests", contests);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
         model.addAttribute("boardCode",boardCode);
+
+        model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("action", "contest");
+
         return "contest/list";
     }
 
@@ -108,7 +118,9 @@ public class ContestController {
 
         List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort, isClosedIncluded);
 
+
         int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds, isClosedIncluded);
+        System.out.println("프래그먼트:" + totalPages);
 
         model.addAttribute("contests", contests);
         model.addAttribute("currentPage", page);
@@ -117,5 +129,28 @@ public class ContestController {
 
 
         return "contest/_contest-list-fragment :: contestListFragment";
+    }
+
+
+
+    @GetMapping("/list/fragment/pagination")
+    public String getPaginationFragment(@RequestParam("boardCode") int boardCode,
+                                       @RequestParam(required = false) List<Long> categoryIds,
+                                       @RequestParam(value = "page", defaultValue = "1") int page,
+                                       @RequestParam("sort") String sort,
+                                       @RequestParam("isClosedIncluded") boolean isClosedIncluded,
+                                       Model model) {
+
+        int totalPages = contestService.getTotalPageCount(8, boardCode, categoryIds, isClosedIncluded);
+
+        PageInfo pageInfo = buildPageInfo(page, totalPages, 5,"");
+        System.out.println("디버그 :" + pageInfo.getTotalPages());
+
+        model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("action", "contest");
+
+
+
+        return "commons/_pagination-fragment :: paginationFragment";
     }
 }

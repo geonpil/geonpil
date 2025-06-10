@@ -27,21 +27,5 @@
             </div>
         </div>
 
-
-    </div>
-
-    <div class="pagination" th:if="${totalPages > 1}">
-        <button th:if="${currentPage > 1}" th:text="'◀ 이전'"
-                th:onclick="'fetchFilteredPosts(' + (${currentPage} - 1) + ')'"></button>
-
-        <button type="button"
-                th:each="i : ${#numbers.sequence(1, totalPages)}"
-                th:text="${i}"
-                th:classappend="${i == currentPage} ? 'active'"
-                th:onclick="'fetchFilteredPosts(' + ${i} + ')'">
-        </button>
-
-        <button th:if="${currentPage < totalPages}" th:text="'다음 ▶'"
-                th:onclick="'fetchFilteredPosts(' + (${currentPage} + 1) + ')'"></button>
     </div>
 </div>

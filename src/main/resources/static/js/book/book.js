@@ -40,7 +40,7 @@ function initSearchBar() {
                 alert("검색어를 입력해주세요.");
                 return;
             }
-            performSearch(query, 1);
+            fetchBookSearchResults(1, query);
         });
     }
 
@@ -51,27 +51,10 @@ function initSearchBar() {
                 alert("검색어를 입력해주세요.");
                 return;
             }
-            performSearch(query, 1);
+            fetchBookSearchResults(1, query);
         }
     });
 }
-
-
-document.getElementById("pagination-area").addEventListener("click", function (e) {
-    if (e.target.classList.contains("page-button")) {
-        const page = parseInt(e.target.dataset.page);
-        const query = e.target.dataset.query;
-        fetchBookSearchResults(page, query);
-    }
-});
-
-
-window.addEventListener("popstate", function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const query = urlParams.get("query") || "";
-    const page = parseInt(urlParams.get("page")) || 1;
-    fetchBookSearchResults(page, query);
-});
 
 
 window.addEventListener("DOMContentLoaded", initSearchBar);
