@@ -10,9 +10,9 @@ document.addEventListener("click", function (e) {
 
         const urlParams = new URLSearchParams(window.location.search);
 
-         page = parseInt(e.target.dataset.page);
-         const action = e.target.dataset.action;
-         const query = e.target.dataset.query || "";
+        page = parseInt(e.target.dataset.page);
+        const action = e.target.dataset.action;
+        const query = e.target.dataset.query || "";
 
 
         const categoryParam = urlParams.get("categoryIds");
@@ -37,11 +37,12 @@ document.addEventListener("click", function (e) {
 
 
 // 뒤로가기 할때 parameter를 받아와 줌
-window.addEventListener("popstate", function () {
+document.addEventListener("DOMContentLoaded", function (event) {
+    console.log("📌dom load 발생");
+
 
     const urlParams = new URLSearchParams(window.location.search);
 
-    console.log("📌 popstate 발생");
     const action = document.body.dataset.action;
 
 

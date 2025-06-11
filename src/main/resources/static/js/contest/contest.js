@@ -57,6 +57,15 @@ function bindContestClickEvents() {
         row.addEventListener("click", function () {
             const id = this.dataset.id;
             if (id) {
+
+                // ✅ 선택된 필터/상태를 다시 push (중복이더라도 안전)
+                saveFilterStateToHistory(
+                    1,
+                    Array.from(selectedCategories),
+                    isClosedIncluded,
+                    currentSort
+                );
+
          //       const boardCode = document.getElementById("boardCode")?.value;
                 window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
             }
