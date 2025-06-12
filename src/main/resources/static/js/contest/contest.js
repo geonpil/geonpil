@@ -46,10 +46,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ '전체' 버튼에 .active 클래스 부여
     const allBtn = document.querySelector('.category-btn[data-id=""]');
-    if (allBtn) allBtn.classList.add("active");
+    if (allBtn && selectedCategories.size === 0) {
+        allBtn.classList.add("active");
+    }
 
-    const recentSortBtn = document.querySelector('.sort-btn[data-sort="recent"]');
-    if (recentSortBtn) recentSortBtn.classList.add("active");
+    // ✅ 정렬 버튼 상태 동기화 (기존 강제지정 삭제)
+    document.querySelectorAll(".sort-btn").forEach(btn => {
+        const sortType = btn.dataset.sort;
+        btn.classList.toggle("active", sortType === currentSort);
+    });
 });
 
 function bindContestClickEvents() {
