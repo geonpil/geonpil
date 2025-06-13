@@ -36,7 +36,7 @@ document.addEventListener("click", function (e) {
 });
 
 
-// 뒤로가기 할때 parameter를 받아와 줌
+// 새로 화면을 로딩할 때
 document.addEventListener("DOMContentLoaded", function (event) {
     console.log("📌dom load 발생");
 
@@ -56,7 +56,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     console.log("디버그:" + categoryIds);
     if (action === "board") {
-        fetchBoardPosts(page);
+        console.log("카테고리 세팅2");
+        fetchBoardPosts(page, new Set(categoryIds));
+        restoreBoardUI(categoryIds, page)
+        highlightSelectedButtons();
     } else if (action === "book") {
      //   fetchBookSearchResults(page, query);
     } else if (action === "contest") {
@@ -67,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             sort
         })
         restoreContestUI(categoryIds, isClosedIncluded, sort);
+        highlightSelectedButtons();
     }
 });
 

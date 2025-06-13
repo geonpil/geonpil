@@ -49,7 +49,7 @@ window.addEventListener("popstate", () => {
 
 
 
-window.addEventListener("DOMContentLoaded", () => {
+/*window.addEventListener("DOMContentLoaded", () => {
 
     console.log("카테고리 세팅");
 
@@ -68,7 +68,21 @@ window.addEventListener("DOMContentLoaded", () => {
     highlightSelectedButtons(); // UI 반영 함수
 
     fetchBoardPosts(page, selectedCategories);
-});
+});*/
+
+
+function restoreBoardUI(categoryIds = [], page = 1) {
+
+    console.log("카테고리 세팅");
+
+    if(!categoryIds){
+        initSelectAllCategory();
+    }
+    selectedCategories = new Set(categoryIds);
+
+    fetchBoardPosts(page, selectedCategories);
+
+}
 
 
 

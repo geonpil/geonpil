@@ -238,5 +238,4 @@ function restoreContestUI(categoryIds = [], isClosedIncluded = false, sort = "re
     // 정렬 상태 변수도 갱신
     currentSort = sort;
 
-    highlightSelectedButtons(); // 선택된 버튼 강조
 }
