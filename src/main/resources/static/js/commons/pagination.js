@@ -1,7 +1,7 @@
 console.log("✅ contest.js loaded");
 
 
-let page = 0;
+let page = 1;
 
 
 // 페이지를 클릭할 때 loading
@@ -21,7 +21,7 @@ document.addEventListener("click", function (e) {
         const sort = urlParams.get("sort") || "recent";
 
         if (action === "board") {
-            fetchBoardPosts(page);
+            fetchBoardPosts(page,new Set(categoryIds));
         } else if (action === "book") {
             fetchBookSearchResults(page, query);
         } else if (action === "contest") {

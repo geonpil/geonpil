@@ -72,31 +72,10 @@
     <script src="/js/commons/pagination.js"></script>
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
 
-            // ✅ '전체' 버튼에 .active 클래스 부여
-            const allBtn = document.querySelector('.category-btn[data-id=""]');
-            if (allBtn) allBtn.classList.add("active");
 
-        });
 
-        const selectedCategories = new Set();
 
-        function toggleCategory(btn) {
-            const id = btn.dataset.id;
-
-            document.querySelector('.category-btn[data-id=""]').classList.remove("active");
-
-            if (selectedCategories.has(id)) {
-                selectedCategories.delete(id);
-                btn.classList.remove("active");
-            } else {
-                selectedCategories.add(id);
-                btn.classList.add("active");
-            }
-
-            fetchBoardPosts();
-        }
 /*
         function fetchFilteredPosts(page = 1) {
             const params = new URLSearchParams();
@@ -123,22 +102,10 @@
         }*/
 
 
-        function selectAllCategories(btn) {
-            // 모든 카테고리 버튼 비활성화
-            document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
-
-            // 전체 버튼만 활성화
-            btn.classList.add("active");
-
-            // 선택된 카테고리 Set 비우기
-            selectedCategories.clear();
-
-            // 전체 게시글 요청
-            fetchBoardPosts();
-        }
 
 
-        function highlightSelectedButtons() {
+
+/*        function highlightSelectedButtons() {
             const allBtn = document.querySelector('.category-btn[data-id=""]');
 
             document.querySelectorAll(".category-btn").forEach(btn => {
@@ -160,7 +127,7 @@
                     }
                 }
             });
-        }
+        }*/
     </script>
 </th:block>
 </body>
