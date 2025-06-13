@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     if (action === "board") {
         fetchBoardPosts(page);
     } else if (action === "book") {
-        fetchBookSearchResults(page, query);
+     //   fetchBookSearchResults(page, query);
     } else if (action === "contest") {
         fetchFilteredContests({
             page,
@@ -69,3 +69,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
         restoreContestUI(categoryIds, isClosedIncluded, sort);
     }
 });
+
+
+function highlightSelectedButtons() {
+    document.querySelectorAll(".category-btn").forEach(btn => {
+        const id = btn.dataset.id;
+        if (id === "") {
+            btn.classList.toggle("active", selectedCategories.size === 0);
+        } else {
+            btn.classList.toggle("active", selectedCategories.has(id));
+        }
+    });
+}

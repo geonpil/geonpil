@@ -61,7 +61,7 @@ function bindContestClickEvents() {
     document.querySelectorAll(".contest-row").forEach(row => {
         row.addEventListener("click", function () {
             const id = this.dataset.id;
-            if (id) {
+/*            if (id) {
 
                 // ✅ 선택된 필터/상태를 다시 push (중복이더라도 안전)
                 saveFilterStateToHistory(
@@ -72,8 +72,10 @@ function bindContestClickEvents() {
                 );
 
          //       const boardCode = document.getElementById("boardCode")?.value;
-                window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
-            }
+
+            }*/
+
+            window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
         });
     });
 }
@@ -113,16 +115,7 @@ function selectAllCategories(btn) {
     });
 }
 
-function highlightSelectedButtons() {
-    document.querySelectorAll(".category-btn").forEach(btn => {
-        const id = btn.dataset.id;
-        if (id === "") {
-            btn.classList.toggle("active", selectedCategories.size === 0);
-        } else {
-            btn.classList.toggle("active", selectedCategories.has(id));
-        }
-    });
-}
+
 
 
 

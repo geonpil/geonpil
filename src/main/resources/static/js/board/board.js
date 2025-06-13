@@ -28,15 +28,21 @@ function fetchBoardPosts(page = 1) {
             document.getElementById("pagination-area").innerHTML = html;
         });
 
-    window.addEventListener("popstate", () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const page = parseInt(urlParams.get("page")) || 1;
 
-        // ✅ 선택된 카테고리 복원 (선택사항)
-        const categoryIdString = urlParams.get("categoryIds") || "";
-        selectedCategories = new Set(categoryIdString.split(",").filter(Boolean));
-        highlightSelectedButtons(); // UI 반영 함수
-
-        fetchBoardPosts(page);
-    });
 }
+
+
+window.addEventListener("popstate", () => {
+    
+    console.log("popstate 발생"); 
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = parseInt(urlParams.get("page")) || 1;
+
+    // ✅ 선택된 카테고리 복원 (선택사항)
+    const categoryIdString = urlParams.get("categoryIds") || "";
+    selectedCategories = new Set(categoryIdString.split(",").filter(Boolean));
+    highlightSelectedButtons(); // UI 반영 함수
+
+    fetchBoardPosts(page);
+});
