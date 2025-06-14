@@ -14,7 +14,7 @@ function initSearchableBookClickHandler() {
             const selectedBookTitle = book.dataset.bookTitle;
             const selectedBookAuthors = book.dataset.bookAuthors;
 
-            document.querySelector("#selected-book > div").innerHTML = `<div>${selectedBookIsbn}</div>
+            document.querySelector("#selected-book").children[1].innerHTML = `<div>${selectedBookIsbn}</div>
                                                                            <div>${selectedBookTitle}</div>
                                                                            <div>${selectedBookAuthors}</div>`;
 

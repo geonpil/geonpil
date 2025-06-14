@@ -45,7 +45,8 @@
              , thumbnail
         FROM book_picks bp
                  LEFT JOIN books b ON bp.book_id = b.book_id
-        WHERE bp.is_deleted = false;
+        WHERE bp.is_deleted = false
+        ORDER BY display_order
     </select>
 
 

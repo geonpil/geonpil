@@ -27,8 +27,6 @@ public class AdminController {
     @GetMapping("/book-picks/fragment/add")
     public String getAddBookPickFragment(Model model) {
         
-
-        
         return "admin/_book-pick-add-fragment :: bookPickAddFormFragment";
     }
 
