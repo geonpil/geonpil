@@ -19,7 +19,7 @@ window.addEventListener("load", function () {
     });
 
     new Swiper(".book-carousel", {
-        slidesPerView: 6,
+        slidesPerView: 5,
         spaceBetween: 1,
         navigation: {
             nextEl: ".book-carousel .swiper-button-next",
@@ -31,17 +31,37 @@ window.addEventListener("load", function () {
         },
         breakpoints: {
             1024: {
-                slidesPerView: 7,
-            },
-            768: {
                 slidesPerView: 5,
             },
+            768: {
+                slidesPerView: 4,
+            },
             480: {
-                slidesPerView: 3,
+                slidesPerView: 2,
             },
             360: {
                 slidesPerView: 2,
             }
+        },
+        loop: true
+    });
+
+
+    new Swiper(".book-pick-carousel", {
+        slidesPerView: 2,
+        spaceBetween: 1,
+        navigation: {
+            nextEl: ".swiper-book-pick-button-next",
+            prevEl: ".swiper-book-pick-button-prev"
+        },
+        breakpoints: {
+            1024: {
+                slidesPerView: 2,
+            },
+            360: {
+                slidesPerView: 1,
+            }
+
         },
         loop: true
     });

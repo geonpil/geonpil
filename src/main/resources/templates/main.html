@@ -51,14 +51,15 @@
 
     </section>
 
-    <!--책추천-->
+
     <section class="books-section">
+        <!--최근 리뷰 책-->
         <div class="latest-books-section card">
             <div class ="latest-books-container" style ="margin-bottom: 0px;">
                 <header class ="latest-books-header card-header">최근 리뷰가 달린 책</header>
 
                 <div class="swiper-container book-carousel">
-                    <div class ="latest-books-wrapper swiper-wrapper" th:fragment="lastestBooksFragment()">
+                    <div class ="latest-books-wrapper swiper-wrapper">
                         <div class="latest-book-card swiper-slide" th:each="book : ${lastestReviewedBooks}">
                                 <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
                                 <!-- 썸네일 -->
@@ -80,18 +81,36 @@
                 </div>
             </div>
         </div>
-
+        <!--건필 픽-->
         <div class="recommended-books-section card">
 
             <div class ="recommended-books-container" style ="margin-bottom: 0px;">
                 <header class ="recommend-books-header card-header">건필 오마카세</header>
 
+
+                <div class="swiper-container book-pick-carousel">
+                    <div class ="latest-books-wrapper swiper-wrapper">
+                        <div class="latest-book-card swiper-slide" th:each="bookPick : ${bookPicks}">
+                            <a th:href="@{/books/isbn/{isbn}(isbn=${bookPick.isbn13 != null ? bookPick.isbn13 : bookPick.isbn10})}"
+                               style="text-decoration: none; color: inherit;">
+                                <!-- 썸네일 -->
+                                <img th:src="${bookPick.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
+
+                                <!-- 책 정보 -->
+                                <div>
+                                    <div class="book-title clamp-2"><strong  th:text="${bookPick.title}">제목</strong></div>
+                                    <div class="book-author clamp-1" th:text="${bookPick.authors}">저자</div>
+                                </div>
+                                <span class="book-pick-reason clamp-3" th:text = "${bookPick.reason}"></span>
+
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="swiper-button-prev swiper-book-pick-button-prev"></div>
+                    <div class="swiper-button-next swiper-book-pick-button-next"></div>
+                </div>
             </div>
-
-            <div class="">
-
-            </div>
-
         </div>
 
     </section>

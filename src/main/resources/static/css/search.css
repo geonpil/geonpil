@@ -38,25 +38,7 @@
     overflow-y: auto;
 }*/
 
-.clamp-2 {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 2;  /* ✅ 최대 줄 수 */
-    line-clamp: 2;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
 
-.clamp-1 {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 1;  /* ✅ 최대 줄 수 */
-    line-clamp: 2;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
 
 
 .book-list-area {

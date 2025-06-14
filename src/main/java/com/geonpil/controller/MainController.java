@@ -2,6 +2,7 @@ package com.geonpil.controller;
 
 import com.geonpil.service.BoardService;
 import com.geonpil.service.ContestService;
+import com.geonpil.service.admin.BookPickService;
 import com.geonpil.service.book.BookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,11 +14,13 @@ public class MainController {
     private final BoardService boardService;
     private final ContestService contestService;
     private final BookService bookService;
+    private final BookPickService bookPickService;
 
-    public MainController(BoardService boardService, ContestService contestService, BookService bookService) {
+    public MainController(BoardService boardService, ContestService contestService, BookService bookService, BookPickService bookPickService) {
         this.boardService = boardService;
         this.contestService = contestService;
         this.bookService = bookService;
+        this.bookPickService = bookPickService;
     }
 
     @GetMapping("/")
@@ -27,6 +30,7 @@ public class MainController {
         model.addAttribute("contestPost", contestService.findLatestContest(6));
 
         model.addAttribute("lastestReviewedBooks", bookService.getLatestReviewedBookById());
+        model.addAttribute("bookPicks", bookPickService.getAllBookPicks());
 
         return "main"; // templates/main.htmlurn "main"; // templates/main.html
     }

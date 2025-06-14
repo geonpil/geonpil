@@ -41,7 +41,7 @@
 }
 
 
-.book-carousel {
+.book-carousel, .book-pick-carousel {
     width: 100%;
     padding: 10px 0;
     position: relative; /* 중요! 화살표 위치 기준 */
@@ -58,7 +58,10 @@
 
 
 .book-carousel .swiper-button-prev,
-.book-carousel .swiper-button-next {
+.book-carousel .swiper-button-next,
+.swiper-book-pick-button-prev,
+.swiper-book-pick-button-next
+{
     position: absolute;
     top: 40%;
     transform: translateY(-50%);
@@ -79,6 +82,13 @@
 
 .book-carousel .swiper-button-next {
     right: 0;
+}
+
+
+/* 건필 픽 */
+.book-pick-reason {
+    font-weight: bold;
+    font-style : italic;
 }
 
 
