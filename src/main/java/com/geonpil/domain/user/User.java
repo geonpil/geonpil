@@ -22,12 +22,13 @@ public class User {
     private LocalDateTime createdAt;
     private boolean isDeleted;  //삭제 여부
 
-    public User(String email, String nickname, String provider, String providerId) {
+    public User(String email, String nickname, String provider, String providerId, List<String> roles) {
         this.email = email;
         this.nickname = nickname;
         this.providerId = providerId;
         this.provider = provider;
         this.isDeleted = false;
+        this.roles = roles;
     }
 
 }

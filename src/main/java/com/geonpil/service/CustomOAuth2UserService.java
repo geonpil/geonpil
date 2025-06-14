@@ -4,6 +4,7 @@ import com.geonpil.domain.user.User;
 import com.geonpil.mapper.user.UserMapper;
 import com.geonpil.security.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -12,10 +13,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -63,18 +62,25 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         User user;
         if (userOpt.isPresent()) {
             user = userOpt.get();
+            user.setRoles(userMapper.findRolesById(user.getId()));
             if(user.isDeleted()){
                 throw new OAuth2AuthenticationException("탈퇴한 계정입니다. oauth");
             }
         }  else {
-            user = new User(email, nickname, registrationId, providerId);  // 소셜 로그인용 생성자 사용
+            user = new User(email, nickname, registrationId, providerId, List.of("ROLE_USER"));  // 소셜 로그인용 생성자 사용
 
             userMapper.insertSocialUser(user);
         }
 
+        userMapper.findRolesById(user.getId());
+
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role)) // ex) "ROLE_ADMIN"
+                .collect(Collectors.toList());
+
 
         return new CustomOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                authorities,
                 flatAttributes, // nickname이 직접 포함된 Map
                 "id",     // nameAttributeKey
                 user.getNickname(),

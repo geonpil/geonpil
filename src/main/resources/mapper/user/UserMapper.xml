@@ -20,8 +20,8 @@
 
 
     <insert id="insertSocialUser" parameterType="com.geonpil.domain.user.User">
-        INSERT INTO users (email, nickname, provider, provider_id, role)
-        VALUES (#{email}, #{nickname}, #{provider}, #{providerId}, #{role})
+        INSERT INTO users (email, nickname, provider, provider_id)
+        VALUES (#{email}, #{nickname}, #{provider}, #{providerId})
     </insert>
 
 
