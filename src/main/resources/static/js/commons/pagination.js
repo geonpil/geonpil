@@ -22,7 +22,7 @@ document.addEventListener("click", function (e) {
 
         if (action === "board") {
             fetchBoardPosts(page,new Set(categoryIds));
-        } else if (action === "book") {
+        } else if (action === "book"||action === "admin") {
             fetchBookSearchResults(page, query);
         } else if (action === "contest") {
             fetchFilteredContests({
