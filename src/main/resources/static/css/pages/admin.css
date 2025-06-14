@@ -1,8 +1,17 @@
 /* START : 메인 레이아웃 */
 .admin-container {
     display: grid;
-    grid-template-columns: 0.5fr 1fr;
+    grid-template-columns: 0.25fr 1fr;
     gap : 1rem;
+}
+
+.delete-book-info{
+    display: flex;
+    gap : 1rem;
+}
+
+.delete-book-info div:first-child{
+    width : 150px;
 }
 
 /* END : 메인 레이아웃  */

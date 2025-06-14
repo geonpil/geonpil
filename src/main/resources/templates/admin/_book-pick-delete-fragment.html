@@ -13,10 +13,10 @@
                         <div th:text="${bookPick.authors}">삭제대상 책이름</div>
                         <div th:text="${bookPick.publisher}">삭제대상 책이름</div>
                         <div th:text="${bookPick.isbn13 != null ? bookPick.isbn13 : bookPick.isbn10}">삭제대상 책이름</div>
+                        <button th:data-id = "${bookPick.bookPickId}"  id="pick-delete" type="button" class="pick-delete btn btn-primary">삭제</button>
                     </div>
                     <div th:text="${bookPick.reason}"></div>
                 </div>
-                <button th:data-id = "${bookPick.bookPickId}"  id="pick-delete" type="button" class="pick-delete btn btn-primary">삭제</button>
             </div>
         </th:block>
     </div>
