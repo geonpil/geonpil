@@ -1,12 +1,14 @@
 package com.geonpil.controller.admin;
 
 import com.geonpil.domain.admin.BookPick;
+import com.geonpil.dto.bookPick.BookPickWithBookInfo;
 import com.geonpil.service.admin.BookPickService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @Controller
@@ -22,14 +24,23 @@ public class AdminController {
         return "/admin/admin";
     }
 
+    @GetMapping("/book-picks/fragment/add")
+    public String getAddBookPickFragment(Model model) {
+        
 
-    @PostMapping("/book-picks/add")
-    public String addBookPicks(@RequestBody BookPick bookPick){
+        
+        return "admin/_book-pick-add-fragment :: bookPickAddFormFragment";
+    }
 
-        System.out.println("isbn확인" + bookPick.getIsbn());
-        bookPickService.saveBookPick(bookPick);
 
-        return "redirect:/admin/main";
+    @GetMapping("/book-picks/fragment/delete")
+    public String getDelBookPickFragment(Model model) {
+
+        List<BookPickWithBookInfo> bookPicks = bookPickService.getAllBookPicks();
+
+        model.addAttribute("bookPicks", bookPicks);
+
+        return "admin/_book-pick-delete-fragment :: bookPickDeleteFormFragment";
     }
 
 }

@@ -4,6 +4,7 @@ import com.geonpil.domain.Book;
 import com.geonpil.domain.admin.BookPick;
 import com.geonpil.domain.admin.BookPickEntity.BookPickEntity;
 import com.geonpil.dto.bookDetail.BookEntity;
+import com.geonpil.dto.bookPick.BookPickWithBookInfo;
 import com.geonpil.external.ExternalBookApiClient;
 import com.geonpil.mapper.admin.BookPickMapper;
 import com.geonpil.mapper.book.BookMapper;
@@ -11,6 +12,8 @@ import com.geonpil.util.converter.BookPickConverterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.geonpil.util.converter.BookConverterUtil.toEntity;
 
@@ -53,8 +56,18 @@ public class BookPickService {
             bookPickMapper.insertBookPick(bookPickEntity);
 
         }
+    }
+
+    public List<BookPickWithBookInfo> getAllBookPicks() {
+
+        return bookPickMapper.findAllBookPicks();
+
+    }
 
 
+    public void deleteBookPick(String BookPickId) {
+        //삭제하는 mapper
+        bookPickMapper.softDeleteBookPickById(BookPickId);
     }
 
 }

@@ -1,0 +1,23 @@
+<!-- book-pick-add-fragment.html -->
+<div th:fragment="bookPickDeleteFormFragment">
+    <h2>📚 건필 픽 - 삭제</h2>
+
+
+    <div class="delete-list-container">
+        <th:block th:each="bookPick : ${bookPicks}">
+            <div class="delete-book-wrapper" th:id="'book-pick-' + ${bookPick.bookPickId}">
+                <div class="delete-book-info">
+                    <img th:src="${bookPick.thumbnail}" alt="이미지 없음">
+                    <div>
+                        <div th:text="${bookPick.title}">삭제대상 책이름</div>
+                        <div th:text="${bookPick.authors}">삭제대상 책이름</div>
+                        <div th:text="${bookPick.publisher}">삭제대상 책이름</div>
+                        <div th:text="${bookPick.isbn13 != null ? bookPick.isbn13 : bookPick.isbn10}">삭제대상 책이름</div>
+                    </div>
+                </div>
+                <button th:data-id = "${bookPick.bookPickId}"  id="pick-delete" type="button" class="pick-delete btn btn-primary">삭제</button>
+            </div>
+        </th:block>
+    </div>
+</div>
+

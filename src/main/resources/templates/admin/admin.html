@@ -20,13 +20,16 @@
 
             <!-- 사이드바 -->
             <aside class="admin-sidebar card p-20">
-                <h2>관리자 메뉴</h2>
+                <h3>관리자 메뉴</h3>
+
+                <h2>건필 픽관리</h2>
                 <ul>
                     <!--<li><a th:href="@{/admin/dashboard}">대시보드</a></li>
                     <li><a th:href="@{/admin/reports}">버그/신고 내역</a></li>
                     <li><a th:href="@{/}">사이트 돌아가기</a></li>
                     <li><a th:href="@{/admin/users}">회원 관리</a></li>-->
-                    <li><a th:href="@{/admin/book-picks}">건필 픽 관리</a></li>
+                    <li><a href="#" data-action="add" class="admin-menu">건필 픽 추가</a></li>
+                    <li><a href="#" data-action="delete" class="admin-menu">건필 픽 삭제</a></li>
                 </ul>
             </aside>
 
@@ -36,8 +39,9 @@
                     <h1>관리자 홈</h1>
                 </div>
 
-                <div class="admin-content">
-                    <div th:replace="~{admin/_book-pick-add-fragment :: bookPickAddFormFragment}"></div>
+                <div id="admin-content" class="admin-content">
+                    <div>좌측의 메뉴를 선택해주세요.</div>
+                   <!-- <div th:replace="~{admin/_book-pick-add-fragment :: bookPickAddFormFragment}"></div> -->
                 </div>
             </main>
 
@@ -45,6 +49,7 @@
     </div>
 </body>
 <th:block layout:fragment="script">
+    <script src = "/js/admin/admin.js"></script>
     <script src = "/js/admin/bookPickAdd.js"></script>
     <script src = "/js/book/bookSearch.js"></script>
     <script src = "/js/commons/pagination.js"></script>

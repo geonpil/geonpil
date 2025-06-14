@@ -6,16 +6,45 @@
 
 <mapper namespace="com.geonpil.mapper.admin.BookPickMapper">
 
-    <resultMap id="ReviewResultMap" type="com.geonpil.domain.Review">
-        <id property="reviewId" column="review_id"/>
+    <resultMap id="BookPickResultMap" type="com.geonpil.dto.bookPick.BookPickWithBookInfo">
+        <id property="bookPickId" column="book_pick_id"/>
         <result property="bookId" column="book_id"/>
-
+        <result property="title" column="title"/>
+        <result property="isbn10" column="isbn10"/>
+        <result property="isbn13" column="isbn13"/>
+        <result property="authors" column="authors"/>
+        <result property="publisher" column="publisher"/>
+        <result property="displayOrder" column="display_order"/>
+        <result property="thumbnail" column="thumbnail"/>
     </resultMap>
 
-    <insert id="insertBookPick" parameterType="com.geonpil.domain.admin.BookPickEntity.BookPickEntity" useGeneratedKeys="true" keyProperty ="bookPickId" keyColumn = "book_pick_id">
+    <insert id="insertBookPick" parameterType="com.geonpil.domain.admin.BookPickEntity.BookPickEntity"
+            useGeneratedKeys="true" keyProperty="bookPickId" keyColumn="book_pick_id">
         INSERT INTO book_picks (book_id, reason, display_order)
         VALUES (#{bookId}, #{reason}, #{displayOrder})
     </insert>
+
+    <update id="softDeleteBookPickById">
+        UPDATE book_picks
+        set is_deleted = true
+        WHERE book_pick_id = #{bookPickId}
+    </update>
+
+
+    <select id="findAllBookPicks" resultMap="BookPickResultMap">
+        SELECT book_pick_id
+             , bp.book_id
+             , title
+             , isbn10
+             , isbn13
+             , authors
+             , publisher
+             , display_order
+             , thumbnail
+        FROM book_picks bp
+                 LEFT JOIN books b ON bp.book_id = b.book_id
+        WHERE bp.is_deleted = false;
+    </select>
 
 
 </mapper>
