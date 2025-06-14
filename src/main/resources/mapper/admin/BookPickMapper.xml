@@ -13,8 +13,8 @@
     </resultMap>
 
     <insert id="insertBookPick" parameterType="com.geonpil.domain.admin.BookPickEntity.BookPickEntity" useGeneratedKeys="true" keyProperty ="bookPickId" keyColumn = "book_pick_id">
-        INSERT INTO book_picks (book_id, reason, display_order, is_visible)
-        VALUES (#{bookId}, #{reason}, #{displayOrder}, #{isVisible})
+        INSERT INTO book_picks (book_id, reason, display_order)
+        VALUES (#{bookId}, #{reason}, #{displayOrder})
     </insert>
 
 
