@@ -1,26 +1,16 @@
 package com.geonpil.service.admin;
 
 import com.geonpil.domain.Book;
-import com.geonpil.domain.ContestPost;
 import com.geonpil.domain.admin.BookPick;
 import com.geonpil.domain.admin.BookPickEntity.BookPickEntity;
 import com.geonpil.dto.bookDetail.BookEntity;
 import com.geonpil.external.ExternalBookApiClient;
-import com.geonpil.mapper.BoardMapper;
-import com.geonpil.mapper.ContestMapper;
 import com.geonpil.mapper.admin.BookPickMapper;
 import com.geonpil.mapper.book.BookMapper;
-import com.geonpil.service.BoardService;
-import com.geonpil.util.DdayUtils;
-import com.geonpil.util.IsbnUtil;
-import com.geonpil.util.converter.BookConverterUtil;
 import com.geonpil.util.converter.BookPickConverterUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.geonpil.util.converter.BookConverterUtil.toEntity;
 

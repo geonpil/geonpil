@@ -1,22 +1,12 @@
 package com.geonpil.controller.admin;
 
-import com.geonpil.domain.Category;
-import com.geonpil.domain.ContestPost;
 import com.geonpil.domain.admin.BookPick;
-import com.geonpil.dto.commons.PageInfo;
-import com.geonpil.service.BoardService;
-import com.geonpil.service.CategoryService;
-import com.geonpil.service.ContestService;
 import com.geonpil.service.admin.BookPickService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.geonpil.util.PaginationUtil.buildPageInfo;
 
 
 @Controller
