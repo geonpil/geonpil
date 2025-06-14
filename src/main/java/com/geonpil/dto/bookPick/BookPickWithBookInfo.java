@@ -10,6 +10,7 @@ public class BookPickWithBookInfo {
     private Long bookId;
     private String isbn10;
     private String isbn13;
+    private String reason;
     private int displayOrder;
     private boolean isVisible;
 

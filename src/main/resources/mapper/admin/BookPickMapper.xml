@@ -12,6 +12,7 @@
         <result property="title" column="title"/>
         <result property="isbn10" column="isbn10"/>
         <result property="isbn13" column="isbn13"/>
+        <result property="reason" column="reason"/>
         <result property="authors" column="authors"/>
         <result property="publisher" column="publisher"/>
         <result property="displayOrder" column="display_order"/>
@@ -34,6 +35,7 @@
     <select id="findAllBookPicks" resultMap="BookPickResultMap">
         SELECT book_pick_id
              , bp.book_id
+             , reason
              , title
              , isbn10
              , isbn13
