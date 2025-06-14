@@ -24,8 +24,9 @@ public class AdminController {
 
 
     @PostMapping("/book-picks/add")
-    public String addBookPicks(@ModelAttribute BookPick bookPick){
+    public String addBookPicks(@RequestBody BookPick bookPick){
 
+        System.out.println("isbn확인" + bookPick.getIsbn());
         bookPickService.saveBookPick(bookPick);
 
         return "redirect:/admin/main";
