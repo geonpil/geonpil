@@ -12,6 +12,8 @@ public class BookDetailViewResponse {
     private String contents;
     private String thumbnail;
     private String isbn;
+    private String isbn10;
+    private String isbn13;
     private Integer price;
     private Integer salePrice;
     private String category;

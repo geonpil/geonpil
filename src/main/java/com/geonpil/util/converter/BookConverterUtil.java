@@ -1,8 +1,11 @@
 package com.geonpil.util.converter;
 
 import com.geonpil.domain.Book;
+import com.geonpil.domain.admin.BookPick;
+import com.geonpil.domain.admin.BookPickEntity.BookPickEntity;
 import com.geonpil.dto.bookDetail.BookDetailViewResponse;
 import com.geonpil.dto.bookDetail.BookEntity;
+import com.geonpil.util.IsbnUtil;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -10,12 +13,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.geonpil.util.IsbnUtil.extractIsbn10;
+import static com.geonpil.util.IsbnUtil.extractIsbn13;
+
 public class BookConverterUtil {
 
 
     public static BookEntity toEntity(Book dto) {
         BookEntity entity = new BookEntity();
         entity.setIsbn(dto.getIsbn());
+        entity.setIsbn10(IsbnUtil.extractIsbn10(dto.getIsbn()));
+        entity.setIsbn13(IsbnUtil.extractIsbn13(dto.getIsbn()));
         entity.setTitle(dto.getTitle());
         entity.setAuthors(String.join(", ", dto.getAuthors()));
         entity.setTranslators(String.join(", ", dto.getTranslators()));
@@ -68,6 +76,8 @@ public class BookConverterUtil {
         dto.setContents(book.getContents());
         dto.setThumbnail(book.getThumbnail());
         dto.setIsbn(book.getIsbn());
+        dto.setIsbn10(extractIsbn10(book.getIsbn()));
+        dto.setIsbn13(extractIsbn13(book.getIsbn()));
         dto.setPrice(book.getPrice());
         dto.setSalePrice(book.getSalePrice());
         dto.setCategory(book.getCategory());
@@ -79,12 +89,6 @@ public class BookConverterUtil {
     }
 
 
-/*    public static BookSearchViewResponse toSearchDetailView(BookSearchResponse bookSearchResponse) {
-        BookSearchViewResponse dto = new BookSearchViewResponse();
-        dto.setMeta(bookSearchResponse.getMeta());
-        dto.setBooks(bookSearchResponse.getDocuments());
-        return dto;
-    }*/
 
 
     public static List<String> parseCommaSeparated(String str) {

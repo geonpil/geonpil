@@ -52,9 +52,7 @@ public class ExternalBookApiClient {
 
             JsonNode docs = root.path("documents");
             if(docs.isArray() && docs.size() > 0) {
-                Book book = mapper.treeToValue(docs.get(0), Book.class);
-                book.setIsbn(filteredIsbn);
-                return book;
+                return mapper.treeToValue(docs.get(0), Book.class);
             } else {
                 throw new RuntimeException("도서를 찾을 수 없습니다.");
             }

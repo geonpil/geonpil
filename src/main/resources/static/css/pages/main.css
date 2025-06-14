@@ -1,9 +1,31 @@
-.latest-books-header {
+/* START : 게시판 */
+.challenge,
+.community,
+.contest {
+    padding : 20px;
+}
 
+/* END : 게시판 */
+
+
+/* START : 책 영역 */
+
+.books-section {
+    display: flex;
+    gap : 20px;
+}
+
+.books-section .latest-books-section{
+    flex : 1;
+}
+
+.books-section  .recommended-books-section{
+    flex : 0.5;
 }
 
 
-.latest-books-section{
+
+.latest-books-section, .recommended-books-section{
     overflow: hidden;
     padding : 20px;
 }
@@ -58,3 +80,6 @@
 .book-carousel .swiper-button-next {
     right: 0;
 }
+
+
+/* END : 책 영역 */

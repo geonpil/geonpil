@@ -45,6 +45,18 @@
 }
 
 
+.form-group textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  resize: vertical;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+
 
 .error-message {
   color: red;
@@ -156,3 +168,5 @@ select:focus {
 #email-domain-input {
   margin-top: 5px;
 }
+
+

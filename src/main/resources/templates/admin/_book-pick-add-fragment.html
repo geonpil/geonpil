@@ -1,0 +1,42 @@
+<!-- book-pick-add-fragment.html -->
+<div th:fragment="bookPickAddFormFragment">
+    <h2>📚 건필 픽 추천 추가</h2>
+
+    <form th:action="@{/admin/book-picks/add}" method="post" class="book-pick-form">
+
+
+        <div class="form-group">
+            <label>추천할 책</label>
+            <div th:replace = "~{fragments/search-bar :: searchBar(${query})}"></div>
+        </div>
+
+        <div class="search-content">
+            <div id= "book-list-area" class="book-list-area"></div>
+
+        </div>
+
+        <nav id = "pagination-area" class="pagination-area"></nav>
+
+        <div id= "selected-book" class="selected-book">
+            <lable>선택된 책</lable>
+            <div></div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="reason">추천 이유</label>
+            <textarea name="reason" id="reason" rows="4" placeholder="이 책을 추천하는 이유를 입력하세요" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="displayOrder">노출 순서</label>
+            <input type="number" name="displayOrder" id="displayOrder" min="0" value="0">
+        </div>
+
+        <input id="isbn"  name ="isbn" type = "hidden">
+
+        <button type="submit" class="submit-btn">추천 등록</button>
+    </form>
+</div>
+

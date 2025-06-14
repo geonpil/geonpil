@@ -50,9 +50,6 @@ public class BookService {
         System.out.println("디버그 " + fetched.getBookId());
 
         BookEntity fetchedBookEntity = toEntity(fetched);
-        fetchedBookEntity.setIsbn(filteredIsbn);
-        fetchedBookEntity.setIsbn10(IsbnUtil.extractIsbn10(rawIsbn));
-        fetchedBookEntity.setIsbn13(IsbnUtil.extractIsbn13(rawIsbn));
         bookMapper.insertBook(fetchedBookEntity);
         BookDetailViewResponse bookDetailViewResponse = toDetailView(toDomain(fetchedBookEntity));
 

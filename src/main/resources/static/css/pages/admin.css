@@ -1,0 +1,8 @@
+/* START : 메인 레이아웃 */
+.admin-container {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+    gap : 1rem;
+}
+
+/* END : 메인 레이아웃  */

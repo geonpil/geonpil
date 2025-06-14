@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.geonpil.mapper.admin.BookPickMapper">
+
+    <resultMap id="ReviewResultMap" type="com.geonpil.domain.Review">
+        <id property="reviewId" column="review_id"/>
+        <result property="bookId" column="book_id"/>
+
+    </resultMap>
+
+    <insert id="insertBookPick" parameterType="com.geonpil.domain.admin.BookPickEntity.BookPickEntity" useGeneratedKeys="true" keyProperty ="bookPickId" keyColumn = "book_pick_id">
+        INSERT INTO book_picks (book_id, reason, display_order, is_visible)
+        VALUES (#{bookId}, #{reason}, #{displayOrder}, #{isVisible})
+    </insert>
+
+
+</mapper>

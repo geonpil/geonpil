@@ -5,14 +5,35 @@
     <!-- ✅ 책 리스트 -->
     <div class="book-list">
         <div th:each="book : ${books}">
-            <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn}, query = ${param.query}, page = ${param.page})}" style="text-decoration: none; color: inherit;">
+            <div class="book-card selectable-book"
+                 th:if="${mode == 'admin'}"
+                 th:data-book-isbn="${book.isbn13 != null ? book.isbn13 : book.isbn10}"
+                 th:data-book-title="${book.title}"
+                 th:data-book-authors="${book.authors}">
+                <!-- 썸네일 -->
+                <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
+
+                <!-- 책 정보 -->
+                <div>
+
+                    <div class="book-title clamp-2"><strong th:text="${book.title}">제목</strong></div>
+                    <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
+                    <div class="book-publisher clamp-1" th:text="${book.publisher}">출판사</div>
+                    <div th:text="${book.isbn13 != null ? book.isbn13 : book.isbn10}">isbn</div>
+                </div>
+            </div>
+
+
+            <a th:if="${mode != 'admin'}"
+               th:href="@{/books/isbn/{isbn}(isbn=${book.isbn}, query = ${param.query}, page = ${param.page})}"
+               style="text-decoration: none; color: inherit;">
                 <div class="book-card">
                     <!-- 썸네일 -->
                     <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
 
                     <!-- 책 정보 -->
                     <div>
-                        <div class="book-title clamp-2"><strong  th:text="${book.title}">제목</strong></div>
+                        <div class="book-title clamp-2"><strong th:text="${book.title}">제목</strong></div>
                         <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
                         <div class="book-publisher clamp-1" th:text="${book.publisher}">출판사</div>
                     </div>

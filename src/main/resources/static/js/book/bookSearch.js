@@ -1,6 +1,7 @@
 function fetchBookSearchResults(page, query = 1) {
 
     const encodedQuery = encodeURIComponent(query);
+    const mode = document.body.dataset.mode;
 
     if (window.location.pathname === '/' || window.location.pathname === '/main') {
         // 👉 메인화면일 경우 → 전체 이동
@@ -10,10 +11,10 @@ function fetchBookSearchResults(page, query = 1) {
         const newUrl = `/api/search?query=${encodedQuery}&page=${page}`;
         history.pushState({}, '', newUrl);
 
-        document.querySelector(".search-header h2").textContent = "검색어: " + query;
+        //document.querySelector(".search-header h2").textContent = "검색어: " + query;
 
 
-        fetch(`/api/search/fragment/result?query=${encodeURIComponent(query)}&page=${page}`)
+        fetch(`/api/search/fragment/result?query=${encodeURIComponent(query)}&page=${page}&mode=${mode}`)
             .then(res => res.text())
             .then(html => {
                 document.querySelector("#book-list-area").innerHTML = html;

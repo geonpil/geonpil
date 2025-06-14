@@ -40,8 +40,10 @@ public class BookSearchController {
     public String getSearchFragment(
             @RequestParam String query,
             @RequestParam(defaultValue = "1") int page,
+            @RequestParam String mode,
             Model model) {
 
+        model.addAttribute("mode", mode);
         prepareModel(query, page, pageSize, model, true, false);
         return "book/search/_result-fragment :: resultFragment";
 
@@ -80,6 +82,7 @@ public class BookSearchController {
             model.addAttribute("pageInfo", pageInfo);
             model.addAttribute("action", "book");
         }
+
 
         model.addAttribute("query", query);
 

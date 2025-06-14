@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:utils="http://www.thymeleaf.org/extras/java8time"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+      th:inline="text">
+
+<th:block layout:fragment="meta">
+    <title>건필 - 관리자페이지</title>
+</th:block>
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/contest.css"/>
+    <link rel="stylesheet" href="/css/pages/admin.css"/>
+</th:block>
+
+<body data-mode = "admin">
+    <div layout:fragment="content">
+        <div class="admin-container">
+
+            <!-- 사이드바 -->
+            <aside class="admin-sidebar card p-20">
+                <h2>관리자 메뉴</h2>
+                <ul>
+                    <!--<li><a th:href="@{/admin/dashboard}">대시보드</a></li>
+                    <li><a th:href="@{/admin/reports}">버그/신고 내역</a></li>
+                    <li><a th:href="@{/}">사이트 돌아가기</a></li>
+                    <li><a th:href="@{/admin/users}">회원 관리</a></li>-->
+                    <li><a th:href="@{/admin/book-picks}">건필 픽 관리</a></li>
+                </ul>
+            </aside>
+
+            <!-- 본문 -->
+            <main class="admin-wrapper card p-20">
+                <div class="admin-header">
+                    <h1>관리자 홈</h1>
+                </div>
+
+                <div class="admin-content">
+                    <div th:replace="~{admin/_book-pick-add-fragment :: bookPickAddFormFragment}"></div>
+                </div>
+            </main>
+
+        </div>
+    </div>
+</body>
+<th:block layout:fragment="script">
+    <script src = "/js/admin/bookPickAdd.js"></script>
+    <script src = "/js/book/bookSearch.js"></script>
+</th:block>
+</html>

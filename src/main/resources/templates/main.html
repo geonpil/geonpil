@@ -10,12 +10,12 @@
 
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
-    <link rel="stylesheet" href="/css/main/latestBooks.css"/>
-    <link rel="stylesheet" href="/css/main/main.css"/>
+    <link rel="stylesheet" href="/css/pages/_latest-books.css"/>
+    <link rel="stylesheet" href="/css/pages/main.css"/>
     <!-- Swiper JS -->
 </th:block>
 
-<body>
+<body data-mode = "main">
 <div layout:fragment="content">
     <div th:replace = "~{fragments/search-bar :: searchBar(${query})}"></div>
     <section class="banner-section">
@@ -52,32 +52,48 @@
     </section>
 
     <!--책추천-->
-    <section class="latest-books-section card">
-        <div class ="latest-books-container" style ="margin-bottom: 0px;">
-            <header class ="latest-books-header card-header">최근 리뷰가 달린 책</header>
+    <section class="books-section">
+        <div class="latest-books-section card">
+            <div class ="latest-books-container" style ="margin-bottom: 0px;">
+                <header class ="latest-books-header card-header">최근 리뷰가 달린 책</header>
 
-            <div class="swiper-container book-carousel">
-                <div class ="latest-books-wrapper swiper-wrapper" th:fragment="lastestBooksFragment()">
-                    <div class="latest-book-card swiper-slide" th:each="book : ${lastestReviewedBooks}">
-                            <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
-                            <!-- 썸네일 -->
-                            <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
+                <div class="swiper-container book-carousel">
+                    <div class ="latest-books-wrapper swiper-wrapper" th:fragment="lastestBooksFragment()">
+                        <div class="latest-book-card swiper-slide" th:each="book : ${lastestReviewedBooks}">
+                                <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
+                                <!-- 썸네일 -->
+                                <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
 
-                            <!-- 책 정보 -->
-                            <div>
-                                <div class="book-title clamp-2"><strong  th:text="${book.title}">제목</strong></div>
-                                <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
-                            </div>
+                                <!-- 책 정보 -->
+                                <div>
+                                    <div class="book-title clamp-2"><strong  th:text="${book.title}">제목</strong></div>
+                                    <div class="book-author clamp-1" th:text="${book.processedAutors}">저자</div>
+                                </div>
 
-                            <p>⭐<span th:text = "${book.rating}"></span></p>
-                        </a>
+                                <p>⭐<span th:text = "${book.rating}"></span></p>
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
             </div>
         </div>
+
+        <div class="recommended-books-section card">
+
+            <div class ="recommended-books-container" style ="margin-bottom: 0px;">
+                <header class ="recommend-books-header card-header">건필 오마카세</header>
+
+            </div>
+
+            <div class="">
+
+            </div>
+
+        </div>
+
     </section>
 
     <div class="main-section">
@@ -160,7 +176,7 @@
 <th:block layout:fragment="script">
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src = "/js/swiper/swiper.js"></script>
-    <script src = "/js/book/book.js"></script>
+    <script src = "/js/book/bookSearch.js"></script>
 </th:block>
 </body>
 </html>
