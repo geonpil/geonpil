@@ -33,7 +33,6 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("user");
         userMapper.insertLocalUser(user);
         return true;
     }

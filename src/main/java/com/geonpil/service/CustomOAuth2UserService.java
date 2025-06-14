@@ -67,7 +67,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 throw new OAuth2AuthenticationException("탈퇴한 계정입니다. oauth");
             }
         }  else {
-            user = new User(email, nickname, registrationId, providerId, "user");  // 소셜 로그인용 생성자 사용
+            user = new User(email, nickname, registrationId, providerId);  // 소셜 로그인용 생성자 사용
 
             userMapper.insertSocialUser(user);
         }

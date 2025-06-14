@@ -3,18 +3,28 @@ package com.geonpil.security;
 import com.geonpil.domain.user.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class CustomUserDetails implements UserDetails, AppUserInfo {
 
     private final User user;
+    private final List<String> roles;
 
     public CustomUserDetails(User user) {
         this.user = user;
+        this.roles = null;
+    }
+
+    public CustomUserDetails(User user, List<String> roles) {
+        this.user = user;
+        this.roles = roles;
     }
 
 
@@ -30,8 +40,12 @@ public class CustomUserDetails implements UserDetails, AppUserInfo {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 권한이 없거나 고정되어 있다면 이렇게 처리
-        return Collections.emptyList();
+
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        // 권한이 없거나 고정되어 있다면 이렇게 처리  return Collections.emptyList();
+
     }
 
     @Override

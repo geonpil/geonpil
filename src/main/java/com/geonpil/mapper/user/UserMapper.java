@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -39,5 +40,7 @@ public interface UserMapper {
     void updatePassword(@Param("userId") Long id, @Param("newPassword") String encodedPassword);
 
     void updateNickname(@Param("userId") Long id, @Param("newNickname") String newNickname);
+
+    List<String> findRolesById(long Id);
 
 }

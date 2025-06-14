@@ -10,6 +10,7 @@
         <result property="createdAt" column="created_at"/>
         <result property="provider" column="provider"/>
         <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+
     </resultMap>
 
     <insert id="insertLocalUser" parameterType="com.geonpil.domain.user.User">
@@ -88,5 +89,16 @@
     <update id="updateNickname">
         UPDATE users SET nickname = #{newNickname} WHERE id = #{userId}
     </update>
+
+
+    <!-- 유저 권한 찾기 -->
+
+    <select id = "findRolesById" parameterType="long" resultType="java.lang.String">
+        SELECT r.name
+        FROM roles r
+                 JOIN user_roles ur ON ur.role_id = r.role_id
+                 JOIN users u ON u.id = ur.id
+        WHERE u.id = #{id}
+    </select>
 
 </mapper>

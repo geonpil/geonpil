@@ -47,15 +47,22 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        //누구나 접근
                         .requestMatchers(
                                 "/", "/signup", "/login","/find-password","/withdrawal-complete"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
                                 "/api/search/**", "/books/**","/reviews/**","/bug-report/**"
                         ).permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**","/fonts/**"
-                                        ,"/favicon.ico").permitAll()
+                        //관리자 접근
+                        .requestMatchers(
+                                "/admin/**"
+                        ).hasRole("ADMIN")
+                        //로그인한 사용자만 접근
                         .requestMatchers("/api/reviews/**").authenticated()
+                        //정적 리소스
+                        .requestMatchers("/css/**", "/js/**", "/images/**","/upload/**","/fonts/**"
+                                ,"/favicon.ico").permitAll()
                         .anyRequest().authenticated()
                 )
 //                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
