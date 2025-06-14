@@ -15,6 +15,9 @@ document.querySelector(".search-content").addEventListener("click", (e) => {
 
     }
 
+    // ✅ 추천 이유 입력 영역으로 부드럽게 스크롤
+    document.getElementById("reason").scrollIntoView({ behavior: "smooth" });
+
 })
 
 document.getElementById("pick-submit").addEventListener("click", () => {
