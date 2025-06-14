@@ -1,7 +1,7 @@
 /* START : 메인 레이아웃 */
 .admin-container {
     display: grid;
-    grid-template-columns: 0.25fr 1fr;
+    grid-template-columns: 200px 1fr;
     gap : 1rem;
 }
 
@@ -14,4 +14,10 @@
     width : 150px;
 }
 
+
+.form-group label,
+.selected-book div:first-child{
+    font-weight: bold;
+    font-size : 22px;
+}
 /* END : 메인 레이아웃  */

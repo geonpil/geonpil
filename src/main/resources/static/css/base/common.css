@@ -72,3 +72,14 @@
 }
 
 
+.dot-list{
+    list-style-type: disc;      /* ● 점 */
+    list-style-position: inside;
+}
+
+.admin-sidebar > h1 {
+    border-bottom-color: black;
+    margin: 1px 0;
+}
+
+
