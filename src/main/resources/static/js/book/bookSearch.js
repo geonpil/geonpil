@@ -3,13 +3,17 @@ function fetchBookSearchResults(page, query = 1) {
     const encodedQuery = encodeURIComponent(query);
     const mode = document.body.dataset.mode;
 
-    if (window.location.pathname === '/' || window.location.pathname === '/main') {
+    if (window.location.pathname === '/') {
         // 👉 메인화면일 경우 → 전체 이동
         window.location.href = `/api/search?query=${encodedQuery}&page=1`;
     } else {
         // 👉 검색결과 화면일 경우 → AJAX로 내용만 갱신
         const newUrl = `/api/search?query=${encodedQuery}&page=${page}`;
-        history.pushState({}, '', newUrl);
+
+
+        if(mode === 'review'){
+            history.pushState({}, '', newUrl);
+        }
 
         //document.querySelector(".search-header h2").textContent = "검색어: " + query;
 
