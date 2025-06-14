@@ -48,7 +48,7 @@ window.addEventListener("load", function () {
 
 
     new Swiper(".book-pick-carousel", {
-        slidesPerView: 2,
+        slidesPerView: 1,
         spaceBetween: 1,
         navigation: {
             nextEl: ".swiper-book-pick-button-next",
@@ -56,7 +56,7 @@ window.addEventListener("load", function () {
         },
         breakpoints: {
             1024: {
-                slidesPerView: 2,
+                slidesPerView: 1,
             },
             360: {
                 slidesPerView: 1,

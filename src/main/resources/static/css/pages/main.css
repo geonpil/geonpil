@@ -27,7 +27,6 @@
 
 .latest-books-section, .recommended-books-section{
     overflow: hidden;
-    padding : 20px;
 }
 
 .latest-books-container {
@@ -91,5 +90,16 @@
     font-style : italic;
 }
 
+.img-wrapper{
+    display: flex;
+    justify-content: center;
+}
+
+.recommend-books-header,
+.latest-books-header{
+    margin-left: 15px;
+    margin-top: 15px;
+    margin-right: 15px;
+}
 
 /* END : 책 영역 */
