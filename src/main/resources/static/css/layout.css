@@ -109,8 +109,8 @@
   grid-template-columns: 1.5fr 1fr;
   gap: 24px;
   max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 30px;
+/*  margin: 0 auto; */
+  margin-top: 24px;
 }
 
 .community { grid-area: community; }

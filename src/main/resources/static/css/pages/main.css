@@ -24,6 +24,19 @@
 }
 
 
+@media (max-width: 768px) {
+    .books-section {
+        flex-direction: column; /* 가로 -> 세로로 전환 */
+        gap : 10px;
+    }
+
+    .books-section .latest-books-section,
+    .books-section .recommended-books-section {
+        width: 100%; /* 각 요소가 전체 너비 차지 */
+    }
+}
+
+
 
 .latest-books-section, .recommended-books-section{
     overflow: hidden;
