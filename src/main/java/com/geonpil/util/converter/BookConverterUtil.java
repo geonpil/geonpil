@@ -1,8 +1,6 @@
 package com.geonpil.util.converter;
 
 import com.geonpil.domain.Book;
-import com.geonpil.domain.admin.BookPick;
-import com.geonpil.domain.admin.BookPickEntity.BookPickEntity;
 import com.geonpil.dto.bookDetail.BookDetailViewResponse;
 import com.geonpil.dto.bookDetail.BookEntity;
 import com.geonpil.util.IsbnUtil;

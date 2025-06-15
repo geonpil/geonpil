@@ -1,10 +1,12 @@
 package com.geonpil.controller.book;
 
 import com.geonpil.domain.Review;
+import com.geonpil.domain.admin.BookPick;
 import com.geonpil.dto.bookDetail.BookDetailViewResponse;
 import com.geonpil.dto.review.ReviewResponseDto;
 import com.geonpil.mapper.review.ReviewLikeMapper;
 import com.geonpil.security.AppUserInfo;
+import com.geonpil.service.admin.BookPickService;
 import com.geonpil.service.user.UserService;
 import com.geonpil.service.book.BookService;
 import com.geonpil.service.review.ReviewCommentService;
@@ -31,6 +33,7 @@ public class BookDetailController {
     private final ReviewLikeMapper reviewLikeMapper;
     private final ReviewConverterUtil reviewMapperUtil;
     private final ReviewCommentService reviewCommentService;
+    private final BookPickService bookPickService;
 
     @GetMapping("/{bookId}")
     public String getBookDetail(@PathVariable Long bookId
@@ -38,33 +41,39 @@ public class BookDetailController {
                                 , @RequestParam(required = false) String query
                                 , @RequestParam(defaultValue = "1") int page
                                 ,Model model) {
-        // 1. 책 상세 정보 조회
+        //  책 상세 정보 조회
         BookDetailViewResponse book = bookService.getBookById(bookId);
         if (book == null) {
             return "error/404"; // 책이 없는 경우 예외 처리
         }
 
 
-        // 2. 리뷰 목록 조회
+        //  리뷰 목록 조회
 
         List<Review> reviews = reviewService.getReviewsByBookId(bookId);
         List<ReviewResponseDto> reviewDtos = reviewMapperUtil.convertToResponseDto(reviews, user);
 
 
-        // 3. 각 리뷰에 댓글 리스트 설정
+        //  각 리뷰에 댓글 리스트 설정
         reviewMapperUtil.attachCommentsToReviews(reviewDtos);
         List<ReviewResponseDto> visibleReviews = reviewMapperUtil.filterVisibleReviewsWithComments(reviewDtos);
 
 
-        // 4. 평균 평점 계산 (없으면 0)
+        //  평균 평점 계산 (없으면 0)
         double averageRating = reviewService.getAverageRating(bookId);
+        
+        //건필 픽 소개글 찾기
 
-        // 5. 모델에 데이터 주입
+        BookPick bookPick = bookPickService.getBookPickByBookId(bookId);
+
+
+        //  모델에 데이터 주입
         model.addAttribute("book", book);
         model.addAttribute("query", query);
         model.addAttribute("page", page);
         model.addAttribute("reviews", visibleReviews);
         model.addAttribute("avgRating", averageRating);
+        model.addAttribute("bookPick", bookPick);
         if (user != null) {
             model.addAttribute("currentUserId", user.getId());
         }

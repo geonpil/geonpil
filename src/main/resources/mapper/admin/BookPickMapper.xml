@@ -6,7 +6,7 @@
 
 <mapper namespace="com.geonpil.mapper.admin.BookPickMapper">
 
-    <resultMap id="BookPickResultMap" type="com.geonpil.dto.bookPick.BookPickWithBookInfo">
+    <resultMap id="BookPickWithBookInfoResultMap" type="com.geonpil.dto.bookPick.BookPickWithBookInfo">
         <id property="bookPickId" column="book_pick_id"/>
         <result property="bookId" column="book_id"/>
         <result property="title" column="title"/>
@@ -19,7 +19,14 @@
         <result property="thumbnail" column="thumbnail"/>
     </resultMap>
 
-    <insert id="insertBookPick" parameterType="com.geonpil.domain.admin.BookPickEntity.BookPickEntity"
+
+    <resultMap id="BookPickResultMap" type="com.geonpil.domain.admin.bookPickEntity.BookPickEntity">
+        <id property="bookPickId" column="book_pick_id"/>
+        <result property="bookId" column="book_id"/>
+        <result property="reason" column="reason"/>
+    </resultMap>
+
+    <insert id="insertBookPick" parameterType="com.geonpil.domain.admin.bookPickEntity.BookPickEntity"
             useGeneratedKeys="true" keyProperty="bookPickId" keyColumn="book_pick_id">
         INSERT INTO book_picks (book_id, reason, display_order)
         VALUES (#{bookId}, #{reason}, #{displayOrder})
@@ -32,7 +39,7 @@
     </update>
 
 
-    <select id="findAllBookPicks" resultMap="BookPickResultMap">
+    <select id="findAllBookPicks" resultMap="BookPickWithBookInfoResultMap">
         SELECT book_pick_id
              , bp.book_id
              , reason
@@ -47,6 +54,15 @@
                  LEFT JOIN books b ON bp.book_id = b.book_id
         WHERE bp.is_deleted = false
         ORDER BY display_order
+    </select>
+
+    <select id="findBookPickByBookId" resultMap="BookPickResultMap" parameterType="long">
+        SELECT book_pick_id
+             , book_id
+             , reason
+        FROM book_picks
+        WHERE is_deleted = false
+          AND book_id = #{bookId}
     </select>
 
 

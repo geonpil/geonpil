@@ -2,7 +2,7 @@ package com.geonpil.service.admin;
 
 import com.geonpil.domain.Book;
 import com.geonpil.domain.admin.BookPick;
-import com.geonpil.domain.admin.BookPickEntity.BookPickEntity;
+import com.geonpil.domain.admin.bookPickEntity.BookPickEntity;
 import com.geonpil.dto.bookDetail.BookEntity;
 import com.geonpil.dto.bookPick.BookPickWithBookInfo;
 import com.geonpil.external.ExternalBookApiClient;
@@ -62,6 +62,21 @@ public class BookPickService {
 
         return bookPickMapper.findAllBookPicks();
 
+    }
+
+    public BookPick getBookPickByBookId(Long bookId) {
+        BookPick bookPick = new BookPick();
+        BookPickEntity bookPickEntity = bookPickMapper.findBookPickByBookId(bookId);
+
+
+        if (bookPickEntity == null) {
+            return null; // 🔥 null로 반환
+        }
+
+        bookPick.setReason(bookPickEntity.getReason());
+
+
+        return bookPick;
     }
 
 

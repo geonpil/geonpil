@@ -11,7 +11,7 @@ public class BookPick {
 
     private String reason;       // 추천 이유
     private Integer displayOrder;// 노출 순서
-    private Boolean isVisible;   // 노출 여부
+    private Boolean isDeleted;   // 노출 여부
 
     private String isbn;
 

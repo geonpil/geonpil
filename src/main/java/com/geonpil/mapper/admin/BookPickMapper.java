@@ -1,7 +1,7 @@
 package com.geonpil.mapper.admin;
 
 
-import com.geonpil.domain.admin.BookPickEntity.BookPickEntity;
+import com.geonpil.domain.admin.bookPickEntity.BookPickEntity;
 import com.geonpil.dto.bookPick.BookPickWithBookInfo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,4 +14,6 @@ public interface BookPickMapper {
     void softDeleteBookPickById(String bookPickId);
 
     List<BookPickWithBookInfo> findAllBookPicks();
+
+    BookPickEntity findBookPickByBookId(Long bookId);
 }

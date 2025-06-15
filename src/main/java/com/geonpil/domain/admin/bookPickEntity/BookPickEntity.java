@@ -1,4 +1,4 @@
-package com.geonpil.domain.admin.BookPickEntity;
+package com.geonpil.domain.admin.bookPickEntity;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class BookPickEntity {
 
     private String reason;       // 추천 이유
     private Integer displayOrder;// 노출 순서
-    private Boolean isVisible;   // 노출 여부
+    private Boolean isDeleted;   // 노출 여부
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
