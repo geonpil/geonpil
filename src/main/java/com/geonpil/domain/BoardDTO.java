@@ -1,5 +1,6 @@
 package com.geonpil.domain;
 
+import com.geonpil.elasticsearch.BoardDocument;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -21,4 +22,25 @@ public class BoardDTO {
     private int commentCount; // ✅ 댓글 수
     private Timestamp createdAt;
     private Timestamp updatedAt;
+
+    public static BoardDTO from(BoardDocument doc) {
+        BoardDTO dto = new BoardDTO();
+        dto.setPostId(doc.getPostId());
+        dto.setUserId(doc.getUserId());
+        dto.setBoardCode(doc.getBoardCode());
+        dto.setCategoryId(doc.getCategoryId());
+        dto.setTitle(doc.getTitle());
+        dto.setContent(doc.getContent());
+        dto.setViewCount(doc.getViewCount());
+        dto.setLikeCount(doc.getLikeCount());
+        dto.setCreatedAt(doc.getCreatedAt());
+        return dto;
+    }
+
+
+
+
 }
+
+
+
