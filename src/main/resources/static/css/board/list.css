@@ -5,6 +5,12 @@
     max-height: 700px;
     margin-bottom : 15px;
 }
+@media (max-width: 768px) {
+    .posts-wrapper {
+        min-height: unset;         /* ✅ 최소 높이만 유지 */
+        max-height: unset;
+    }
+}
 
 
 .board-section {
@@ -118,6 +124,16 @@
     overflow-y: auto;
     height: 548px;
 }
+
+
+@media (max-width: 480px) {
+    .post-list {
+        height: auto;              /* ✅ 기존 height 제거 */
+        overflow-y: visible;       /* ✅ 스크롤도 제거 */
+    }
+}
+
+
 
 .post-row span {
     white-space: nowrap;

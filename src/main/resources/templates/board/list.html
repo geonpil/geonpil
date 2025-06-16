@@ -80,62 +80,6 @@
 <th:block layout:fragment="script">
     <script src="/js/board/board.js"></script>
     <script src="/js/commons/pagination.js"></script>
-    <script>
-
-
-        /*
-                function fetchFilteredPosts(page = 1) {
-                    const params = new URLSearchParams();
-
-                    highlightSelectedButtons()
-
-                    if (selectedCategories.size > 0) {
-                        params.set("categoryIds", Array.from(selectedCategories).join(","));
-                    }
-
-                    const boardCode = new URLSearchParams(window.location.search).get("boardCode");
-                    if (boardCode) {
-                        params.set("boardCode", boardCode);
-                    }
-
-                    params.set("page", page);
-
-                    fetch("/board/list/fragment?" + params.toString())
-                        .then(res => res.text())
-                        .then(html => {
-                            document.getElementById("post-list").innerHTML = html;
-                        })
-                        .catch(err => console.error("게시글 불러오기 실패", err));
-                }*/
-
-
-
-
-
-        /*        function highlightSelectedButtons() {
-                    const allBtn = document.querySelector('.category-btn[data-id=""]');
-
-                    document.querySelectorAll(".category-btn").forEach(btn => {
-                        const id = btn.dataset.id;
-
-                        if (id === "") {
-                            // 전체 버튼은 선택된 카테고리가 아무것도 없을 때만 활성화
-                            if (selectedCategories.size === 0) {
-                                btn.classList.add("active");
-                            } else {
-                                btn.classList.remove("active");
-                            }
-                        } else {
-                            // 일반 카테고리 버튼
-                            if (selectedCategories.has(id)) {
-                                btn.classList.add("active");
-                            } else {
-                                btn.classList.remove("active");
-                            }
-                        }
-                    });
-                }*/
-    </script>
 </th:block>
 </body>
 </html>
