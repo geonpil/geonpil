@@ -31,6 +31,7 @@ public class SecurityConfig {
     private final UserMapper userMapper;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomAuthFailureHandler customAuthFailureHandler;
+    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -49,7 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //누구나 접근
                         .requestMatchers(
-                                "/", "/signup", "/login","/find-password","/withdrawal-complete"
+                                "/", "/signup", "/login","/find-password","/withdrawal-complete", "signup-success"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
                                 "/api/search/**", "/books/**","/reviews/**","/bug-report/**"
@@ -78,7 +79,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(new CustomOAuth2SuccessHandler())
+                        .successHandler(customOAuth2SuccessHandler)
                         )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
@@ -117,7 +118,10 @@ public class SecurityConfig {
                     throws ServletException, IOException {
 
                 HttpSession session = request.getSession(false);
+
+                System.out.println("널인가? :" + request.getSession(false));
                 if (session != null) {
+                    System.out.println("이게뭐지 : " + (String) session.getAttribute("redirectAfterLogin"));
                     String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
                     if (redirectUrl != null) {
                         session.removeAttribute("redirectAfterLogin");

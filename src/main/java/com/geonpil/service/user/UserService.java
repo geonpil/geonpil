@@ -57,10 +57,15 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(newPassword);
         userMapper.updatePasswordByEmail(email, encodedPassword);
     }
+
+
+
     // 유저닉네임 가져오기
     public String getUserNicknameByUserId(Long userId) {
         return userMapper.getUserNicknameById(userId);
     }
+
+
 
 
     public User findUserById(Long userId) {

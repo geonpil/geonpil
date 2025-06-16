@@ -30,10 +30,8 @@ public class UserController {
         model.addAttribute("user", new User());
         return "signup"; // signup.html
     }
-    
-    
 
-    
+
     // 회원가입 처리
     @PostMapping("/signup")
     public String processSignup(@ModelAttribute User user,
@@ -60,14 +58,18 @@ public class UserController {
     }
 
 
-
     //로그인 화면
     @GetMapping("/login")
-    public String showLoginForm(HttpServletRequest request, HttpSession session) {
-        String referer = request.getHeader("Referer");
-        if (referer != null && !referer.contains("/login")) {
-            session.setAttribute("redirectAfterLogin", referer);
+    public String showLoginForm(HttpServletRequest request
+            , HttpSession session
+            , @RequestParam(value="from", required = false) String from
+    ) {
+        
+        //회원가입에서 로그인 후 redirect시 메인화면으로
+        if ("signup".equals(from)) {
+            session.removeAttribute("SPRING_SECURITY_SAVED_REQUEST");
         }
+
         return "login"; // templates/login.html 보여주기
     }
 
@@ -102,9 +104,6 @@ public class UserController {
     public String withdrawComplete() {
         return "user/withdrawal/withdrawal-complete";
     }
-
-
-
 
 
 }

@@ -14,8 +14,8 @@
     </resultMap>
 
     <insert id="insertLocalUser" parameterType="com.geonpil.domain.user.User">
-        INSERT INTO users (email, password, nickname, role)
-        VALUES (#{email}, #{password}, #{nickname}, #{role})
+        INSERT INTO users (email, password, nickname)
+        VALUES (#{email}, #{password}, #{nickname})
     </insert>
 
 

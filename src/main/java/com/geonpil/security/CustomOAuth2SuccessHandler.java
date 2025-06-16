@@ -8,9 +8,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+
+@Component
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -20,6 +25,12 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
                                         HttpServletResponse response,
                                         Authentication authentication)
             throws IOException, ServletException {
+        SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+        if (savedRequest != null) {
+            new DefaultRedirectStrategy().sendRedirect(request, response, savedRequest.getRedirectUrl());
+            return;
+        }
+
 
         HttpSession session = request.getSession(false);
         if (session != null) {
