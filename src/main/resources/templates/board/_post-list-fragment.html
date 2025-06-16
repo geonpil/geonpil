@@ -1,8 +1,13 @@
 <!-- 게시글 목록 + 페이지네이션 조각 -->
 <div id="post" class = "post" th:fragment="postListFragment(posts, page, totalPages, boardCode)">
-    <div th:if="${#lists.isEmpty(posts)}" class="empty-message">
-        등록된 글이 없어요.
-    </div>
+    <th:block th:if="${#lists.isEmpty(posts)}">
+        <div class="empty-board-message">
+            <i class="fa-solid fa-message"></i>
+            <p class="empty-text">아직 등록된 글이 없어요</p>
+            <p class="empty-sub">가장 먼저 글을 작성해보는 건 어떨까요?</p>
+            <a href="/board/write" class="empty-btn">✍ 글쓰기</a>
+        </div>
+    </th:block>
 
     <div class="post-row" th:each="post : ${posts}">
         <span class="category" th:text="${post.categoryName}">일반</span>

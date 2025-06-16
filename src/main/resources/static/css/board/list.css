@@ -207,4 +207,48 @@
     }
 
     /* END : 게시글 로우 */
+
+
+
+    .empty-board-message {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .empty-board-message i {
+        font-size: 48px;
+        color: #c0c0c0;
+    }
+
+    .empty-text {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    .empty-sub {
+        font-size: 0.95rem;
+        color: #999;
+    }
+
+    .empty-btn {
+        margin-top: 10px;
+        padding: 8px 16px;
+        background-color: var(--primary-color, #1F4EB2);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .empty-btn:hover {
+        background-color: var(--primary-hover, #163c8c);
+    }
 }
