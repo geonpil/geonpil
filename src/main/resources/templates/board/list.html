@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/css/board/list.css">
 </th:block>
 
-<body data-action = "board">
+<body data-action="board">
 <div layout:fragment="content">
     <div class="board-header" th:text="${boardName}">게시판 이름</div>
     <div class="board-section" style="gap :30px">
@@ -39,8 +39,7 @@
             <div class="posts-wrapper card">
                 <div class="posts-header">
                     <span>카테고리</span>
-                    <span>제목</span>
-                    <span>작성자</span>
+                    <span>제목 및 작성자</span>
                     <span>작성일</span>
                     <span>조회</span>
                     <span>추천</span>
@@ -50,16 +49,27 @@
                 </div>
             </div>
 
+
+
+
+            <div class="board-control-bar">
+                <div class="board-search-box">
+                    <input type="text" id="postSearchInput" placeholder="검색어를 입력하세요"/>
+                    <select id="searchType">
+                        <option value="title">제목</option>
+                        <option value="titleContent">제목+내용</option>
+                    </select>
+                    <button onclick="searchPosts()">🔍</button>
+                </div>
+
+                <a th:href="@{/board/write(boardCode=${boardCode})}" class="write-btn basic-btn">✍ 글쓰기</a>
+            </div>
+
+
             <div id="pagination-area">
                 <div th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}">
+                </div>
             </div>
-
-            </div>
-
-            <div class="write-btn">
-                <a th:href="@{/board/write(boardCode=${boardCode})}" class="basic-btn">✍ 글쓰기</a>
-            </div>
-
         </div>
 
 
@@ -73,61 +83,58 @@
     <script>
 
 
+        /*
+                function fetchFilteredPosts(page = 1) {
+                    const params = new URLSearchParams();
 
+                    highlightSelectedButtons()
 
-
-/*
-        function fetchFilteredPosts(page = 1) {
-            const params = new URLSearchParams();
-
-            highlightSelectedButtons()
-
-            if (selectedCategories.size > 0) {
-                params.set("categoryIds", Array.from(selectedCategories).join(","));
-            }
-
-            const boardCode = new URLSearchParams(window.location.search).get("boardCode");
-            if (boardCode) {
-                params.set("boardCode", boardCode);
-            }
-
-            params.set("page", page);
-
-            fetch("/board/list/fragment?" + params.toString())
-                .then(res => res.text())
-                .then(html => {
-                    document.getElementById("post-list").innerHTML = html;
-                })
-                .catch(err => console.error("게시글 불러오기 실패", err));
-        }*/
-
-
-
-
-
-/*        function highlightSelectedButtons() {
-            const allBtn = document.querySelector('.category-btn[data-id=""]');
-
-            document.querySelectorAll(".category-btn").forEach(btn => {
-                const id = btn.dataset.id;
-
-                if (id === "") {
-                    // 전체 버튼은 선택된 카테고리가 아무것도 없을 때만 활성화
-                    if (selectedCategories.size === 0) {
-                        btn.classList.add("active");
-                    } else {
-                        btn.classList.remove("active");
+                    if (selectedCategories.size > 0) {
+                        params.set("categoryIds", Array.from(selectedCategories).join(","));
                     }
-                } else {
-                    // 일반 카테고리 버튼
-                    if (selectedCategories.has(id)) {
-                        btn.classList.add("active");
-                    } else {
-                        btn.classList.remove("active");
+
+                    const boardCode = new URLSearchParams(window.location.search).get("boardCode");
+                    if (boardCode) {
+                        params.set("boardCode", boardCode);
                     }
-                }
-            });
-        }*/
+
+                    params.set("page", page);
+
+                    fetch("/board/list/fragment?" + params.toString())
+                        .then(res => res.text())
+                        .then(html => {
+                            document.getElementById("post-list").innerHTML = html;
+                        })
+                        .catch(err => console.error("게시글 불러오기 실패", err));
+                }*/
+
+
+
+
+
+        /*        function highlightSelectedButtons() {
+                    const allBtn = document.querySelector('.category-btn[data-id=""]');
+
+                    document.querySelectorAll(".category-btn").forEach(btn => {
+                        const id = btn.dataset.id;
+
+                        if (id === "") {
+                            // 전체 버튼은 선택된 카테고리가 아무것도 없을 때만 활성화
+                            if (selectedCategories.size === 0) {
+                                btn.classList.add("active");
+                            } else {
+                                btn.classList.remove("active");
+                            }
+                        } else {
+                            // 일반 카테고리 버튼
+                            if (selectedCategories.has(id)) {
+                                btn.classList.add("active");
+                            } else {
+                                btn.classList.remove("active");
+                            }
+                        }
+                    });
+                }*/
     </script>
 </th:block>
 </body>

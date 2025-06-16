@@ -1,5 +1,5 @@
 <!-- 게시글 목록 + 페이지네이션 조각 -->
-<div id="post" class = "post" th:fragment="postListFragment(posts, page, totalPages, boardCode)">
+<th:block th:fragment="postListFragment(posts, page, totalPages, boardCode)">
     <th:block th:if="${#lists.isEmpty(posts)}">
         <div class="empty-board-message">
             <i class="fa-solid fa-message"></i>
@@ -11,16 +11,21 @@
 
     <div class="post-row" th:each="post : ${posts}">
         <span class="category" th:text="${post.categoryName}">일반</span>
-        <span class="title">
-      <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
-         th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
-         th:title="${post.title}">제목</a>
+        <span class="title with-author">
+            <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
+                 th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
+                 th:title="${post.title}">제목</a>
+            <div class="by-author" th:text="|by ${post.nickname}|">글쓴이: 홍길동</div>
         </span>
-
-        <span class="author" th:text="${post.nickname}">작성자</span>
         <span class="date" th:text="${#dates.format(post.createdAt, 'MM-dd')}">25-05-01</span>
         <span class="views" th:text="${post.viewCount}">147</span>
         <span class="likes" th:text="${post.likeCount}">1</span>
+
+        <span class="title mobile-title">
+            <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
+               th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
+               th:title="${post.title}">제목</a>
+        </span>
 
         <div class="meta">
             <span class="author" th:text="${post.nickname}">작성자</span>
@@ -30,20 +35,4 @@
         </div>
     </div>
 
-  <!--  <div class="board-footer">
-        <div class="pagination">
-            <button type="button" th:if="${page > 1}" th:text="'◀ 이전'"
-                    th:onclick="'fetchFilteredPosts(' + (${page} - 1) + ')'"></button>
-
-            <button type="button"
-                    th:each="i : ${#numbers.sequence(1, totalPages)}"
-                    th:text="${i}"
-                    th:classappend="${i == page} ? 'active'"
-                    th:onclick="'fetchFilteredPosts(' + ${i} + ')'">
-            </button>
-
-            <button type="button" th:if="${page < totalPages}" th:text="'다음 ▶'"
-                    th:onclick="'fetchFilteredPosts(' + (${page} + 1) + ')'"></button>
-        </div>
-    </div>-->
-</div>
+</th:block>
