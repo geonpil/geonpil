@@ -2,6 +2,7 @@ package com.geonpil.service.board;
 
 import com.geonpil.domain.BoardDTO;
 import com.geonpil.elasticsearch.BoardDocument;
+import com.geonpil.mapper.BoardMapper;
 import com.geonpil.repository.search.BoardSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder;
@@ -13,6 +14,7 @@ import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,24 +24,16 @@ public class BoardSearchService {
 
     private final BoardSearchRepository boardSearchRepository;
     private final ElasticsearchOperations elasticsearchOperations;
+    private final BoardMapper boardMapper;
 
     public void index(BoardDTO dto) {
-        BoardDocument doc = new BoardDocument();
-        doc.setPostId(dto.getPostId());
-        doc.setUserId(dto.getUserId());
-        doc.setBoardCode(dto.getBoardCode());
-        doc.setCategoryId(dto.getCategoryId());
-        doc.setTitle(dto.getTitle());
-        doc.setContent(dto.getContent());
-        doc.setViewCount(dto.getViewCount());
-        doc.setLikeCount(dto.getLikeCount());
-        doc.setCreatedAt(dto.getCreatedAt());
+        BoardDocument doc = new BoardDocument(dto.getPostId(), dto.getTitle(), dto.getContent());
 
         boardSearchRepository.save(doc);
     }
 
 
-    public List<BoardDocument> searchByKeyword(String keyword) {
+    public List<BoardDTO> searchByKeyword(String keyword) {
         String queryString = String.format("""
         {
           "multi_match": {
@@ -48,13 +42,25 @@ public class BoardSearchService {
           }
         }
     """, keyword);
-
         Query query = new StringQuery(queryString);
-
         SearchHits<BoardDocument> hits = elasticsearchOperations.search(query, BoardDocument.class);
 
-        return hits.getSearchHits().stream()
-                .map(SearchHit::getContent)
-                .collect(Collectors.toList());
+        List<Long> postIds = hits.getSearchHits().stream()
+                .map(hit -> hit.getContent().getPostId())
+                .toList();
+
+
+        return boardMapper.findBoardsByPostIds(postIds);
+    }
+
+
+    public void indexAllFromDatabase() {
+        List<BoardDTO> allPosts = boardMapper.findAllForIndexing();
+
+        List<BoardDocument> docs = allPosts.stream()
+                .map(dto -> new BoardDocument(dto.getPostId(), dto.getTitle(), dto.getContent()))
+                .toList();
+
+        boardSearchRepository.saveAll(docs);
     }
 }

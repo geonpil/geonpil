@@ -5,6 +5,19 @@
 
 <mapper namespace="com.geonpil.mapper.BoardMapper">
 
+    <resultMap id="boardResultMap" type="com.geonpil.domain.BoardDTO">
+        <id property="postId" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="boardCode" column="board_code"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="nickname" column="nickname"/>
+        <result property="categoryName" column="category_name"/>
+    </resultMap>
+
+
     <insert id="insertBoard"
             parameterType="com.geonpil.domain.BoardDTO"
             useGeneratedKeys="true"
@@ -166,5 +179,38 @@
                 #{id}
             </foreach>
         </if>
+    </select>
+
+
+    <select id="findAllForIndexing" resultMap = "boardResultMap">
+        SELECT post_id, title, content
+        FROM board
+    </select>
+
+
+    <select id="findBoardsByPostIds" resultMap = "boardResultMap">
+        SELECT b.post_id
+             , b.title
+             , b.content
+             , b.board_code
+             , b.view_count
+             , b.like_count
+             , b.created_at
+             , u.nickname
+             , c.category_name
+        FROM board b
+        JOIN users u ON b.user_id = u.id
+        JOIN category c ON b.category_id = c.category_id
+        <where>
+            <if test="postIds != null and postIds.size() > 0">
+                b.post_id IN
+                <foreach item="id" collection="postIds" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="postIds == null or postIds.size() == 0">
+                1 = 0
+            </if>
+        </where>
     </select>
 </mapper>

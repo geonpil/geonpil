@@ -1,23 +1,19 @@
 package com.geonpil.elasticsearch;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.sql.Timestamp;
 
 @Data
 @Document(indexName = "board")  // Elasticsearch 인덱스명
+@AllArgsConstructor   // 모든 필드를 받는 생성자
+@NoArgsConstructor
 public class BoardDocument {
-
     @Id
     private Long postId;
-
-    private Long userId;
-    private int boardCode;
-    private Long categoryId;
     private String title;
     private String content;
-    private int viewCount;
-    private int likeCount;
-    private Timestamp createdAt;
 }

@@ -26,14 +26,8 @@ public class BoardDTO {
     public static BoardDTO from(BoardDocument doc) {
         BoardDTO dto = new BoardDTO();
         dto.setPostId(doc.getPostId());
-        dto.setUserId(doc.getUserId());
-        dto.setBoardCode(doc.getBoardCode());
-        dto.setCategoryId(doc.getCategoryId());
         dto.setTitle(doc.getTitle());
         dto.setContent(doc.getContent());
-        dto.setViewCount(doc.getViewCount());
-        dto.setLikeCount(doc.getLikeCount());
-        dto.setCreatedAt(doc.getCreatedAt());
         return dto;
     }
 

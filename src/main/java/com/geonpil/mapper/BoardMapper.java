@@ -29,4 +29,12 @@ public interface BoardMapper {
 
     int countAll(@Param("boardCode") int boardCode,
                  @Param("categoryIds") List<Long> categoryIds);
+
+
+    List<BoardDTO> findAllForIndexing();
+
+
+    List<BoardDTO> findBoardsByPostIds(@Param("postIds") List<Long> postIds);
+
+
 }
