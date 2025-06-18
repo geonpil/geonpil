@@ -183,16 +183,16 @@ public class BoardController {
     public String listFragment(@RequestParam("boardCode") int boardCode,
                                @RequestParam(required = false) List<Long> categoryIds,
                                @RequestParam(value = "page", defaultValue = "1") int page,
+                               @RequestParam(required = false) String keyword,
                                Model model) {
         int size = 10;
 
         PageResult<BoardDTO> pageResult = boardService.findByPage(boardCode, categoryIds, page, size);
 
         int pageGroupSize = 5; // 한 번에 보여줄 페이지 수
-        int currentPage = page; // 요청받은 페이지
         int totalPages = pageResult.getTotalPages();   // 전체 페이지 수
 
-        PageInfo pageInfo = buildPageInfo(currentPage, totalPages, pageGroupSize,"");
+        PageInfo pageInfo = buildPageInfo(page, totalPages, pageGroupSize, keyword);
 
 
         model.addAttribute("posts", pageResult.getPosts());
@@ -204,7 +204,7 @@ public class BoardController {
         model.addAttribute("action", "board"); // 또는 "book"
 
 
-        return "board/_post-list-fragment :: postListFragment";
+        return "board/_search-result-fragment::searchResultFragment";
     }
 
 

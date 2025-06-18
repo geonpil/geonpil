@@ -182,9 +182,23 @@
     </select>
 
 
-    <select id="findAllForIndexing" resultMap = "boardResultMap">
-        SELECT post_id, title, content
+
+    <resultMap id="BoardResultMap" type="com.geonpil.domain.BoardDTO">
+        <result column="post_id" property="postId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="board_code" property="boardCode"/>
+    </resultMap>
+
+
+    <select id="findAllForIndexing" resultMap="BoardResultMap">
+        SELECT 
+            post_id,
+            title,
+            content,
+            board_code
         FROM board
+        WHERE is_deleted = false
     </select>
 
 
@@ -201,16 +215,17 @@
         FROM board b
         JOIN users u ON b.user_id = u.id
         JOIN category c ON b.category_id = c.category_id
-        <where>
-            <if test="postIds != null and postIds.size() > 0">
-                b.post_id IN
+        WHERE b.board_code = #{boardCode}
+        <choose>
+            <when test="postIds != null and postIds.size() > 0">
+                AND b.post_id IN
                 <foreach item="id" collection="postIds" open="(" separator="," close=")">
                     #{id}
                 </foreach>
-            </if>
-            <if test="postIds == null or postIds.size() == 0">
-                1 = 0
-            </if>
-        </where>
+            </when>
+            <otherwise>
+                AND FALSE
+            </otherwise>
+        </choose>
     </select>
 </mapper>

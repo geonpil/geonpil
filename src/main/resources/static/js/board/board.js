@@ -1,34 +1,59 @@
 let selectedCategories = new Set();
 
-function fetchBoardPosts(page = 1, categoryParam = new Set()) {
+function fetchBoardPosts(page = 1,  keyword = "", categoryParam = new Set()) {
     const params = new URLSearchParams();
+
 
     highlightSelectedButtons();
 
+    //카테고리 파라미터 세팅
     if (categoryParam.size > 0) {
         params.set("categoryIds", Array.from(categoryParam).join(","));
     }
-
+    //게시판 코드 파라미터 세팅
     const boardCode = new URLSearchParams(window.location.search).get("boardCode");
     if (boardCode) params.set("boardCode", boardCode);
 
+    //페이지 파라미터 세팅
     params.set("page", page);
 
-    const newUrl = `/board/list?` + params.toString();
-    history.pushState({}, '', newUrl);
+    // 세팅한파라미터 push state(뒤로가기용)
+   // const newUrl = `/board/list?` + params.toString();
+    let url ="";
+    let urlForPage =""
 
 
-    fetch("/board/list/fragment?" + params.toString())
+   if (keyword) {
+        // 검색용
+        params.set("keyword", keyword);
+        url = "/api/search/board?" + params.toString();
+    } else {
+        // 일반 목록용
+        url = "/board/list/fragment?" + params.toString();
+      //  urlForPage = "/board/list/fragment/pagination?" + params.toString();
+   }
+
+    history.pushState({}, '', "/board/list?" + params.toString());
+
+    fetch(url)
         .then(res => res.text())
         .then(html => {
             document.getElementById("post-list").innerHTML = html;
         });
 
-    fetch("/board/list/fragment/pagination?" + params.toString())
+
+
+/*    fetch(url)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("post-list").innerHTML = html;
+        });
+
+    fetch(urlForPage)
         .then(res => res.text())
         .then(html => {
             document.getElementById("pagination-area").innerHTML = html;
-        });
+        });*/
 }
 
 //뒤로 가기시
@@ -78,9 +103,9 @@ function restoreBoardUI(categoryIds = [], page = 1) {
     if(!categoryIds){
         initSelectAllCategory();
     }
-    selectedCategories = new Set(categoryIds);
+   // selectedCategories = new Set(categoryIds);
 
-    fetchBoardPosts(page, selectedCategories);
+   // fetchBoardPosts(page, "",selectedCategories);
 
 }
 
@@ -101,7 +126,7 @@ function toggleCategory(btn) {
 
 
     console.log("토글 정상 작동")
-    fetchBoardPosts(1, selectedCategories);
+    fetchBoardPosts(1,"", selectedCategories);
 }
 
 
@@ -116,7 +141,7 @@ function selectAllCategories(btn) {
     selectedCategories.clear();
 
     // 전체 게시글 요청
-    fetchBoardPosts(page, selectedCategories);
+    fetchBoardPosts(page,null, selectedCategories);
 }
 
 

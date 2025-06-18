@@ -1,6 +1,9 @@
 package com.geonpil.controller.board;
 
 import com.geonpil.domain.BoardDTO;
+import com.geonpil.domain.PageResult;
+import com.geonpil.dto.boardSearch.SearchResult;
+import com.geonpil.dto.commons.PageInfo;
 import com.geonpil.service.board.BoardSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.geonpil.util.PaginationUtil.buildPageInfo;
 
 @Controller
 @RequestMapping("/api/search/board")
@@ -32,10 +37,23 @@ public class BoardSearchController {
     }
 
     @GetMapping
-    public String searchBoard(@RequestParam String keyword, Model model) {
-        List<BoardDTO> results = boardSearchService.searchByKeyword(keyword);
+    public String searchBoard(@RequestParam String keyword,
+                              @RequestParam(defaultValue = "1") int page,
+                              @RequestParam Integer boardCode,
+                              Model model) {
+        int size = 10;
+
+        SearchResult<BoardDTO> results = boardSearchService.searchByKeyword(keyword, page, size, boardCode);
+
+        PageInfo pageInfo = buildPageInfo(page, results.getTotalPages(),10,keyword);
+
         System.out.println("키워드 :" + keyword);
-        model.addAttribute("posts", results);
-        return "board/_post-list-fragment::postListFragment";
+        System.out.println("게시판 코드 :" + boardCode);
+        model.addAttribute("posts", results.getContent());
+        model.addAttribute("action", "board");
+
+        model.addAttribute("pageInfo", pageInfo);
+
+        return "board/_search-result-fragment::searchResultFragment";
     }
 }

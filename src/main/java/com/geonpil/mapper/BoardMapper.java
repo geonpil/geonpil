@@ -34,7 +34,7 @@ public interface BoardMapper {
     List<BoardDTO> findAllForIndexing();
 
 
-    List<BoardDTO> findBoardsByPostIds(@Param("postIds") List<Long> postIds);
+    List<BoardDTO> findBoardsByPostIds(@Param("postIds") List<Long> postIds, @Param("boardCode") Integer boardCode);
 
 
 }

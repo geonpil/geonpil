@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 
 @Data
 public class BoardDTO {
-    @Id
     private Long postId;
     private Long userId;
     private int boardCode;
@@ -28,6 +27,7 @@ public class BoardDTO {
         dto.setPostId(doc.getPostId());
         dto.setTitle(doc.getTitle());
         dto.setContent(doc.getContent());
+        dto.setBoardCode(doc.getBoardCode());
         return dto;
     }
 

@@ -21,7 +21,7 @@ document.addEventListener("click", function (e) {
         const sort = urlParams.get("sort") || "recent";
 
         if (action === "board") {
-            fetchBoardPosts(page,new Set(categoryIds));
+            fetchBoardPosts(page,"",new Set(categoryIds));
         } else if (action === "book"||action === "admin") {
             fetchBookSearchResults(page, query);
         } else if (action === "contest") {
@@ -36,7 +36,7 @@ document.addEventListener("click", function (e) {
 });
 
 
-// 새로 화면을 로딩할 때
+// 뒤로가기 용 로딩할 때
 document.addEventListener("DOMContentLoaded", function (event) {
     console.log("📌dom load 발생");
 
@@ -53,12 +53,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
     const isClosedIncluded = urlParams.get("isClosedIncluded") === "true";
     const sort = urlParams.get("sort") || "recent";
 
+    //최초로딩 판단
+    const isInitialLoad = !query && categoryIds.length === 0 && page === 1;
 
     console.log("디버그:" + categoryIds);
     if (action === "board") {
-        console.log("카테고리 세팅2");
-        fetchBoardPosts(page, new Set(categoryIds));
-        restoreBoardUI(categoryIds, page)
+        if(!isInitialLoad){
+            console.log("패치됨");
+            fetchBoardPosts(page,"", new Set(categoryIds));
+            restoreBoardUI(categoryIds, page)
+        }
         highlightSelectedButtons();
     } else if (action === "book") {
      //   fetchBookSearchResults(page, query);

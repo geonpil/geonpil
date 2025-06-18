@@ -1,5 +1,5 @@
-<!-- 게시글 목록 + 페이지네이션 조각 -->
-<th:block th:fragment="postListFragment(posts, page, totalPages, boardCode)">
+<!-- 게시글 목록 -->
+<th:block th:fragment="postListFragment(results)">
     <th:block th:if="${#lists.isEmpty(posts)}">
         <div class="empty-board-message">
             <i class="fa-solid fa-message"></i>

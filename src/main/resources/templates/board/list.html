@@ -44,8 +44,7 @@
                     <span>조회</span>
                     <span>추천</span>
                 </div>
-                <div id="post-list" class="post-list"
-                     th:include="~{board/_post-list-fragment :: postListFragment(${posts}, ${page}, ${totalPages}, ${boardCode})}">
+                <div id = "post-list" th:include="~{board/_search-result-fragment :: searchResultFragment}">
                 </div>
             </div>
 
@@ -64,10 +63,10 @@
             </div>
 
 
-            <div id="pagination-area">
+<!--            <div id="pagination-area">
                 <div th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}">
                 </div>
-            </div>
+            </div>-->
         </div>
 
 
