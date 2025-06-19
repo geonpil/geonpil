@@ -59,16 +59,13 @@
         b.created_at AS createdAt,
         b.updated_at AS updatedAt,
         u.nickname,
-        COUNT(cm.comment_id) AS commentCount
+        (SELECT COUNT(*) FROM comments cm WHERE b.post_id = cm.post_id AND cm.is_deleted = FALSE) AS commentCount
         FROM board b
         JOIN users u ON b.user_id = u.id
         JOIN category c ON b.category_id = c.category_id
         LEFT JOIN comments cm ON b.post_id = cm.post_id AND cm.is_deleted = FALSE
         WHERE b.is_deleted = FALSE
          AND b.board_code = #{boardCode}
-        GROUP BY
-        b.post_id, b.category_id, c.category_name, b.title, b.content,
-        b.view_count, b.like_count, b.created_at, b.updated_at, u.nickname
         ORDER BY b.created_at DESC
     </select>
 
