@@ -3,7 +3,6 @@ let selectedCategories = new Set();
 function fetchBoardPosts(page = 1,  keyword = "", categoryParam = new Set()) {
     const params = new URLSearchParams();
 
-
     highlightSelectedButtons();
 
     //카테고리 파라미터 세팅
@@ -17,11 +16,7 @@ function fetchBoardPosts(page = 1,  keyword = "", categoryParam = new Set()) {
     //페이지 파라미터 세팅
     params.set("page", page);
 
-    // 세팅한파라미터 push state(뒤로가기용)
-   // const newUrl = `/board/list?` + params.toString();
     let url ="";
-    let urlForPage =""
-
 
    if (keyword) {
         // 검색용

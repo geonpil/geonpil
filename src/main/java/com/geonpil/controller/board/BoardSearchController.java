@@ -40,15 +40,17 @@ public class BoardSearchController {
     public String searchBoard(@RequestParam String keyword,
                               @RequestParam(defaultValue = "1") int page,
                               @RequestParam Integer boardCode,
+                              @RequestParam String categoryIds,
                               Model model) {
         int size = 10;
 
-        SearchResult<BoardDTO> results = boardSearchService.searchByKeyword(keyword, page, size, boardCode);
+        SearchResult<BoardDTO> results = boardSearchService.searchByKeyword(keyword, page, size, boardCode, categoryIds);
 
         PageInfo pageInfo = buildPageInfo(page, results.getTotalPages(),10,keyword);
 
         System.out.println("키워드 :" + keyword);
         System.out.println("게시판 코드 :" + boardCode);
+        System.out.println("카테고리 아이디" + categoryIds);
         model.addAttribute("posts", results.getContent());
         model.addAttribute("action", "board");
 

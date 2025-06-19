@@ -25,4 +25,8 @@ public class BoardDocument {
     
     @Field(type = FieldType.Integer)
     private int boardCode;
+
+    @Field(type = FieldType.Long)
+    private Long categoryId;
+
 }

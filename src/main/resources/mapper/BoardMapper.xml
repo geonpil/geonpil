@@ -188,6 +188,7 @@
         <result column="title" property="title"/>
         <result column="content" property="content"/>
         <result column="board_code" property="boardCode"/>
+        <result column="category_id" property="categoryId"/>
     </resultMap>
 
 
@@ -196,7 +197,8 @@
             post_id,
             title,
             content,
-            board_code
+            board_code,
+            category_id
         FROM board
         WHERE is_deleted = false
     </select>

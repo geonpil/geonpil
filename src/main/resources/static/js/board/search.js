@@ -15,6 +15,7 @@ function getBoardCodeFromUrl() {
 // 검색 로직 함수로 분리
 function searchHandler() {
     const keyword = document.getElementById("search-input").value.trim();
+    const categoryIds = new URLSearchParams(window.location.search).get('categoryIds') || '';
     const boardCode = getBoardCodeFromUrl();
     const postArea = document.getElementById("post-list");
 
@@ -28,7 +29,7 @@ function searchHandler() {
         return;
     }
 
-    fetch(`/api/search/board?keyword=${encodeURIComponent(keyword)}&page=1&boardCode=${boardCode}`, {
+    fetch(`/api/search/board?keyword=${encodeURIComponent(keyword)}&page=1&boardCode=${boardCode}&categoryIds=${encodeURIComponent(categoryIds)}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -45,6 +46,7 @@ function searchHandler() {
             postArea.innerHTML = html;
             // URL 업데이트 (boardCode는 이미 URL에 있으므로 유지)
             const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("categoryIds", categoryIds); // 카테고리 파라미터 초기화
             currentUrl.searchParams.set('keyword', keyword);
             currentUrl.searchParams.set('page', '1');
             history.pushState(null, "", currentUrl.toString());

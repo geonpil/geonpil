@@ -19,9 +19,11 @@ document.addEventListener("click", function (e) {
         const categoryIds = categoryParam ? categoryParam.split(',') : [];
         const isClosedIncluded = urlParams.get("isClosedIncluded") === "true";
         const sort = urlParams.get("sort") || "recent";
+        const keyword = urlParams.get("keyword")||"";
+
 
         if (action === "board") {
-            fetchBoardPosts(page,"",new Set(categoryIds));
+            fetchBoardPosts(page,keyword,new Set(categoryIds));
         } else if (action === "book"||action === "admin") {
             fetchBookSearchResults(page, query);
         } else if (action === "contest") {
