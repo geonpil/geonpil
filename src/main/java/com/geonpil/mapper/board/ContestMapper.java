@@ -1,7 +1,5 @@
-package com.geonpil.mapper;
+package com.geonpil.mapper.board;
 
-import com.geonpil.domain.BoardDTO;
-import com.geonpil.domain.Category;
 import com.geonpil.domain.ContestPost;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

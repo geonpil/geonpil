@@ -261,6 +261,9 @@
 }
 
 
+
+
+
 /* 데스크탑 레이아웃 */
 @media (min-width: 769px) {
     .post-row {
@@ -372,6 +375,10 @@
 
 
 
+
+
+
+    /* START : 빈 게시판 메시지 */
     .empty-board-message {
         text-align: center;
         padding: 60px 20px;
@@ -415,4 +422,5 @@
     .empty-btn:hover {
         background-color: var(--primary-hover, #163c8c);
     }
+    /* END : 빈 게시판 메시지 */
 }

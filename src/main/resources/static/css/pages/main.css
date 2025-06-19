@@ -116,3 +116,60 @@
 }
 
 /* END : 책 영역 */
+
+
+
+/*메인화면 게시글 */
+.main-section .post-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #e0e0e0; /* ✅ 회색 구분선 추가 */
+}
+
+.main-section .post-row:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.main-section .post-row:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.main-section .post-row .category {
+    font-weight: bold;
+    color: #1f4eb2;
+}
+
+.main-section .title-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.main-section .post-row .title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+    max-width: 100%;
+}
+
+.main-section .post-row .nickname {
+    font-size: 0.85rem;
+    color: #888;
+    white-space: nowrap;
+}
+
+.main-section .post-row .commentCount {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+/* 메인화면 게시글 끝 */

@@ -1,9 +1,7 @@
 package com.geonpil.service;
 
-import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Category;
-import com.geonpil.mapper.BoardMapper;
-import com.geonpil.mapper.CategoryMapper;
+import com.geonpil.mapper.board.CategoryMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

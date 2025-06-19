@@ -1,9 +1,7 @@
 package com.geonpil.service;
 
-import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Comment;
-import com.geonpil.mapper.BoardMapper;
-import com.geonpil.mapper.CommentMapper;
+import com.geonpil.mapper.board.CommentMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

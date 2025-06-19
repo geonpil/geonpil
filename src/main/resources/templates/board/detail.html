@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/css/pages/board/detail.css">
+    <link rel="stylesheet" href="/css/pages/board/board.css">
 </th:block>
 
 <body>
@@ -167,7 +168,6 @@
                                         등록
                                     </button>
                                 </div>
-
                                 <button type="button"
                                         class="edit-reply-btn"
                                         th:if="${reply.userId == #authentication.principal.id}"
@@ -175,6 +175,7 @@
                                         onclick="toggleEdit(this)">
                                     수정
                                 </button>
+
                                 <button type="button"
                                         class="delete-reply-btn"
                                         th:if="${reply.userId == #authentication.principal.id}"

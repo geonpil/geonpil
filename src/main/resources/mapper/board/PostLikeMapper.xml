@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geonpil.mapper.PostLikeMapper">
+<mapper namespace="com.geonpil.mapper.board.PostLikeMapper">
 
     <select id="countByPostIdAndUserId" resultType="int">
         SELECT COUNT(*)

@@ -1,11 +1,8 @@
-package com.geonpil.mapper;
+package com.geonpil.mapper.board;
 
-import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.PostLike;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface PostLikeMapper {

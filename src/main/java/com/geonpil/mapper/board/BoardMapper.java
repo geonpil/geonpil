@@ -1,4 +1,4 @@
-package com.geonpil.mapper;
+package com.geonpil.mapper.board;
 
 import com.geonpil.domain.BoardDTO;
 import org.apache.ibatis.annotations.Mapper;

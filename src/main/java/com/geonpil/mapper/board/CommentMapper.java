@@ -1,7 +1,6 @@
-package com.geonpil.mapper;
+package com.geonpil.mapper.board;
 
 import com.geonpil.domain.Comment;
-import com.geonpil.service.CommentService;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geonpil.mapper.CommentMapper">
+<mapper namespace="com.geonpil.mapper.board.CommentMapper">
 
     <resultMap id="CommentResultMap" type="com.geonpil.domain.Comment">
         <id property="commentId" column="comment_id"/>

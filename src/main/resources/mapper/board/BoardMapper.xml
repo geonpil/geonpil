@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geonpil.mapper.BoardMapper">
+<mapper namespace="com.geonpil.mapper.board.BoardMapper">
 
     <resultMap id="boardResultMap" type="com.geonpil.domain.BoardDTO">
         <id property="postId" column="post_id"/>

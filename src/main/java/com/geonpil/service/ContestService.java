@@ -1,8 +1,8 @@
 package com.geonpil.service;
 
 import com.geonpil.domain.*;
-import com.geonpil.mapper.BoardMapper;
-import com.geonpil.mapper.ContestMapper;
+import com.geonpil.mapper.board.BoardMapper;
+import com.geonpil.mapper.board.ContestMapper;
 import com.geonpil.util.DdayUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;

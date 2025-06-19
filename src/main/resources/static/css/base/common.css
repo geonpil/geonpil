@@ -83,3 +83,77 @@
 }
 
 
+
+/* 페이지내이션 시작 */
+.pagination-area {
+    padding: 15px;
+}
+
+
+.pagination {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+
+.pagination button {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: black;
+    background-color: #fff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+    background-color: #f0f0f0;
+    color: black;
+}
+
+.pagination button.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+/* 페이지내이션 끝 */
+
+
+
+
+/* 카테고리 디자인 */
+.category-filter {
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.category-btn.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* 카테고리 디자인 끝*/
+
+/*START : 목록으로  ,삭제 등 버튼 디자인 */
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+/*END : 목록으로  ,삭제 등 버튼 디자인 */
+

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.geonpil.mapper.ContestMapper">
+<mapper namespace="com.geonpil.mapper.board.ContestMapper">
 
     <resultMap id="contestPostResultMap" type="com.geonpil.domain.ContestPost">
         <id property="postId" column="post_id"/>
@@ -11,6 +11,7 @@
         <result property="title" column="title"/>
         <result property="viewCount" column="view_count"/>
         <result property="boardCode" column="board_code"/>
+        <result property="content" column="content"/>
         <result property="createdAt" column="created_at"/>
         <result property="categoryName" column="category_name"/>
         <result property="categoryNames" column="category_names"/>

@@ -1,9 +1,7 @@
-package com.geonpil.mapper;
+package com.geonpil.mapper.board;
 
-import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Category;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 

@@ -20,6 +20,7 @@ public class ContestPost extends BoardDTO {
     private LocalDate startDate;       // 시작일
     private LocalDate endDate;         // 마감일
     private String hostName;           // 주최사
+    private String content;             // 공모전 내용
     private String target;             // 응모 대상자
     private String totalPrize;         // 총 상금
     private String firstPrize;         // 1등 상금
