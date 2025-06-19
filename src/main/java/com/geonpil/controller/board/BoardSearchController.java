@@ -40,7 +40,7 @@ public class BoardSearchController {
     public String searchBoard(@RequestParam String keyword,
                               @RequestParam(defaultValue = "1") int page,
                               @RequestParam Integer boardCode,
-                              @RequestParam String categoryIds,
+                              @RequestParam(required = false, defaultValue = "") String categoryIds,
                               Model model) {
         int size = 10;
 

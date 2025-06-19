@@ -38,17 +38,6 @@ function fetchBoardPosts(page = 1,  keyword = "", categoryParam = new Set()) {
 
 
 
-/*    fetch(url)
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("post-list").innerHTML = html;
-        });
-
-    fetch(urlForPage)
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("pagination-area").innerHTML = html;
-        });*/
 }
 
 //뒤로 가기시
@@ -69,27 +58,6 @@ window.addEventListener("popstate", () => {
 
 
 
-/*window.addEventListener("DOMContentLoaded", () => {
-
-    console.log("카테고리 세팅");
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const categoryParam = urlParams.get("categoryIds");
-    const categoryIds = categoryParam ? categoryParam.split(",") : [];
-
-    if(!categoryParam){
-        initSelectAllCategory();
-    }
-
-    selectedCategories = new Set(categoryIds);
-    const page = parseInt(urlParams.get("page")) || 1;
-
-    // ✅ 선택된 카테고리 복원 (선택사항)
-    highlightSelectedButtons(); // UI 반영 함수
-
-    fetchBoardPosts(page, selectedCategories);
-});*/
-
 
 function restoreBoardUI(categoryIds = [], page = 1) {
 
@@ -98,34 +66,55 @@ function restoreBoardUI(categoryIds = [], page = 1) {
     if(!categoryIds){
         initSelectAllCategory();
     }
-   // selectedCategories = new Set(categoryIds);
 
-   // fetchBoardPosts(page, "",selectedCategories);
+}
 
+function initSelectAllCategory(){
+    // ✅ '전체' 버튼에 .active 클래스 부여
+    const allBtn = document.querySelector('.category-btn[data-id=""]');
+    if (allBtn) allBtn.classList.add("active");
 }
 
 
 
-function toggleCategory(btn) {
+
+document.querySelectorAll(".category-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const keyword = document.getElementById("search-input").value.trim()||"";
+
+        if (btn.dataset.id === "") {
+            selectAllCategories(btn, keyword);
+        } else {
+            toggleCategory(btn, keyword);
+        }
+    });
+})
+
+function toggleCategory(btn, keyword) {
     const id = btn.dataset.id;
 
     document.querySelector('.category-btn[data-id=""]').classList.remove("active");
 
-        if (selectedCategories.has(id)) {
-            selectedCategories.delete(id);
-        } else {
-            selectedCategories.add(id);
+    if (selectedCategories.has(id)) {
+        selectedCategories.delete(id);
+
+        // 선택된 카테고리가 하나도 없으면 '전체' 카테고리를 활성화
+        if (selectedCategories.size === 0) {
+            document.querySelector('.category-btn[data-id=""]').classList.add("active");
+            // 전체 카테고리일 때는 categoryIds 파라미터를 명시적으로 빈 값으로 전달
+            fetchBoardPosts(1, keyword, new Set());
+            return; // 여기서 함수 종료
         }
+    } else {
+        selectedCategories.add(id);
+    }
     highlightSelectedButtons();
 
-
-
-    console.log("토글 정상 작동")
-    fetchBoardPosts(1,"", selectedCategories);
+    fetchBoardPosts(1, keyword, selectedCategories);
 }
 
 
-function selectAllCategories(btn) {
+function selectAllCategories(btn, keyword) {
     // 모든 카테고리 버튼 비활성화
     document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
 
@@ -136,15 +125,5 @@ function selectAllCategories(btn) {
     selectedCategories.clear();
 
     // 전체 게시글 요청
-    fetchBoardPosts(page,null, selectedCategories);
+    fetchBoardPosts(1, keyword, selectedCategories);
 }
-
-
-
-function initSelectAllCategory(){
-    // ✅ '전체' 버튼에 .active 클래스 부여
-    const allBtn = document.querySelector('.category-btn[data-id=""]');
-    if (allBtn) allBtn.classList.add("active");
-};
-
-

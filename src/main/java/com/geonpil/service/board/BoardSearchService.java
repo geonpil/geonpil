@@ -43,12 +43,19 @@ public class BoardSearchService {
             return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
         }
 
-        // categoryIds 처리
+        // categoryIds 처리 - null 체크 개선
         List<Long> categoryIdList = null;
         if (categoryIds != null && !categoryIds.trim().isEmpty() && !categoryIds.equals("0")) {
-            categoryIdList = Arrays.stream(categoryIds.split(","))
-                    .map(s -> Long.parseLong(s.trim()))
-                    .collect(Collectors.toList());
+            try {
+                categoryIdList = Arrays.stream(categoryIds.split(","))
+                        .filter(s -> !s.trim().isEmpty())
+                        .map(s -> Long.parseLong(s.trim()))
+                        .collect(Collectors.toList());
+            } catch (NumberFormatException e) {
+                System.out.println("카테고리 ID 변환 중 오류 발생: " + e.getMessage());
+                // 오류 발생 시 빈 리스트로 처리
+                categoryIdList = Collections.emptyList();
+            }
         }
 
         // 쿼리 JSON 구성 (카테고리 ID 추가)
@@ -58,7 +65,7 @@ public class BoardSearchService {
                 .append("    \"must\": [\n")
                 .append("      { \"term\": { \"boardCode\": " + boardCode + " } },\n");
 
-        // 카테고리 조건이 있는 경우 추가
+        // 카테고리 조건이 있는 경우에만 추가
         if (categoryIdList != null && !categoryIdList.isEmpty()) {
             queryJson.append("      { \"terms\": { \"categoryId\": [");
             for (int i = 0; i < categoryIdList.size(); i++) {
