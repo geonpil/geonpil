@@ -16,7 +16,11 @@ import java.sql.Timestamp;
 public class BoardDocument {
     @Id
     private Long postId;
+
+    @Field(type = FieldType.Text, analyzer = "standard", searchAnalyzer = "standard")
     private String title;
+
+    @Field(type = FieldType.Text, analyzer = "standard", searchAnalyzer = "standard")
     private String content;
     
     @Field(type = FieldType.Integer)

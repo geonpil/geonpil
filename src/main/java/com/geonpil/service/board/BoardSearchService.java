@@ -39,11 +39,11 @@ public class BoardSearchService {
 
 
     public SearchResult<BoardDTO> searchByKeyword(String keyword, int page, int size, Integer boardCode) {
-        if (keyword == null || keyword.trim().length() < 2) {
+        if (keyword == null || keyword.trim().length() < 1) { // 최소 길이를 1로 낮춤
             return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
         }
 
-        // 직접 JSON 쿼리를 작성해서 사용
+        // 직접 JSON 쿼리를 작성해서 사용 - match 대신 match_phrase_prefix 사용
         String queryJson = String.format("""
             {
               "bool": {
@@ -52,8 +52,8 @@ public class BoardSearchService {
                   { 
                     "bool": {
                       "should": [
-                        { "match": { "title": "%s" } },
-                        { "match": { "content": "%s" } }
+                        { "match_phrase_prefix": { "title": { "query": "%s", "slop": 3, "max_expansions": 10 } } },
+                        { "match_phrase_prefix": { "content": { "query": "%s", "slop": 3, "max_expansions": 10 } } }
                       ],
                       "minimum_should_match": 1
                     }
