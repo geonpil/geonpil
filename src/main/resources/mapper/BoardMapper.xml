@@ -228,4 +228,30 @@
             </otherwise>
         </choose>
     </select>
+
+    <select id="findBoardsByPostIdsWithoutBoardCodeFilter" resultMap="boardResultMap">
+        SELECT b.post_id
+             , b.title
+             , b.content
+             , b.board_code
+             , b.view_count
+             , b.like_count
+             , b.created_at
+             , u.nickname
+             , c.category_name
+        FROM board b
+        JOIN users u ON b.user_id = u.id
+        JOIN category c ON b.category_id = c.category_id
+        <choose>
+            <when test="postIds != null and postIds.size() > 0">
+                WHERE b.post_id IN
+                <foreach item="id" collection="postIds" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </when>
+            <otherwise>
+                WHERE FALSE
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

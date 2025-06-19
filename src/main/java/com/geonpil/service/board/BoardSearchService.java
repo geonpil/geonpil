@@ -6,8 +6,6 @@ import com.geonpil.elasticsearch.BoardDocument;
 import com.geonpil.mapper.BoardMapper;
 import com.geonpil.repository.search.BoardSearchRepository;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery;
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder;
@@ -45,11 +43,30 @@ public class BoardSearchService {
             return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
         }
 
-        Criteria criteria = new Criteria("boardCode").is(boardCode)
-                .and(new Criteria("title").matches(keyword)
-                .or(new Criteria("content").matches(keyword)));
+        // 직접 JSON 쿼리를 작성해서 사용
+        String queryJson = String.format("""
+            {
+              "bool": {
+                "must": [
+                  { "term": { "boardCode": %d } },
+                  { 
+                    "bool": {
+                      "should": [
+                        { "match": { "title": "%s" } },
+                        { "match": { "content": "%s" } }
+                      ],
+                      "minimum_should_match": 1
+                    }
+                  }
+                ]
+              }
+            }
+            """, boardCode, keyword, keyword);
 
-        Query query = new CriteriaQuery(criteria, PageRequest.of(page - 1, size));
+        StringQuery query = new StringQuery(queryJson);
+        query.setPageable(PageRequest.of(page - 1, size));
+
+        System.out.println("실행 쿼리: " + queryJson);
 
         SearchHits<BoardDocument> hits = elasticsearchOperations.search(query, BoardDocument.class);
 
@@ -57,12 +74,25 @@ public class BoardSearchService {
                 .map(hit -> hit.getContent().getPostId())
                 .toList();
 
+        // For debug purposes
+        System.out.println("Found " + postIds.size() + " documents in ES with boardCode=" + boardCode + " and keyword=" + keyword);
+        postIds.forEach(id -> System.out.println("ES Hit: postId=" + id));
+
+        if (postIds.isEmpty()) {
+            return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
+        }
+
+        // 이제 postIds로 DB에서 조회
         List<BoardDTO> boards = boardMapper.findBoardsByPostIds(postIds, boardCode);
+
+        // 검색 결과 확인 디버깅
+        System.out.println("ES hit count: " + postIds.size() + ", DB result count: " + boards.size());
 
         long totalHits = hits.getTotalHits();
         int totalPages = (int) Math.ceil((double) totalHits / size);
 
-        System.out.println("디벅" + totalHits + "," + totalPages + "," + postIds.size());
+        System.out.println("디버그 " + totalHits + ", " + totalPages + ", " + postIds.size());
+
         return new SearchResult<>(boards, page, size, totalHits, totalPages);
     }
 

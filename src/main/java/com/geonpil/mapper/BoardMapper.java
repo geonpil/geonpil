@@ -36,5 +36,6 @@ public interface BoardMapper {
 
     List<BoardDTO> findBoardsByPostIds(@Param("postIds") List<Long> postIds, @Param("boardCode") Integer boardCode);
 
+    List<BoardDTO> findBoardsByPostIdsWithoutBoardCodeFilter(@Param("postIds") List<Long> postIds);
 
 }
