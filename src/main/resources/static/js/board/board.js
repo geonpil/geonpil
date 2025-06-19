@@ -60,13 +60,30 @@ window.addEventListener("popstate", () => {
 
 
 function restoreBoardUI(categoryIds = [], page = 1) {
+    // 모든 카테고리 버튼 초기화
+    document.querySelectorAll(".category-btn").forEach(btn => btn.classList.remove("active"));
 
-    console.log("카테고리 세팅");
-
-    if(!categoryIds){
+    // 카테고리가 없거나 비어있으면 '전체' 카테고리 활성화
+    if (!categoryIds || categoryIds.length === 0) {
         initSelectAllCategory();
+        return;
     }
 
+    // 카테고리가 있는 경우, 해당 카테고리 버튼 활성화
+    categoryIds.forEach(id => {
+        const btn = document.querySelector(`.category-btn[data-id="${id}"]`);
+        if (btn) btn.classList.add("active");
+    });
+
+    // 검색창 값 복원 (URL에 keyword가 있는 경우)
+    const urlParams = new URLSearchParams(window.location.search);
+    const keyword = urlParams.get("keyword");
+    if (keyword) {
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) searchInput.value = keyword;
+    }
+
+    console.log("UI가 복원되었습니다. 페이지:", page, "카테고리:", categoryIds);
 }
 
 function initSelectAllCategory(){
@@ -127,3 +144,33 @@ function selectAllCategories(btn, keyword) {
     // 전체 게시글 요청
     fetchBoardPosts(1, keyword, selectedCategories);
 }
+
+
+addEventListener("DOMContentLoaded", () => {
+    console.log("DOMContentLoaded 이벤트 발생");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = parseInt(urlParams.get("page") || 1);
+    const categoryIds = urlParams.get("categoryIds") || "";
+    const keyword = urlParams.get("keyword") || "";
+
+    // 디버깅을 위한 로그 추가
+    console.log("초기 파라미터 확인:", { page, categoryIds, keyword });
+
+    // 최초 로딩 판단 - categoryIds가 undefined나 빈 문자열일 경우 포함
+    const isInitialLoad = !keyword && (!categoryIds || categoryIds === "") && page === 1;
+
+    console.log("초기 로드 여부:", isInitialLoad);
+
+    if (isInitialLoad) {
+        console.log("최초 로드: 전체 카테고리 활성화");
+        initSelectAllCategory();
+    } else {
+        console.log("파라미터 있는 로드: UI 복원");
+        // 페이지가 로드될 때 카테고리와 페이지를 복원
+        const categorySet = categoryIds ? new Set(categoryIds.split(",").filter(Boolean)) : new Set();
+        selectedCategories = categorySet; // 선택된 카테고리 복원
+        fetchBoardPosts(page, keyword, selectedCategories);
+        restoreBoardUI(Array.from(categorySet), page);
+    }
+});
