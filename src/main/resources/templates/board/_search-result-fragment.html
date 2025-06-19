@@ -1,4 +1,6 @@
 <th:block th:fragment="searchResultFragment">
     <div th:replace="~{board/_post-list-fragment :: postListFragment(${results})}"></div>
-    <div id="pagination-wrapper" th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}"></div>
+    <div id="pagination-wrapper">
+        <div th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}"></div>
+    </div>
 </th:block>

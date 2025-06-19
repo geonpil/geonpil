@@ -1,15 +1,46 @@
 .posts-wrapper {
     display: flex;
     flex-direction: column;
-    min-height: 567px;         /* ✅ 최소 높이만 유지 */
-    max-height: 700px;
-    margin-bottom : 15px;
+    min-height: 568px;         /* ✅ 최소 높이만 유지 */
+    margin-bottom: 15px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative; /* 포지션 컨텍스트 설정 */
 }
+
+
 @media (max-width: 768px) {
     .posts-wrapper {
         min-height: unset;         /* ✅ 최소 높이만 유지 */
         max-height: unset;
     }
+}
+
+
+/* #post-list 스타일 - empty-board-message와 post-row를 포함하는 컨테이너 */
+#post-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 564px; /* 최소 높이 설정 */
+    overflow-y: auto;
+}
+
+/* 페이지네이션 래퍼를 하단에 고정 */
+#pagination-wrapper {
+    width: 100%;
+    padding: 15px 0;
+    background-color: white;
+    margin-top: auto;
+    border-top: 1px solid #eee; /* 구분선 추가 */
+}
+
+/* 페이지네이션이 없을 때도 공간 유지 */
+#pagination-wrapper:empty::after {
+    content: "";
+    display: block;
+    min-height: 400px;
 }
 
 
@@ -349,6 +380,8 @@
         flex-direction: column;
         align-items: center;
         gap: 12px;
+        min-height: 300px; /* 빈 메시지일 때의 최소 높이 */
+        flex: 1;
     }
 
     .empty-board-message i {
