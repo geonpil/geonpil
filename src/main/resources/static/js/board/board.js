@@ -69,7 +69,7 @@ window.addEventListener("popstate", () => {
     selectedCategories = new Set(categoryIdString.split(",").filter(Boolean));
     highlightSelectedButtons(); // UI 반영 함수
 
-    fetchBoardPosts(page, selectedCategories);
+    fetchBoardPosts(page, "",selectedCategories);
 });
 
 
