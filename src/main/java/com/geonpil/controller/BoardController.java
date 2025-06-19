@@ -11,6 +11,7 @@ import com.geonpil.security.CustomOAuth2User;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
+import com.geonpil.service.board.BoardSearchService;
 import com.geonpil.util.PaginationUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.access.AccessDeniedException;
@@ -36,11 +37,13 @@ public class BoardController {
     private final BoardService boardService;
     private final CategoryService categoryService;
     private final CommentService commentService;
+    private final BoardSearchService boardSearchService;
 
-    public BoardController(BoardService boardService, CategoryService categoryService, CommentService commentService) {
+    public BoardController(BoardService boardService, CategoryService categoryService, CommentService commentService, BoardSearchService boardSearchService) {
         this.boardService = boardService;
         this.categoryService = categoryService;
         this.commentService = commentService;
+        this.boardSearchService = boardSearchService;
     }
 
 
@@ -96,6 +99,7 @@ public class BoardController {
 
         boardDTO.setUserId(user.getId());
         boardService.save(boardDTO);
+        boardSearchService.index(boardDTO);
         redirectAttributes.addFlashAttribute("message", "글이 성공적으로 등록되었습니다.");
         return "redirect:/board/list?boardCode=" + boardDTO.getBoardCode();
     }

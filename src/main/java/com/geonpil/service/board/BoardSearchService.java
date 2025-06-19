@@ -100,9 +100,9 @@ public class BoardSearchService {
     public void indexAllFromDatabase() {
         List<BoardDTO> allPosts = boardMapper.findAllForIndexing();
 
-
-        for (BoardDTO dto : allPosts) {
-            System.out.println("postId = " + dto.getPostId() + ", boardCode = " + dto.getBoardCode());
+        if (allPosts.isEmpty()) {
+            System.out.println("색인할 게시글이 없습니다.");
+            return;
         }
 
         List<BoardDocument> docs = allPosts.stream()
