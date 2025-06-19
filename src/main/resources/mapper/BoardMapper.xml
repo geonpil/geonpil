@@ -207,25 +207,27 @@
 
     <select id="findBoardsByPostIds" resultMap="boardResultMap">
         SELECT b.post_id
-             , b.title
-             , b.content
-             , b.board_code
-             , b.view_count
-             , b.like_count
-             , b.created_at
-             , u.nickname
-             , c.category_name
-             , COUNT(cm.comment_id) AS commentCount
+        , b.title
+        , b.content
+        , b.board_code
+        , b.view_count
+        , b.like_count
+        , b.created_at
+        , u.nickname
+        , c.category_name
+        , (SELECT COUNT(*) FROM comments cm WHERE b.post_id = cm.post_id AND cm.is_deleted = FALSE) AS commentCount
         FROM board b
         JOIN users u ON b.user_id = u.id
         JOIN category c ON b.category_id = c.category_id
-        LEFT JOIN comments cm ON b.post_id = cm.post_id AND cm.is_deleted = FALSE
         <choose>
             <when test="postIds != null and postIds.size() > 0">
                 WHERE b.post_id IN
                 <foreach item="id" collection="postIds" open="(" separator="," close=")">
                     #{id}
                 </foreach>
+                <if test="boardCode != null">
+                    AND b.board_code = #{boardCode}
+                </if>
             </when>
             <otherwise>
                 WHERE FALSE
