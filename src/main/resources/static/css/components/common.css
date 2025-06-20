@@ -1,5 +1,5 @@
 @import url('/css/components/_button.css');
-@import url('/css/components/_search.css');
+@import url('/css/components/_utilities.css');
 
 .flex-display-columns{
     display: flex;
