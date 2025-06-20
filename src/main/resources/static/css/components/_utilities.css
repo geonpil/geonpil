@@ -1,3 +1,12 @@
+.flex {
+    display: flex;
+}
+
+.flex-columns{
+    display: flex;
+    flex-direction: column;
+}
+
 .w-100 {
     width: 100%;
 }
@@ -5,4 +14,46 @@
 
 .p-20 {
     padding : 20px;
+}
+
+
+.clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 3;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+
+.clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.clamp-1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+
+
+.border-bottom {
+    border-bottom: 2px solid #ddd;
+}
+
+.border-top {
+    border-top: 2px solid #ddd;
 }

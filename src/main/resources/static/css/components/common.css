@@ -1,91 +1,10 @@
 @import url('/css/components/_button.css');
 @import url('/css/components/_utilities.css');
 
-.flex-display-columns{
-    display: flex;
-    flex-direction: column;
-}
-
-.card-wrapper {
-    gap: 2rem;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-}
-
-.unAuthMsg {
-    color : gray;
-    margin-top : 20px;
-}
-
-a.basic-btn,
-button.basic-btn,
-a.delete-btn,
-button.delete-btn {
-    display: inline-block;
-    text-align: center;
-    line-height: 1.4;
-    text-decoration: none;
-    padding: 10px 16px;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-}
-
-.border-bottom {
-    border-bottom: 2px solid #ddd;
-}
-
-.border-top {
-    border-top: 2px solid #ddd;
-}
-
-
-.basic-btn-border {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-
-.flex-wrapper {
-    display: flex;
-    width: 100%;
-}
 
 
 
-.clamp-3 {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 3;  /* ✅ 최대 줄 수 */
-    line-clamp: 2;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
 
-
-.clamp-2 {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 2;  /* ✅ 최대 줄 수 */
-    line-clamp: 2;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
-
-.clamp-1 {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 1;  /* ✅ 최대 줄 수 */
-    line-clamp: 2;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
 
 
 .dot-list{
@@ -93,14 +12,9 @@ button.delete-btn {
     list-style-position: inside;
 }
 
-.admin-sidebar > h1 {
-    border-bottom-color: black;
-    margin: 1px 0;
-}
 
 
-
-/* 페이지내이션 시작 */
+/* START : 페이지내이션 */
 .pagination-area {
     padding: 15px;
 }
@@ -136,18 +50,19 @@ button.delete-btn {
     font-weight: bold;
 }
 
-/* 페이지내이션 끝 */
+/* END : 페이지내이션 */
 
 
 
 
-/* 카테고리 디자인 */
+/* START : 카테고리 디자인 */
 .category-filter {
     margin-bottom: 16px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
+/* END : 카테고리 디자인 */
 
 
 
@@ -216,6 +131,16 @@ button.delete-btn {
 
 
 /* start : 카드 */
+
+.card-wrapper {
+    gap: 2rem;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+
 .card {
     background: #fff;
     border-radius: 6px;

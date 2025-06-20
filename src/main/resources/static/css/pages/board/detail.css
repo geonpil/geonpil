@@ -269,6 +269,13 @@
 
 /* END : 알림박스 끝 */
 
+/* start : 비로그인시 메시지 */
+.unAuthMsg {
+    color : gray;
+    margin-top : 20px;
+}
+/* end : 비로그인시 메시지 */
+
 /* END : 공유버튼(드롭다운) */
 
 @media(max-width : 768px) {

@@ -5,6 +5,11 @@
     gap : 1rem;
 }
 
+.admin-sidebar > h1 {
+    border-bottom-color: black;
+    margin: 1px 0;
+}
+
 .delete-book-info{
     display: flex;
     gap : 1rem;
