@@ -1,0 +1,118 @@
+
+/* ========== 버튼 ========== */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #1F4EB2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #163d8f;
+}
+
+.btn-secondary {
+    background-color: gray;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5c5c5c;
+}
+
+
+
+/* 일반버튼 */
+.basic-btn {
+    background-color: #1F4EB2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.basic-btn:hover {
+    background-color: #163d8f;
+    color: white;
+}
+
+
+/* 삭제버튼 */
+.delete-btn {
+    background-color: #e74c3c; /* 강렬한 빨간색 */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/*삭제 버튼 끝 */
+
+/* Start : 검색 버튼 */
+.search-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* end : 검색 버튼 */
+
+/* START : 공유버튼 모음 (공유) */
+
+.kakao-link-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.kakao-link-btn img {
+    width: 48px;
+    height: 48px;
+}
+
+.link-copy-btn {
+    height: 100%;
+}
+
+/* END : 공유버튼 모음(공유) */
+
+/* start : 카테고리 버튼 디자인 */
+.category-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.category-btn.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* end : 카테고리 버튼 디자인 */

@@ -8,12 +8,13 @@
     <title>책 검색</title>
 </th:block>
 
+<th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/pages/bookSearch/search-book-list.css"/>
+</th:block>
+
 
 <body data-mode="review">
 <div layout:fragment="content">
-
-
-
     <div th:replace = "~{fragments/search-bar :: searchBar(${query})}"></div>
 
 

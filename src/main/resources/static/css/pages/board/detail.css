@@ -68,28 +68,13 @@
 }
 
 
-.comment-empty {
-    text-align: center;
-    color: #888;
-    font-style: italic;
-    padding: 8px;
-}
+
 
 
 .comment-form {
     margin-top: 20px;
 }
 
-.comment-input {
-    width: 100%;
-    resize: vertical;
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    min-height: 100px;
-}
 
 .comment-btn-wrapper {
     display: flex;
@@ -169,9 +154,14 @@
 
 /* END : 댓글 영역 */
 
-
-
-
+/* START : 추천 및 공유하기 버튼 영역 */
+.post-action-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+/* END : 추천 및 공유하기 버튼 영역 */
 
 /* 추천하기*/
 
@@ -198,42 +188,9 @@
 /* 추천하기 끝 */
 
 
-/* START : 공유버튼 */
-.share-buttons {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.share-buttons i {
-    font-size: 40px !important; /* ← 이거 중요 */
-}
-
-.kakao-link-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: none;
-    background: none;
-    cursor: pointer;
-}
-
-.kakao-link-btn img {
-    width: 48px;
-    height: 48px;
-}
-
-.link-copy-btn {
-    height: 100%;
-}
 
 
-.post-action-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
+/* START : 공유버튼 (드롭다운) */
 
 .share-dropdown {
     position: relative;
@@ -285,7 +242,34 @@
     display: block;
 }
 
-/* END : 공유버튼 */
+
+/* START : 알림박스 */
+.alert-box {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.alert {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+}
+
+.alert-success {
+    background-color: #e0f7fa;
+    color: #00796b;
+    border: 1px solid #b2dfdb;
+}
+
+.alert-danger {
+    background-color: #fdecea;
+    color: #c62828;
+    border: 1px solid #f5c6cb;
+}
+
+/* END : 알림박스 끝 */
+
+/* END : 공유버튼(드롭다운) */
 
 @media(max-width : 768px) {
     .post-container {

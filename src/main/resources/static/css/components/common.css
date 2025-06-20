@@ -1,0 +1,328 @@
+@import url('/css/components/_button.css');
+@import url('/css/components/_search.css');
+
+.flex-display-columns{
+    display: flex;
+    flex-direction: column;
+}
+
+.card-wrapper {
+    gap: 2rem;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.unAuthMsg {
+    color : gray;
+    margin-top : 20px;
+}
+
+a.basic-btn,
+button.basic-btn,
+a.delete-btn,
+button.delete-btn {
+    display: inline-block;
+    text-align: center;
+    line-height: 1.4;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.border-bottom {
+    border-bottom: 2px solid #ddd;
+}
+
+.border-top {
+    border-top: 2px solid #ddd;
+}
+
+
+.basic-btn-border {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+.flex-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+
+
+.clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 3;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+
+.clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.clamp-1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1;  /* ✅ 최대 줄 수 */
+    line-clamp: 2;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+
+.dot-list{
+    list-style-type: disc;      /* ● 점 */
+    list-style-position: inside;
+}
+
+.admin-sidebar > h1 {
+    border-bottom-color: black;
+    margin: 1px 0;
+}
+
+
+
+/* 페이지내이션 시작 */
+.pagination-area {
+    padding: 15px;
+}
+
+
+.pagination {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+
+.pagination button {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: black;
+    background-color: #fff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+    background-color: #f0f0f0;
+    color: black;
+}
+
+.pagination button.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+/* 페이지내이션 끝 */
+
+
+
+
+/* 카테고리 디자인 */
+.category-filter {
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+
+/* 카테고리 디자인 끝*/
+
+/*START : 목록으로  ,삭제 등 버튼 디자인 */
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+/*END : 목록으로  ,삭제 등 버튼 디자인 */
+
+
+
+/* START : 댓글 영역 */
+.comment-input {
+    width: 100%;
+    resize: vertical;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    min-height: 100px;
+}
+.comment-empty {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    padding: 8px;
+}
+
+/* END : 댓글 영역 */
+
+
+
+/* START : 공통 폼 디자인 */
+.form-group {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+
+.form-group textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    resize: vertical;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* END : 공통 폼 디자인 */
+
+
+
+/* start : 카드 */
+.card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    /*  margin-bottom: 30px; */
+}
+
+.card-header {
+    font-weight: bold;
+    font-size: 1.5rem;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--primary-color);
+    /* 하단 테두리 */
+}
+
+.card-footer {
+    text-align: right;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    font-weight : bold;
+}
+
+/* end : 카드 */
+
+
+/* start : 댓글 영역 */
+
+.comment-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.comment-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* end : 댓글 영역 */
+
+
+/* 글에 있는 링크(ex 이메일 재전송, 로그인)*/
+.link {
+    color : var(--primary-color)
+}
+
+.link:hover {
+    color : var(--primary-hover)
+}
+/* /* 글에 있는 링크(ex 이메일 재전송, 로그인) 끝*/
+
+
+/* start : 기본 input 스타일 */
+.input-basic {
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background-color: white;
+}
+
+
+
+/* end : 기본 input 스타일 */
+
+
+
+/* START : 검색바 디자인 */
+.searchBar-section {
+    width : 100%;
+    display : flex;
+    justify-content : center;
+    padding: 0 12px; /* 좌우 여백 추가 */
+}
+
+
+.searchBar-wrapper{
+    width : 100%;
+    max-width : 800px;
+    display : flex;
+}
+
+/* 책 검색 페이지 시작 */
+
+.search-container {
+    max-width: 1000px;
+    margin: 0 auto;
+
+}
+
+
+.search-wrapper {
+    display : flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.search-input {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* END : 검색바 디자인 */

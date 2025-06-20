@@ -1,0 +1,96 @@
+
+.form-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 요소 간 여백 */
+  flex-wrap: wrap; /* 모바일 대응 */
+}
+
+.form-flex input[type="text"],
+.form-flex select {
+  flex: 1;
+  min-width: 0;
+}
+
+
+
+
+.form-title {
+  font-size: 1.8rem;
+  color: #1F4EB2;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+
+
+
+
+
+.error-message {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+
+
+
+input:focus,
+select:focus {
+  border-color: var(--main-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(31, 78, 178, 0.1);
+}
+
+.form-hint,
+.validation-text {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 6px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+
+.form-editor {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 400px;
+  margin-top: 10px;
+}
+
+
+
+.email-row input[type="text"],
+.email-row select {
+  height: 40px;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.email-at {
+  white-space: nowrap;
+}
+
+.email-domain-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 120px;
+}
+
+#email-domain-input {
+  margin-top: 5px;
+}
