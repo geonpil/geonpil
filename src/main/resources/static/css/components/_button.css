@@ -135,3 +135,28 @@ button.delete-btn {
 }
 
 /* end : 카테고리 버튼 디자인 */
+
+
+/* start : 정렬 버튼 디자인 */
+.sort-btn {
+    padding: 6px 14px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.sort-btn:hover {
+    background-color: #f4f4f4;
+}
+
+.sort-btn.active {
+    background-color: #2a7ae4;
+    color: #fff;
+    border-color: #2a7ae4;
+    font-weight: bold;
+}
+/* end : 정렬 버튼 디자인 */
