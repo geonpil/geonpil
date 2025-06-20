@@ -107,135 +107,145 @@
   <script src="/js/contest/setDate.js"></script>
   <script src="/js/toast-editor-rest.js"></script>
   <script>
+    // 에디터 초기화와 기존 내용 로딩
+    document.addEventListener('DOMContentLoaded', function() {
+      // 기존 에디터 초기화
+      initContestDateFields();
 
+      // hidden input에서 컨텐츠 값 가져오기
+      const contentValue = document.getElementById("content").value;
 
-
-document.addEventListener("DOMContentLoaded", initContestDateFields);
-
-document.getElementById("update-btn").addEventListener("click", async function () {
-
-  const checkedCategoryInputs = document.querySelectorAll('input[name="categoryIds"]:checked');
-  const categoryIds = Array.from(checkedCategoryInputs).map(input => input.value);
-
-  if (checkedCategoryInputs.length === 0) {
-    alert("장르(카테고리)를 하나 이상 선택해주세요.");
-    // 선택 항목이 없으면 중단
-    return;
-  }
-
-  const start = new Date(startDate.value);
-  const end = new Date(endDate.value);
-  const boardCode = document.getElementById("boardCode").value;
-  today.setHours(0, 0, 0, 0);
-
-
-
-
-    <!--  if (start > today) {-->
-    <!--    alert("시작일은 오늘 이후로 설정할 수 없습니다.");-->
-    <!--    return;-->
-    <!--  }-->
-
-      if (end <= today) {
-        alert("종료일은 오늘보다 이후여야 합니다.");
-        return;
-      } else if(end < start) {
-        alert("시작일은 종료일 이전이어야 합니다.");
-        return;
-      }
-
-  const data = {
-    title: document.getElementById("title").value,
-    subtitle: document.getElementById("subtitle").value,
-    startDate: document.getElementById("startDate").value,
-    endDate: document.getElementById("endDate").value,
-    hostName: document.getElementById("hostName").value,
-    totalPrize: document.getElementById("totalPrize").value,
-    boardCode: document.getElementById("boardCode").value,
-    applyUrl : document.getElementById("applyUrl").value,
-    contactInfo : document.getElementById("contactInfo").value,
-    categoryIds: categoryIds,
-    postId : document.getElementById("postId").value,
-    content: editor.getHTML()
-  };
-
-  const posterFile = document.getElementById("posterFile").files[0];
-    if (posterFile) {
-      const posterUrl = await uploadPosterFile(posterFile); // ✅ OK now
-      data.posterUrl = posterUrl.startsWith("http") ? posterUrl : window.location.origin + posterUrl;
-    } else {
-      data.posterUrl = document.getElementById("existingPosterUrl").value;
-    }
-
-    await fetch("/api/contest/update", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    }).then(res => {
-      if (res.ok) {
-        alert("수정 완료!");
-        location.href = `/contest/detail/${data.postId}?boardCode=${boardCode}`;
-      } else {
-        alert("수정 실패");
+      // 에디터가 초기화된 후 내용 설정
+      if (window.editor && contentValue) {
+        // HTML 형식의 내용을 에디터에 설정
+        editor.setHTML(contentValue);
       }
     });
-  });
+
+    document.getElementById("update-btn").addEventListener("click", async function () {
+
+      const checkedCategoryInputs = document.querySelectorAll('input[name="categoryIds"]:checked');
+      const categoryIds = Array.from(checkedCategoryInputs).map(input => input.value);
+
+      if (checkedCategoryInputs.length === 0) {
+        alert("장르(카테고리)를 하나 이상 선택해주세요.");
+        // 선택 항목이 없으면 중단
+        return;
+      }
+
+      const start = new Date(startDate.value);
+      const end = new Date(endDate.value);
+      const boardCode = document.getElementById("boardCode").value;
+      today.setHours(0, 0, 0, 0);
 
 
 
- document.addEventListener("DOMContentLoaded", function () {
-  const endDateInput = document.getElementById("endDate");
-  const endDateUndefined = document.getElementById("endDateUndefined");
 
-  endDateUndefined.addEventListener("change", function () {
-    if (this.checked) {
-      endDateInput.disabled = true;
-      endDateInput.value = ""; // 필드 비움
-    } else {
-      endDateInput.disabled = false;
+        <!--  if (start > today) {-->
+        <!--    alert("시작일은 오늘 이후로 설정할 수 없습니다.");-->
+        <!--    return;-->
+        <!--  }-->
+
+        if (end <= today) {
+          alert("종료일은 오늘보다 이후여야 합니다.");
+          return;
+        } else if(end < start) {
+          alert("시작일은 종료일 이전이어야 합니다.");
+          return;
+        }
+
+      const data = {
+        title: document.getElementById("title").value,
+        subtitle: document.getElementById("subtitle").value,
+        startDate: document.getElementById("startDate").value,
+        endDate: document.getElementById("endDate").value,
+        hostName: document.getElementById("hostName").value,
+        totalPrize: document.getElementById("totalPrize").value,
+        boardCode: document.getElementById("boardCode").value,
+        applyUrl : document.getElementById("applyUrl").value,
+        contactInfo : document.getElementById("contactInfo").value,
+        categoryIds: categoryIds,
+        postId : document.getElementById("postId").value,
+        content: editor.getHTML()
+      };
+
+      const posterFile = document.getElementById("posterFile").files[0];
+        if (posterFile) {
+          const posterUrl = await uploadPosterFile(posterFile); // ✅ OK now
+          data.posterUrl = posterUrl.startsWith("http") ? posterUrl : window.location.origin + posterUrl;
+        } else {
+          data.posterUrl = document.getElementById("existingPosterUrl").value;
+        }
+
+        await fetch("/api/contest/update", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        }).then(res => {
+          if (res.ok) {
+            alert("수정 완료!");
+            location.href = `/contest/detail/${data.postId}?boardCode=${boardCode}`;
+          } else {
+            alert("수정 실패");
+          }
+        });
+      });
+
+
+
+     document.addEventListener("DOMContentLoaded", function () {
+      const endDateInput = document.getElementById("endDate");
+      const endDateUndefined = document.getElementById("endDateUndefined");
+
+      endDateUndefined.addEventListener("change", function () {
+        if (this.checked) {
+          endDateInput.disabled = true;
+          endDateInput.value = ""; // 필드 비움
+        } else {
+          endDateInput.disabled = false;
+        }
+      });
+    });
+
+    async function uploadPosterFile(file) {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch("/upload-image", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await res.json();
+      return result.url;
     }
-  });
-});
-
-async function uploadPosterFile(file) {
-  const formData = new FormData();
-  formData.append("image", file);
-
-  const res = await fetch("/upload-image", {
-    method: "POST",
-    body: formData
-  });
-
-  const result = await res.json();
-  return result.url;
-}
 
 
 
-document.getElementById("posterFile").addEventListener("change", async function () {
-  const file = this.files[0];
-  if (!file) return;
+    document.getElementById("posterFile").addEventListener("change", async function () {
+      const file = this.files[0];
+      if (!file) return;
 
-  const formData = new FormData();
-  formData.append("image", file);
+      const formData = new FormData();
+      formData.append("image", file);
 
-  const res = await fetch("/upload-image", {
-    method: "POST",
-    body: formData
-  });
+      const res = await fetch("/upload-image", {
+        method: "POST",
+        body: formData
+      });
 
-  const result = await res.json();
-  document.getElementById("poster-preview").src = result.url;
-  document.getElementById("existingPosterUrl").value = result.url;
-});
+      const result = await res.json();
+      document.getElementById("poster-preview").src = result.url;
+      document.getElementById("existingPosterUrl").value = result.url;
+    });
 
-document.getElementById("remove-poster-btn").addEventListener("click", function () {
-  const preview = document.getElementById("poster-preview");
-  if (preview) preview.src = "";
-  document.getElementById("posterFile").value = "";
-  document.getElementById("existingPosterUrl").value = "";
-});
-  </script>
+    document.getElementById("remove-poster-btn").addEventListener("click", function () {
+      const preview = document.getElementById("poster-preview");
+      if (preview) preview.src = "";
+      document.getElementById("posterFile").value = "";
+      document.getElementById("existingPosterUrl").value = "";
+    });
+    </script>
 </th:block>
 </body>
 </html>
