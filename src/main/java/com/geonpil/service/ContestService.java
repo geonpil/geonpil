@@ -96,7 +96,7 @@ public class ContestService {
 
     public int getTotalPageCount(int pageSize, int boardCode, List<Long> categoryIds, boolean isClosedIncluded) {
 
-        int totalCount = contestMapper.contestCountAll(boardCode, categoryIds, isClosedIncluded);
+        int totalCount = Math.max(1, contestMapper.contestCountAll(boardCode, categoryIds, isClosedIncluded));
 
         System.out.println("totalcount" + totalCount);
         return (int) Math.ceil((double) totalCount / pageSize);

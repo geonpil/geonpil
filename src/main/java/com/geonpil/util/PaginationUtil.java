@@ -11,6 +11,8 @@ public class PaginationUtil {
         boolean hasPrevGroup = startPage > 1;
         boolean hasNextGroup = endPage < totalPages;
 
+
+        System.out.println("디버그 : startPage = " + startPage + ", endPage = " + endPage + ", totalPages = " + totalPages);
         return PageInfo.builder()
                 .currentPage(currentPage)
                 .startPage(startPage)
