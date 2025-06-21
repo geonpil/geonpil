@@ -1,0 +1,265 @@
+package com.geonpil.service.contest;
+
+import com.geonpil.domain.ContestPost;
+import com.geonpil.dto.boardSearch.SearchResult;
+import com.geonpil.elasticsearch.ContestDocument;
+import com.geonpil.mapper.board.ContestMapper;
+import com.geonpil.repository.search.ContestSearchRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ContestSearchService {
+
+    private final ContestSearchRepository contestSearchRepository;
+    private final ContestMapper contestMapper;
+    private final ElasticsearchOperations elasticsearchOperations;
+
+    /**
+     * 개별 공모전을 검색 인덱스에 추가
+     */
+    public void index(ContestPost dto) {
+        // 검색 인덱스에 공모전 정보 저장 로직
+        log.info("공모전 색인: ID={}, 제목={}", dto.getPostId(), dto.getTitle());
+
+        // ContestDocument 객체 생성
+        ContestDocument doc = new ContestDocument();
+
+        // 부모 클래스(BoardDocument) 필드 설정
+        doc.setPostId(dto.getPostId());
+        doc.setTitle(dto.getTitle());
+        doc.setContent(dto.getContent());
+        doc.setBoardCode(dto.getBoardCode());
+        doc.setCategoryId(dto.getCategoryId());
+
+        // ContestDocument 필드 설정
+        doc.setSubtitle(dto.getSubtitle());
+        doc.setHostName(dto.getHostName()); // 필드명 주의: host_name vs hostName
+        doc.setTarget(dto.getTarget());
+
+        // 실제 ElasticSearch 또는 다른 검색 엔진에 저장하는 코드 구현
+        contestSearchRepository.save(doc);
+
+        log.info("공모전 색인 완료: {}", doc);
+    }
+
+    /**
+     * 모든 공모전을 데이터베이스에서 가져와 검색 인덱스에 추가
+     */
+    public void indexAllFromDatabase() {
+        log.info("모든 공모전 색인 시작");
+
+        try {
+            // DB에서 모든 공모전을 가져옴
+            List<ContestPost> allContests = contestMapper.findAllContestForIndexing();
+            log.info("색인할 공모전 수: {}", allContests.size());
+
+            List<ContestDocument> docs = allContests.stream()
+                    .map(contest -> {
+                        try {
+                            ContestDocument doc = new ContestDocument();
+
+                            // 부모 클래스(BoardDocument) 필드 설정
+                            doc.setPostId(contest.getPostId());
+                            doc.setTitle(contest.getTitle());
+                            doc.setContent(contest.getContent());
+                            doc.setBoardCode(contest.getBoardCode());
+
+                            // 카테고리 ID 설정 - categoryIdsRaw가 문자열로 들어있으므로 처리 필요
+                            if (contest.getCategoryIdsRaw() != null && !contest.getCategoryIdsRaw().isEmpty()) {
+                                // 콤마로 분리된 카테고리 ID 문자열을 처리
+                                String[] categoryIds = contest.getCategoryIdsRaw().split(",");
+                                if (categoryIds.length > 0) {
+                                    try {
+                                        doc.setCategoryId(Long.parseLong(categoryIds[0]));
+                                    } catch (NumberFormatException e) {
+                                        log.warn("카테고리 ID 변환 오류: {}", e.getMessage());
+                                    }
+                                }
+                            }
+
+                            // ContestDocument 필드 설정
+                            doc.setSubtitle(contest.getSubtitle());
+                            doc.setHostName(contest.getHostName());
+                            doc.setTarget(contest.getTarget());
+
+                            // 날짜 설정 (null 체크 포함)
+                            doc.setStartDate(contest.getStartDate());
+                            doc.setEndDate(contest.getEndDate());
+
+                            return doc;
+                        } catch (Exception e) {
+                            log.error("공모전 문서 변환 중 오류: postId={}, error={}",
+                                    contest.getPostId(), e.getMessage(), e);
+                            return null;
+                        }
+                    })
+                    .filter(doc -> doc != null)
+                    .collect(Collectors.toList());
+
+            log.info("Elasticsearch에 저장할 문서 수: {}", docs.size());
+
+            if (!docs.isEmpty()) {
+                // 각 문서를 개별적으로 저장 (일괄 저장 대신)
+                for (ContestDocument doc : docs) {
+                    try {
+                        contestSearchRepository.save(doc);
+                        log.debug("문서 저장 성공: id={}", doc.getPostId());
+                    } catch (Exception e) {
+                        log.error("문서 저장 실패: id={}, 오류={}", doc.getPostId(), e.getMessage(), e);
+                    }
+                }
+                log.info("모든 공모전 색인 완료: {} 건", docs.size());
+            } else {
+                log.warn("색인할 공모전 문서가 없습니다.");
+            }
+        } catch (Exception e) {
+            log.error("공모전 색인 중 오류 발생: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    /**
+     * 키워드로 공모전 검색
+     */
+    public SearchResult<ContestPost> searchByKeyword(
+            String keyword, int page, int size, Integer boardCode,
+            String categoryIds, boolean isClosedIncluded, String sort) {
+
+        log.info("공모전 검색: 키워드={}, 페이지={}, 게시판={}, 카테고리={}, 마감포함={}, 정렬={}",
+                keyword, page, boardCode, categoryIds, isClosedIncluded, sort);
+
+        try {
+            // 검색어가 없으면 빈 결과 반환
+            if (!StringUtils.hasText(keyword)) {
+                return new SearchResult<>(Collections.emptyList(), 0, 0, 0, page);
+            }
+
+            // 기본 검색 조건 - 게시판 코드 필터
+            Criteria criteria = new Criteria("boardCode").is(boardCode);
+
+            // 키워드 검색 조건 - contains 대신 matches 사용
+            Criteria keywordCriteria = new Criteria("title").matches("*" + keyword + "*")
+                    .or(new Criteria("content").matches("*" + keyword + "*"))
+                    .or(new Criteria("subtitle").matches("*" + keyword + "*"))
+                    .or(new Criteria("hostName").matches("*" + keyword + "*"));
+
+            // 검색 조건 결합
+            criteria = criteria.and(keywordCriteria);
+
+            // 카테고리 필터 적용
+            if (StringUtils.hasText(categoryIds)) {
+                String[] ids = categoryIds.split(",");
+                if (ids.length > 0) {
+                    // Object 배열로 변환하여 in 메소드에 전달
+                    Object[] categoryIdObjs = new Object[ids.length];
+                    for (int i = 0; i < ids.length; i++) {
+                        try {
+                            categoryIdObjs[i] = Long.parseLong(ids[i].trim());
+                        } catch (NumberFormatException e) {
+                            log.warn("유효하지 않은 카테고리 ID: {}", ids[i]);
+                        }
+                    }
+                    criteria = criteria.and(new Criteria("categoryId").in(categoryIdObjs));
+                }
+            }
+
+            // 마감 여부 필터 적용 (isClosedIncluded가 false면 마감되지 않은 공모전만)
+            if (!isClosedIncluded) {
+                String today = LocalDate.now().toString();
+
+                // 마감일이 없거나(존재하지 않음) OR 마감일이 오늘 이후인 경우
+                // Criteria 오브젝트를 생성할 때 반드시 필드명 지정 필요
+                Criteria endDateDoesNotExist = new Criteria("endDate").exists().not(); // endDate 필드가 없는 경우
+                Criteria endDateAfterToday = new Criteria("endDate").greaterThanEqual(today); // endDate가 오늘 이후인 경우
+
+                // OR 조건으로 두 조건 결합
+                criteria = criteria.and(new Criteria("endDate").subCriteria(
+                    new Criteria().or(endDateDoesNotExist).or(endDateAfterToday)
+                ));
+            }
+
+            // 쿼리 생성 및 페이지네이션 설정
+            CriteriaQuery query = new CriteriaQuery(criteria);
+            query.setPageable(PageRequest.of(page - 1, size));
+
+            // 디버깅용 로깅 추가
+            log.debug("검색 쿼리: {}", query.getCriteria().toString());
+
+            // 정렬 조건 적용
+            if ("deadline".equals(sort)) {
+                // 마감일 순 (마감일이 가까운 순)
+                query.addSort(Sort.by(Sort.Order.asc("endDate").with(Sort.NullHandling.NULLS_LAST)));
+            } else {
+                // 최신순 (기본)
+                query.addSort(Sort.by(Sort.Direction.DESC, "postId"));
+            }
+
+            // 검색 실행
+            SearchHits<ContestDocument> searchHits = elasticsearchOperations.search(query, ContestDocument.class);
+            log.debug("검색 결과 수: {}", searchHits.getTotalHits());
+
+            // 검색 결과에서 문서 ID 추출
+            List<Long> postIds = searchHits.getSearchHits().stream()
+                    .map(SearchHit::getContent)
+                    .map(ContestDocument::getPostId)
+                    .collect(Collectors.toList());
+
+            // 결과가 없는 경우
+            if (postIds.isEmpty()) {
+                return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
+            }
+
+            // ID로 DB에서 실제 공모전 정보 조회
+            List<ContestPost> contests = contestMapper.findContestsByPostIds(postIds);
+
+            // 검색 결과가 없거나 DB 조회 결과가 없는 경우
+            if (contests == null || contests.isEmpty()) {
+                return new SearchResult<>(Collections.emptyList(), 0, 0, 0, page);
+            }
+
+            // 검색 결과 정렬 순서에 맞게 재정렬
+            List<ContestPost> sortedContests = postIds.stream()
+                    .map(id -> contests.stream()
+                            .filter(p -> p.getPostId().equals(id))
+                            .findFirst()
+                            .orElse(null))
+                    .filter(p -> p != null)
+                    .collect(Collectors.toList());
+
+            // 검색 결과 반환 (SearchResult 생성자 순서에 맞게 수정)
+            return new SearchResult<>(
+                    sortedContests,                                  // content: 검색 결과 목록
+                    page,                                            // page: 현재 페이지 번호
+                    size,                                            // size: 페이지당 아이템 수
+                    searchHits.getTotalHits(),                       // totalHits: 총 검색 결과 수
+                    calculateTotalPages((int) searchHits.getTotalHits(), size) // totalPages: 총 페이지 수
+            );
+        } catch (Exception e) {
+            log.error("공모전 검색 중 오류 발생: {}", e.getMessage(), e);
+            return new SearchResult<>(Collections.emptyList(), 0, 0, 0, page);
+        }
+    }
+
+    // 총 페이지 수 계산
+    private int calculateTotalPages(int totalHits, int size) {
+        return totalHits == 0 ? 0 : (int) Math.ceil((double) totalHits / size);
+    }
+}

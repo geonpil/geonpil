@@ -150,23 +150,40 @@ function fetchFilteredContests({ page = 1, categoryIds = [], isClosedIncluded = 
         }
     });
 
-    // 게시글 목록 로드
-    fetch("/contest/list/fragment?" + params.toString())
+    // 통합된 엔드포인트로 요청하여 게시글 목록과 페이지네이션을 한 번에 가져옴
+    fetch("/contest/list/combined-fragment?" + params.toString())
         .then(res => res.text())
         .then(html => {
-            document.getElementById("contest-list").innerHTML = html;
+            // 응답에 목록과 페이지네이션이 모두 포함되어 있으므로
+            // 최상위 컨테이너에 HTML을 삽입
+            const container = document.querySelector(".board-container");
+
+            // 기존 목록과 페이지네이션 영역을 찾음
+            const contestListArea = document.getElementById("contest-list");
+            const paginationArea = document.getElementById("pagination-area");
+
+            // 임시 요소를 생성하여 응답 HTML을 파싱
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+
+            // 응답에서 목록과 페이지네이션 부분을 추출
+            const newContestList = tempDiv.querySelector("#contest-list");
+            const newPaginationArea = tempDiv.querySelector("#pagination-area");
+
+            // 기존 요소 업데이트
+            if (newContestList && contestListArea) {
+                contestListArea.innerHTML = newContestList.innerHTML;
+            }
+
+            if (newPaginationArea && paginationArea) {
+                paginationArea.innerHTML = newPaginationArea.innerHTML;
+            }
+
+            // UI 상태 업데이트 및 이벤트 핸들러 재바인딩
             highlightSelectedButtons();
             bindContestClickEvents();
         })
-        .catch(err => console.error("게시글 불러오기 실패", err));
-
-    // 페이지네이션 로드
-    fetch("/contest/list/fragment/pagination?" + params.toString())
-        .then(res => res.text()
-            .then(html => {
-                document.getElementById("pagination-area").innerHTML = html;
-            }))
-        .catch(err => console.error("페이지네이션 불러오기 실패", err));
+        .catch(err => console.error("공모전 데이터 로드 실패", err));
 
     // 현재 페이지 업데이트
     currentPage = page;

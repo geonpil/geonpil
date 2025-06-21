@@ -1,5 +1,5 @@
-<div id="contest-list" th:fragment="contestListFragment(contests, currentPage, totalPages, boardCode)">
-    <div class="contest-container">
+<th:block th:fragment="contestListFragment(contests)">
+    <div id= "contest-list" class="contest-list">
 
         <div th:if="${#lists.isEmpty(contests)}" class="empty-message">
             등록된 공모전이 없습니다.
@@ -28,4 +28,4 @@
         </div>
 
     </div>
-</div>
+</th:block>

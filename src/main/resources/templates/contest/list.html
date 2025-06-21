@@ -51,11 +51,9 @@
         </div>
 
 
-        <div th:replace="~{contest/_contest-list-fragment :: contestListFragment(${contests}, ${currentPage}, ${totalPages}, ${boardCode})}"></div>
 
-        <div id = "pagination-area">
-            <div th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}"></div>
-        </div>
+        <div th:replace="~{contest/_contest-combined-fragment :: combinedContestFragment(${contests}, ${pageInfo}, ${action})}"></div>
+
 
         <!-- board와 동일한 UI로 변경 - 검색바와 글쓰기 버튼 -->
         <div class="board-control-bar">

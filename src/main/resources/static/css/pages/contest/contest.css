@@ -1,4 +1,4 @@
-.contest-container {
+.contest-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -157,7 +157,7 @@
 
 /* 모바일 시작*/
 @media (max-width: 768px) {
-    .contest-container {
+    .contest-list {
         grid-template-columns: 1fr;
         padding: 0;
     }

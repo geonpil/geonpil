@@ -10,7 +10,6 @@ import java.util.List;
 public interface ContestMapper {
     void insertContestPost(ContestPost contest);
 
-    List<ContestPost> findAllContests();
 
     ContestPost findContestById(Long postId);
 
@@ -41,6 +40,11 @@ public interface ContestMapper {
 
     void deleteCategoriesByPostId(Long postId);
 
+
+    List<ContestPost> findAllContestForIndexing();
+
+
+    List<ContestPost> findContestsByPostIds(@Param("postIds") List<Long> postIds);
 
 }
 

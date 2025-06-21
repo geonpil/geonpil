@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardSearchRepository extends ElasticsearchRepository<BoardDocument, Long> {
-    // 커스텀 쿼리 메서드도 여기에 추가 가능
+    // 게시판 특화 쿼리 메서드를 여기에 추가 가능
 }

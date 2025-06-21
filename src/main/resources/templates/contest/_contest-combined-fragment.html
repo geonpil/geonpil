@@ -1,0 +1,14 @@
+<!-- 공모전 목록과 페이지네이션을 함께 포함하는 프래그먼트 -->
+<th:block th:fragment="combinedContestFragment(contests, pageInfo, action)">
+    <!-- 공모전 목록 부분 -->
+    <section id="contest-section" class="contest-section">
+
+        <div th:replace="~{contest/_contest-list-fragment :: contestListFragment(${contests})}"></div>
+        <!-- 페이지네이션 부분 -->
+        <div id="pagination-area">
+            <div th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo},${action})}"></div>
+        </div>
+    </section>
+</th:block>
+
+

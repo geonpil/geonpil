@@ -124,8 +124,6 @@ public class ContestController {
         return "contest/_contest-list-fragment :: contestListFragment";
     }
 
-
-
     @GetMapping("/list/fragment/pagination")
     public String getPaginationFragment(@RequestParam("boardCode") int boardCode,
                                        @RequestParam(required = false) List<Long> categoryIds,
@@ -133,8 +131,9 @@ public class ContestController {
                                        @RequestParam("sort") String sort,
                                        @RequestParam("isClosedIncluded") boolean isClosedIncluded,
                                        Model model) {
+        int pageSize = 8;
 
-        int totalPages = contestService.getTotalPageCount(8, boardCode, categoryIds, isClosedIncluded);
+        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds, isClosedIncluded);
 
         PageInfo pageInfo = buildPageInfo(page, totalPages, 5,"");
         System.out.println("디버그 :" + pageInfo.getTotalPages());
@@ -142,8 +141,43 @@ public class ContestController {
         model.addAttribute("pageInfo", pageInfo);
         model.addAttribute("action", "contest");
 
-
-
         return "commons/_pagination-fragment :: paginationFragment";
+    }
+
+    /**
+     * 공모전 목록과 페이지네이션을 한번에 반환하는 통합 메서드
+     */
+    @GetMapping("/list/combined-fragment")
+    public String getCombinedFragment(@RequestParam("boardCode") int boardCode,
+                                     @RequestParam(required = false) List<Long> categoryIds,
+                                     @RequestParam(value = "page", defaultValue = "1") int page,
+                                     @RequestParam("sort") String sort,
+                                     @RequestParam("isClosedIncluded") boolean isClosedIncluded,
+                                     Model model) {
+        int pageSize = 8;
+
+        // 공모전 목록 조회
+        List<ContestPost> contests = contestService.findContestsByPage(page, pageSize, categoryIds, sort, isClosedIncluded);
+
+        // 총 페이지 수 계산
+        int totalPages = contestService.getTotalPageCount(pageSize, boardCode, categoryIds, isClosedIncluded);
+
+        // 페이지 정보 생성
+        PageInfo pageInfo = buildPageInfo(page, totalPages, 5,"");
+
+        // 모델에 데이터 추가
+        model.addAttribute("contests", contests);
+        model.addAttribute("pageInfo", pageInfo);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("boardCode", boardCode);
+        model.addAttribute("action", "contest");
+
+        // 검색 시 사용할 파라미터들도 추가
+        model.addAttribute("sort", sort);
+        model.addAttribute("isClosedIncluded", isClosedIncluded);
+        model.addAttribute("categoryIds", categoryIds);
+
+        return "contest/_contest-combined-fragment :: combinedContestFragment";
     }
 }

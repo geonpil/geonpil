@@ -37,17 +37,6 @@ public class ContestService {
     }
 
 
-    public List<ContestPost> findContestByPage() {
-        List<ContestPost> contestPosts = contestMapper.findAllContests();
-
-        //dday 설정
-        for (ContestPost post : contestPosts) {
-            post.setDDay(DdayUtils.calculateDDay(post.getEndDate()));
-        }
-
-        return contestPosts;
-    }
-
     public void updateContestPost(ContestPost contestPost,
                                   Long id) {
         Long postId = contestPost.getPostId();
@@ -113,5 +102,4 @@ public class ContestService {
 
         return contestPosts;
     }
-
 }

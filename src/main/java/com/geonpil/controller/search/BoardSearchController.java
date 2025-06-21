@@ -1,4 +1,4 @@
-package com.geonpil.controller.board;
+package com.geonpil.controller.search;
 
 import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.PageResult;
