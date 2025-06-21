@@ -1,17 +1,13 @@
-package com.geonpil.controller;
+package com.geonpil.controller.contest;
 
 import com.geonpil.domain.ContestPost;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.security.CustomUserDetails;
 import com.geonpil.service.ContestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @Controller

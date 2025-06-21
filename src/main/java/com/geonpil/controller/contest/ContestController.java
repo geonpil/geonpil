@@ -1,20 +1,13 @@
-package com.geonpil.controller;
+package com.geonpil.controller.contest;
 
 import com.geonpil.domain.*;
 import com.geonpil.dto.commons.PageInfo;
-import com.geonpil.resolver.BoardNameResolver;
-import com.geonpil.security.CustomUserDetails;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
-import com.geonpil.service.CommentService;
 import com.geonpil.service.ContestService;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.geonpil.controller;
+package com.geonpil.controller.board;
 
 import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Category;
@@ -7,24 +7,18 @@ import com.geonpil.domain.PageResult;
 import com.geonpil.dto.commons.PageInfo;
 import com.geonpil.resolver.BoardNameResolver;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.security.CustomOAuth2User;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
 import com.geonpil.service.board.BoardSearchService;
-import com.geonpil.util.PaginationUtil;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.geonpil.security.CustomUserDetails;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.geonpil.util.PaginationUtil.buildPageInfo;

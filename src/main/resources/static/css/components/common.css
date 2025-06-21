@@ -114,6 +114,14 @@
     box-sizing: border-box;
 }
 
+.form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
 
 .form-group textarea {
     width: 100%;
@@ -125,6 +133,25 @@
     font-size: 14px;
     box-sizing: border-box;
 }
+
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+
+
+.form-editor {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    min-height: 400px;
+    margin-top: 10px;
+}
+
 
 /* END : 공통 폼 디자인 */
 

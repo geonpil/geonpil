@@ -50,21 +50,8 @@ select:focus {
   margin-top: 6px;
 }
 
-.form-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 30px;
-}
 
 
-.form-editor {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  min-height: 400px;
-  margin-top: 10px;
-}
 
 
 
