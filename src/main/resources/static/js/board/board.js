@@ -1,79 +1,90 @@
-let selectedCategories = new Set();
+// FilterUtils 전역 객체 사용 (import 대신)
 
-function fetchBoardPosts(page = 1,  keyword = "", categoryParam = new Set()) {
+// 상태 관리 변수
+let selectedCategories = new Set();
+let currentPage = 1;
+let boardCode = "";
+
+function fetchBoardPosts(page = 1, keyword = "", categoryParam = new Set()) {
     const params = new URLSearchParams();
 
+    // 화면 버튼 상태 업데이트
     highlightSelectedButtons();
 
-    //카테고리 파라미터 세팅
+    // 카테고리 파라미터 세팅
     if (categoryParam.size > 0) {
         params.set("categoryIds", Array.from(categoryParam).join(","));
     }
-    //게시판 코드 파라미터 세팅
-    const boardCode = new URLSearchParams(window.location.search).get("boardCode");
+
+    // 게시판 코드 파라미터 세팅
+    boardCode = new URLSearchParams(window.location.search).get("boardCode") || boardCode;
     if (boardCode) params.set("boardCode", boardCode);
 
-    //페이지 파라미터 세팅
+    // 페이지 파라미터 세팅
     params.set("page", page);
 
-    let url ="";
+    // 현재 페이지 저장
+    currentPage = page;
 
-   if (keyword) {
+    let url = "";
+    let additionalParams = {};
+
+    if (keyword) {
         // 검색용
         params.set("keyword", keyword);
         url = "/api/search/board?" + params.toString();
+        additionalParams.keyword = keyword;
     } else {
         // 일반 목록용
         url = "/board/list/fragment?" + params.toString();
-      //  urlForPage = "/board/list/fragment/pagination?" + params.toString();
-   }
+    }
 
-    history.pushState({}, '', "/board/list?" + params.toString());
+    // URL 상태 저장 (공통 유틸 사용)
+    FilterUtils.saveFilterStateToHistory({
+        page,
+        categoryIds: Array.from(categoryParam),
+        baseUrl: "board/list",
+        boardCode,
+        additionalParams,
+        state: { keyword }
+    });
 
+    // 게시글 목록 로드
     fetch(url)
         .then(res => res.text())
         .then(html => {
             document.getElementById("post-list").innerHTML = html;
         });
-
-
-
 }
 
-//뒤로 가기시
+// 뒤로 가기 시 (공통 유틸 사용)
 window.addEventListener("popstate", () => {
-    
     console.log("popstate 발생");
     
+    // URL에서 상태 복원
     const urlParams = new URLSearchParams(window.location.search);
-    const page = parseInt(urlParams.get("page")) || 1;
+    const state = FilterUtils.initializeStateFromUrl({
+        selectedCategories,
+        additionalParams: {
+            keyword: { paramName: "keyword", defaultValue: "" }
+        }
+    });
 
-    // ✅ 선택된 카테고리 복원 (선택사항)
-    const categoryIdString = urlParams.get("categoryIds") || "";
-    selectedCategories = new Set(categoryIdString.split(",").filter(Boolean));
-    highlightSelectedButtons(); // UI 반영 함수
+    // 반환된 상태에서 값 가져오기
+    currentPage = state.currentPage;
+    boardCode = state.boardCode;
+    const keyword = state.keyword;
 
-    fetchBoardPosts(page, "",selectedCategories);
+    // UI 반영
+    restoreBoardUI(Array.from(selectedCategories), currentPage);
+
+    // 데이터 다시 로드
+    fetchBoardPosts(currentPage, keyword, selectedCategories);
 });
 
-
-
-
 function restoreBoardUI(categoryIds = [], page = 1) {
-    // 모든 카테고리 버튼 초기화
-    document.querySelectorAll(".category-btn").forEach(btn => btn.classList.remove("active"));
-
-    // 카테고리가 없거나 비어있으면 '전체' 카테고리 활성화
-    if (!categoryIds || categoryIds.length === 0) {
-        initSelectAllCategory();
-        return;
-    }
-
-    // 카테고리가 있는 경우, 해당 카테고리 버튼 활성화
-    categoryIds.forEach(id => {
-        const btn = document.querySelector(`.category-btn[data-id="${id}"]`);
-        if (btn) btn.classList.add("active");
-    });
+    // 카테고리 버튼 업데이트 (공통 유틸 사용)
+    FilterUtils.updateCategoryButtonsUI(categoryIds);
 
     // 검색창 값 복원 (URL에 keyword가 있는 경우)
     const urlParams = new URLSearchParams(window.location.search);
@@ -86,18 +97,21 @@ function restoreBoardUI(categoryIds = [], page = 1) {
     console.log("UI가 복원되었습니다. 페이지:", page, "카테고리:", categoryIds);
 }
 
-function initSelectAllCategory(){
-    // ✅ '전체' 버튼에 .active 클래스 부여
+function highlightSelectedButtons() {
+    // 카테고리 버튼 업데이트 (공통 유틸 사용)
+    FilterUtils.updateCategoryButtonsUI(selectedCategories);
+}
+
+function initSelectAllCategory() {
+    // '전체' 버튼에 .active 클래스 부여
     const allBtn = document.querySelector('.category-btn[data-id=""]');
     if (allBtn) allBtn.classList.add("active");
 }
 
-
-
-
+// 카테고리 버튼 이벤트 리스너 설정
 document.querySelectorAll(".category-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-        const keyword = document.getElementById("search-input").value.trim()||"";
+        const keyword = document.getElementById("search-input").value.trim() || "";
 
         if (btn.dataset.id === "") {
             selectAllCategories(btn, keyword);
@@ -105,72 +119,64 @@ document.querySelectorAll(".category-btn").forEach(btn => {
             toggleCategory(btn, keyword);
         }
     });
-})
+});
 
+// 카테고리 토글 처리
 function toggleCategory(btn, keyword) {
-    const id = btn.dataset.id;
-
-    document.querySelector('.category-btn[data-id=""]').classList.remove("active");
-
-    if (selectedCategories.has(id)) {
-        selectedCategories.delete(id);
-
-        // 선택된 카테고리가 하나도 없으면 '전체' 카테고리를 활성화
-        if (selectedCategories.size === 0) {
-            document.querySelector('.category-btn[data-id=""]').classList.add("active");
-            // 전체 카테고리일 때는 categoryIds 파라미터를 명시적으로 빈 값으로 전달
+    // 공통 유틸 함수 사용
+    FilterUtils.toggleCategoryCommon(btn, selectedCategories, (isAllCategory) => {
+        if (isAllCategory) {
             fetchBoardPosts(1, keyword, new Set());
-            return; // 여기서 함수 종료
+            return;
         }
-    } else {
-        selectedCategories.add(id);
-    }
-    highlightSelectedButtons();
 
-    fetchBoardPosts(1, keyword, selectedCategories);
+        fetchBoardPosts(1, keyword, selectedCategories);
+    });
 }
 
-
+// 전체 카테고리 선택 처리
 function selectAllCategories(btn, keyword) {
-    // 모든 카테고리 버튼 비활성화
-    document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
-
-    // 전체 버튼만 활성화
-    btn.classList.add("active");
-
-    // 선택된 카테고리 Set 비우기
-    selectedCategories.clear();
-
-    // 전체 게시글 요청
-    fetchBoardPosts(1, keyword, selectedCategories);
+    // 공통 유틸 함수 사용
+    FilterUtils.selectAllCategoriesCommon(btn, selectedCategories, () => {
+        fetchBoardPosts(1, keyword, new Set());
+    });
 }
 
-
+// 페이지 로드 시 초기화
 addEventListener("DOMContentLoaded", () => {
     console.log("DOMContentLoaded 이벤트 발생");
 
     const urlParams = new URLSearchParams(window.location.search);
-    const page = parseInt(urlParams.get("page") || 1);
-    const categoryIds = urlParams.get("categoryIds") || "";
-    const keyword = urlParams.get("keyword") || "";
 
-    // 디버깅을 위한 로그 추가
-    console.log("초기 파라미터 확인:", { page, categoryIds, keyword });
+    // URL에서 상태 복원 (공통 유틸 사용)
+    const state = FilterUtils.initializeStateFromUrl({
+        selectedCategories,
+        additionalParams: {
+            keyword: { paramName: "keyword", defaultValue: "" }
+        }
+    });
 
-    // 최초 로딩 판단 - categoryIds가 undefined나 빈 문자열일 경우 포함
-    const isInitialLoad = !keyword && (!categoryIds || categoryIds === "") && page === 1;
+    // 반환된 상태에서 값 가져오기
+    currentPage = state.currentPage;
+    boardCode = state.boardCode;
+    const keyword = state.keyword;
 
-    console.log("초기 로드 여부:", isInitialLoad);
+    // 최초 로드 여부 확인 (공통 유틸 사용)
+    const initialLoadCheck = FilterUtils.isInitialLoad({
+        urlParams,
+        additionalChecks: [
+            !keyword || keyword === ""
+        ]
+    });
 
-    if (isInitialLoad) {
+    console.log("초기 로드 여부:", initialLoadCheck);
+
+    if (initialLoadCheck) {
         console.log("최초 로드: 전체 카테고리 활성화");
         initSelectAllCategory();
     } else {
         console.log("파라미터 있는 로드: UI 복원");
-        // 페이지가 로드될 때 카테고리와 페이지를 복원
-        const categorySet = categoryIds ? new Set(categoryIds.split(",").filter(Boolean)) : new Set();
-        selectedCategories = categorySet; // 선택된 카테고리 복원
-        fetchBoardPosts(page, keyword, selectedCategories);
-        restoreBoardUI(Array.from(categorySet), page);
+        fetchBoardPosts(currentPage, keyword, selectedCategories);
+        restoreBoardUI(Array.from(selectedCategories), currentPage);
     }
 });
