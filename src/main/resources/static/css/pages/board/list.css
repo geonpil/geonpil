@@ -66,68 +66,8 @@
     margin-bottom: 10px;
 }
 
-.board-control-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px auto 10px;
-    padding: 0 10px;
-    max-width: 100%;
-    flex-wrap: wrap;
-}
 
-.board-search-box {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
 
-.board-search-box input,
-.board-search-box select {
-    height: 38px;               /* ✅ 높이 강제 통일 */
-    box-sizing: border-box;     /* ✅ 패딩 포함 계산 */
-    font-size: 0.95rem;
-}
-
-.board-search-box input {
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 200px;
-}
-
-.board-search-box select {
-    padding: 6px;
-    width:100px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.board-search-box button {
-    padding: 6px 10px;
-    background-color: var(--primary-color, #1F4EB2);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-@media (max-width: 480px) {
-    .board-control-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .board-search-box {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .write-btn {
-        align-self: flex-end; /* 오른쪽 정렬 */
-        margin-top: 8px;
-    }
-}
 
 
 

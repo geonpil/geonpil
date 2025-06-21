@@ -5,8 +5,6 @@
 @import url('/css/base/base.css');
 @import url('/css/base/layout.css');
 
-@import url('/css/contest.css');
-@import url('/css/search.css');
 
 :root {
   --primary-color: #1F4EB2;

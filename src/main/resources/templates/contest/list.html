@@ -11,11 +11,12 @@
 
 <th:block layout:fragment="css">
     <link rel="stylesheet" href="/css/pages/contest/contest.css"/>
+    <link rel="stylesheet" href="/css/pages/board/board.css"/>
 </th:block>
 
 <body data-action="contest">
 <div layout:fragment="content">
-    <div class="board-container  flex-columns">
+    <div class="board-container flex-columns">
         <h2 class="board-header">📢 공모전</h2>
 
 <!--        장르필터-->
@@ -56,10 +57,10 @@
             <div th:replace="~{commons/_pagination-fragment :: paginationFragment(${pageInfo}, ${action})}"></div>
         </div>
 
-        <div class="contest-footer">
-            <div class="contest-upload">
-                <a th:href="@{/contest/write(boardCode=${boardCode})}" class="basic-btn">✍ 공모전 게시</a>
-            </div>
+        <!-- board와 동일한 UI로 변경 - 검색바와 글쓰기 버튼 -->
+        <div class="board-control-bar">
+            <div th:replace="~{commons/_search-fragment :: searchFragment}"></div>
+            <a th:href="@{/contest/write(boardCode=${boardCode})}" class="write-btn basic-btn">✍ 공모전 게시</a>
         </div>
     </div>
     <input type="hidden" id="boardCode" th:value="${boardCode}"/>
@@ -69,6 +70,7 @@
     <script src="/js/commons/pagination.js"></script>
     <script src="/js/commons/filter-utils.js"></script>
     <script src="/js/contest/contest.js"></script>
+    <script src="/js/board/search.js"></script>
 </th:block>
 </body>
 </html>
