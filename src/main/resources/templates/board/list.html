@@ -50,7 +50,7 @@
 
 
             <div class="board-control-bar">
-                <div th:replace ="~{commons/_search-fragment:: searchFragment}"></div>
+                <div th:replace ="~{commons/_search-fragment:: searchFragment(${boardCode})}"></div>
 
                 <a th:href="@{/board/write(boardCode=${boardCode})}" class="write-btn basic-btn">✍ 글쓰기</a>
             </div>
