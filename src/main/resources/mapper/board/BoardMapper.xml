@@ -222,9 +222,6 @@
                 <foreach item="id" collection="postIds" open="(" separator="," close=")">
                     #{id}
                 </foreach>
-                <if test="boardCode != null">
-                    AND b.board_code = #{boardCode}
-                </if>
             </when>
             <otherwise>
                 WHERE FALSE
