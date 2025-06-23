@@ -57,7 +57,7 @@
 
         <!-- board와 동일한 UI로 변경 - 검색바와 글쓰기 버튼 -->
         <div class="board-control-bar">
-            <div th:replace="~{commons/_search-fragment :: searchFragment}"></div>
+            <div th:replace="~{commons/_search-fragment :: searchFragment(${boardCode})}"></div>
             <a th:href="@{/contest/write(boardCode=${boardCode})}" class="write-btn basic-btn">✍ 공모전 게시</a>
         </div>
     </div>
