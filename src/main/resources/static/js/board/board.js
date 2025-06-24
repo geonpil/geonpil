@@ -29,15 +29,14 @@ function fetchBoardPosts(page = 1, keyword = "", categoryParam = new Set()) {
     let url = "";
     let additionalParams = {};
 
+// 검색어가 있는 경우에만 키워드 파라미터 추가
     if (keyword) {
-        // 검색용
         params.set("keyword", keyword);
-        url = "/api/search/board?" + params.toString();
         additionalParams.keyword = keyword;
-    } else {
-        // 일반 목록용
-        url = "/board/list/fragment?" + params.toString();
     }
+
+// 통합 API 호출 (검색어 유무와 관계없이 동일 엔드포인트 사용)
+    url = "/api/search/board?" + params.toString();
 
     // URL 상태 저장 (공통 유틸 사용)
     FilterUtils.saveFilterStateToHistory({
