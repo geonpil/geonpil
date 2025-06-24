@@ -37,22 +37,25 @@ public class BoardSearchController {
     }
 
     @GetMapping
-    public String searchBoard(@RequestParam String keyword,
+    public String searchBoard(@RequestParam(required = false, defaultValue = "") String keyword,
                               @RequestParam(defaultValue = "1") int page,
                               @RequestParam Integer boardCode,
                               @RequestParam(required = false, defaultValue = "") String categoryIds,
+                              @RequestParam(required = false, defaultValue = "") String searchType,
                               Model model) {
         int size = 10;
 
-        SearchResult<BoardDTO> results = boardSearchService.searchByKeyword(keyword, page, size, boardCode, categoryIds);
+        SearchResult<BoardDTO> results = boardSearchService.searchByKeyword(keyword, page, size, boardCode, categoryIds, searchType);
 
         PageInfo pageInfo = buildPageInfo(page, results.getTotalPages(),10,keyword);
 
         System.out.println("키워드 :" + keyword);
         System.out.println("게시판 코드 :" + boardCode);
         System.out.println("카테고리 아이디" + categoryIds);
+        System.out.println("검색 유형 :" + searchType);
         model.addAttribute("posts", results.getContent());
         model.addAttribute("action", "board");
+
 
         model.addAttribute("pageInfo", pageInfo);
 
