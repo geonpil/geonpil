@@ -105,11 +105,7 @@ function highlightSelectedButtons() {
     FilterUtils.updateCategoryButtonsUI(selectedCategories);
 }
 
-function initSelectAllCategory() {
-    // '전체' 버튼에 .active 클래스 부여
-    const allBtn = document.querySelector('.category-btn[data-id=""]');
-    if (allBtn) allBtn.classList.add("active");
-}
+
 
 // 카테고리 버튼 이벤트 리스너 설정
 document.querySelectorAll(".category-btn").forEach(btn => {
@@ -179,7 +175,7 @@ addEventListener("DOMContentLoaded", () => {
 
     if (initialLoadCheck) {
         console.log("최초 로드: 전체 카테고리 활성화");
-        initSelectAllCategory();
+        FilterUtils.initSelectAllCategory();
     } else {
         console.log("파라미터 있는 로드: UI 복원");
         fetchBoardPosts(currentPage, keyword, selectedCategories,searchType);

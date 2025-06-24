@@ -215,5 +215,13 @@ FilterUtils.selectAllCategoriesCommon = function(btn, selectedCategories, callba
     callback();
 };
 
+
+FilterUtils.initSelectAllCategory = function () {
+    // '전체' 버튼에 .active 클래스 부여
+    const allBtn = document.querySelector('.category-btn[data-id=""]');
+    if (allBtn) allBtn.classList.add("active");
+}
+
+
 // 전역 객체에 FilterUtils 내보내기
 window.FilterUtils = FilterUtils;
