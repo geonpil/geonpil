@@ -40,11 +40,12 @@ public class ContestSearchController {
                               @RequestParam(required = false, defaultValue = "") String categoryIds,
                               @RequestParam(required = false, defaultValue = "false") boolean isClosedIncluded,
                               @RequestParam(required = false, defaultValue = "recent") String sort,
+                              @RequestParam(required = false, defaultValue = "searchType") String searchType,
                               Model model) {
         int size = 8;
 
         SearchResult<ContestPost> results = contestSearchService.searchByKeyword(
-            keyword, page, size, boardCode, categoryIds, isClosedIncluded, sort);
+            keyword, page, size, boardCode, categoryIds, isClosedIncluded, sort, searchType);
 
         // PageInfo 객체 생성
         PageInfo pageInfo = buildPageInfo(page, results.getTotalPages(), 10, keyword);
