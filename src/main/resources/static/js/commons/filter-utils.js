@@ -216,10 +216,15 @@ FilterUtils.selectAllCategoriesCommon = function(btn, selectedCategories, callba
 };
 
 
-FilterUtils.initSelectAllCategory = function () {
+FilterUtils.initSelectAllCategory = function (type ="") {
     // '전체' 버튼에 .active 클래스 부여
     const allBtn = document.querySelector('.category-btn[data-id=""]');
     if (allBtn) allBtn.classList.add("active");
+
+    if(type === "contest") {
+        const orderByBtn = document.querySelector('.sort-btn[data-sort="recent"]');
+        if(orderByBtn) orderByBtn.classList.add("active");
+    }
 }
 
 
