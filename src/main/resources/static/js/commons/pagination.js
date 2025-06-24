@@ -20,10 +20,11 @@ document.addEventListener("click", function (e) {
         const isClosedIncluded = urlParams.get("isClosedIncluded") === "true";
         const sort = urlParams.get("sort") || "recent";
         const keyword = urlParams.get("keyword") || "";
+        const searchType = urlParams.get("searchType") || "";
 
 
         if (action === "board") {
-            fetchBoardPosts(page, keyword, new Set(categoryIds));
+            fetchBoardPosts(page, keyword, new Set(categoryIds), searchType);
         } else if (action === "book" || action === "admin") {
             fetchBookSearchResults(page, query);
         } else if (action === "contest") {

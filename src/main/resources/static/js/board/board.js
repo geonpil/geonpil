@@ -5,7 +5,7 @@ let selectedCategories = new Set();
 let currentPage = 1;
 let boardCode = "";
 
-function fetchBoardPosts(page = 1, keyword = "", categoryParam = new Set()) {
+function fetchBoardPosts(page = 1, keyword = "", categoryParam = new Set(), searchType = "") {
     const params = new URLSearchParams();
 
     // 화면 버튼 상태 업데이트
@@ -32,7 +32,9 @@ function fetchBoardPosts(page = 1, keyword = "", categoryParam = new Set()) {
 // 검색어가 있는 경우에만 키워드 파라미터 추가
     if (keyword) {
         params.set("keyword", keyword);
+        params.set("searchType", searchType); // 기본 검색 타입은 제목
         additionalParams.keyword = keyword;
+        additionalParams.searchType = searchType;
     }
 
 // 통합 API 호출 (검색어 유무와 관계없이 동일 엔드포인트 사용)
@@ -65,7 +67,8 @@ window.addEventListener("popstate", () => {
     const state = FilterUtils.initializeStateFromUrl({
         selectedCategories,
         additionalParams: {
-            keyword: { paramName: "keyword", defaultValue: "" }
+            keyword: { paramName: "keyword", defaultValue: "" },
+            searchType: { paramName: "searchType", defaultValue: "" }
         }
     });
 
@@ -73,12 +76,13 @@ window.addEventListener("popstate", () => {
     currentPage = state.currentPage;
     boardCode = state.boardCode;
     const keyword = state.keyword;
+    const searchType = state.searchType;
 
     // UI 반영
     restoreBoardUI(Array.from(selectedCategories), currentPage);
 
     // 데이터 다시 로드
-    fetchBoardPosts(currentPage, keyword, selectedCategories);
+    fetchBoardPosts(currentPage, keyword, selectedCategories, searchType);
 });
 
 function restoreBoardUI(categoryIds = [], page = 1) {
@@ -111,33 +115,34 @@ function initSelectAllCategory() {
 document.querySelectorAll(".category-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         const keyword = document.getElementById("search-input").value.trim() || "";
+        const searchType = document.getElementById("searchType").value.trim() || "";
 
         if (btn.dataset.id === "") {
-            selectAllCategories(btn, keyword);
+            selectAllCategories(btn, keyword, searchType);
         } else {
-            toggleCategory(btn, keyword);
+            toggleCategory(btn, keyword, searchType);
         }
     });
 });
 
 // 카테고리 토글 처리
-function toggleCategory(btn, keyword) {
+function toggleCategory(btn, keyword, searchType) {
     // 공통 유틸 함수 사용
     FilterUtils.toggleCategoryCommon(btn, selectedCategories, (isAllCategory) => {
         if (isAllCategory) {
-            fetchBoardPosts(1, keyword, new Set());
+            fetchBoardPosts(1, keyword, new Set(), searchType);
             return;
         }
 
-        fetchBoardPosts(1, keyword, selectedCategories);
+        fetchBoardPosts(1, keyword, selectedCategories, searchType);
     });
 }
 
 // 전체 카테고리 선택 처리
-function selectAllCategories(btn, keyword) {
+function selectAllCategories(btn, keyword, searchType) {
     // 공통 유틸 함수 사용
     FilterUtils.selectAllCategoriesCommon(btn, selectedCategories, () => {
-        fetchBoardPosts(1, keyword, new Set());
+        fetchBoardPosts(1, keyword, new Set(), searchType);
     });
 }
 
@@ -151,7 +156,8 @@ addEventListener("DOMContentLoaded", () => {
     const state = FilterUtils.initializeStateFromUrl({
         selectedCategories,
         additionalParams: {
-            keyword: { paramName: "keyword", defaultValue: "" }
+            keyword: { paramName: "keyword", defaultValue: "" },
+            searchType: { paramName: "searchType", defaultValue: "" }
         }
     });
 
@@ -159,6 +165,7 @@ addEventListener("DOMContentLoaded", () => {
     currentPage = state.currentPage;
     boardCode = state.boardCode;
     const keyword = state.keyword;
+    const searchType = state.searchType;
 
     // 최초 로드 여부 확인 (공통 유틸 사용)
     const initialLoadCheck = FilterUtils.isInitialLoad({
@@ -175,7 +182,7 @@ addEventListener("DOMContentLoaded", () => {
         initSelectAllCategory();
     } else {
         console.log("파라미터 있는 로드: UI 복원");
-        fetchBoardPosts(currentPage, keyword, selectedCategories);
+        fetchBoardPosts(currentPage, keyword, selectedCategories,searchType);
         restoreBoardUI(Array.from(selectedCategories), currentPage);
     }
 });

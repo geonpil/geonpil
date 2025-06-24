@@ -28,7 +28,10 @@ function searchHandler() {
     const categoryIds = new URLSearchParams(window.location.search).get('categoryIds') || '';
     const boardCode = getBoardCodeFromUrl();
     const pageType = getPageType(); // 페이지 타입 확인
-    const postArea = document.getElementById("contest-section") || document.querySelector(".board-container");
+    const postArea = document.getElementById("contest-section") || document.getElementById("post-list");
+    const searchType = document.getElementById("searchType").value.trim();
+
+
 
     if (!keyword) {
         alert("검색어를 입력해주세요.");
@@ -44,7 +47,7 @@ function searchHandler() {
     const apiPath = pageType === 'contest' ? '/api/search/contest' : '/api/search/board';
 
     // 페이지 타입에 따라 추가 파라미터 설정
-    let apiUrl = `${apiPath}?keyword=${encodeURIComponent(keyword)}&page=1&boardCode=${boardCode}&categoryIds=${encodeURIComponent(categoryIds)}`;
+    let apiUrl = `${apiPath}?keyword=${encodeURIComponent(keyword)}&page=1&boardCode=${boardCode}&categoryIds=${encodeURIComponent(categoryIds)}&searchType=${encodeURIComponent(searchType)}`;
 
     // 공모전의 경우 추가 파라미터 설정
     if (pageType === 'contest') {
@@ -109,6 +112,7 @@ function searchHandler() {
             currentUrl.searchParams.set("categoryIds", categoryIds);
             currentUrl.searchParams.set('keyword', keyword);
             currentUrl.searchParams.set('page', '1');
+            currentUrl.searchParams.set('searchType', searchType);
 
             if (pageType === 'contest') {
                 const isClosedIncluded = document.getElementById("isClosedIncluded")?.checked || false;
