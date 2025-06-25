@@ -6,6 +6,8 @@ let currentSort = "recent";
 let isClosedIncluded = false;
 let boardCode = "";
 let currentPage = 1;
+let keyword = "";
+let searchType = "";
 
 // 페이지 초기 로드 시 실행
 document.addEventListener("DOMContentLoaded", function () {
@@ -25,7 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 paramName: "isClosedIncluded",
                 defaultValue: false,
                 transform: value => value === "true"
-            }
+            },
+            keyword: { paramName: "keyword", defaultValue: "" },
+            searchType: { paramName: "searchType", defaultValue: "" }
         }
     });
 
@@ -33,6 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
     currentPage = state.currentPage;
     currentSort = state.sort;
     isClosedIncluded = state.isClosedIncluded;
+    keyword = state.keyword;
+    searchType = state.searchType;
 
     // 최초 로드 여부 확인 (공통 유틸 사용)
     const initialLoadCheck = FilterUtils.isInitialLoad({
@@ -43,8 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     });
 
-    // UI 업데이트
-    restoreContestUI(Array.from(selectedCategories), isClosedIncluded, currentSort);
+
 
     // 최초 로드가 아닌 경우에만 데이터 다시 가져오기
     if (!initialLoadCheck) {
@@ -55,9 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
             isClosedIncluded: isClosedIncluded,
             sort: currentSort
         });
+        // UI 업데이트
+        restoreContestUI(Array.from(selectedCategories), isClosedIncluded, currentSort,keyword, searchType);
     } else {
         console.log("최초 로드: 서버 렌더링 데이터 사용");
         // 이미 서버에서 렌더링된 데이터 사용, 추가 요청하지 않음
+        FilterUtils.initSelectAllCategory("contest");
         bindContestClickEvents(); // 이벤트 바인딩만 수행
     }
 });
@@ -120,7 +128,7 @@ window.addEventListener("popstate", function(event) {
     }
 });
 
-function fetchFilteredContests({ page = 1, categoryIds = [], isClosedIncluded = false, sort = "recent"}) {
+function fetchFilteredContests({ page = 1, categoryIds = [], isClosedIncluded = false, sort = "recent", keyword = "", searchType = ""}) {
     const params = new URLSearchParams();
 
     if (categoryIds.length > 0) {
@@ -131,6 +139,8 @@ function fetchFilteredContests({ page = 1, categoryIds = [], isClosedIncluded = 
     params.set("page", page);
     params.set("sort", sort);
     params.set("isClosedIncluded", isClosedIncluded);
+    params.set("keyword", keyword);
+    params.set("searchType", searchType);
 
     console.log("필터 파라미터:", params.toString());
 
@@ -142,16 +152,20 @@ function fetchFilteredContests({ page = 1, categoryIds = [], isClosedIncluded = 
         boardCode,
         additionalParams: {
             sort: sort,
-            isClosedIncluded: isClosedIncluded.toString()
+            isClosedIncluded: isClosedIncluded.toString(),
+            keyword: keyword,
+            searchType : searchType
         },
         state: {
             sort,
-            isClosedIncluded
+            isClosedIncluded,
+            keyword,
+            searchType
         }
     });
 
     // 통합된 엔드포인트로 요청하여 게시글 목록과 페이지네이션을 한 번에 가져옴
-    fetch("/contest/list/combined-fragment?" + params.toString())
+    fetch("/api/search/contest?" + params.toString())
         .then(res => res.text())
         .then(html => {
             // 응답에 목록과 페이지네이션이 모두 포함되어 있으므로
@@ -220,6 +234,7 @@ function bindContestClickEvents() {
 
 // 카테고리 토글 처리
 function toggleCategory(btn) {
+    settingKeywordAndSearchType();
     // 공통 유틸 함수 사용
     FilterUtils.toggleCategoryCommon(btn, selectedCategories, (isAllCategory) => {
         if (isAllCategory) {
@@ -227,7 +242,9 @@ function toggleCategory(btn) {
                 page: 1,
                 categoryIds: [],
                 sort: currentSort,
-                isClosedIncluded
+                isClosedIncluded,
+                keyword,
+                searchType
             });
             return;
         }
@@ -236,20 +253,26 @@ function toggleCategory(btn) {
             page: 1,
             categoryIds: Array.from(selectedCategories),
             sort: currentSort,
-            isClosedIncluded
+            isClosedIncluded,
+            keyword,
+            searchType
         });
     });
 }
 
 // 전체 카테고리 선택 처리
 function selectAllCategories(btn) {
+    settingKeywordAndSearchType();
+
     // 공통 유틸 함수 사용
     FilterUtils.selectAllCategoriesCommon(btn, selectedCategories, () => {
         fetchFilteredContests({
             page: 1,
             categoryIds: [],
             sort: currentSort,
-            isClosedIncluded
+            isClosedIncluded,
+            keyword,
+            searchType
         });
     });
 }
@@ -259,30 +282,38 @@ function changeSort(btn) {
     document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
+    settingKeywordAndSearchType();
+
     currentSort = btn.dataset.sort;
     fetchFilteredContests({
         page: 1,
         categoryIds: Array.from(selectedCategories),
         sort: currentSort,
-        isClosedIncluded
+        isClosedIncluded,
+        keyword,
+        searchType
     });
 }
 
 // 마감된 공모전 표시 여부 변경 처리
 function changeShow() {
     isClosedIncluded = document.getElementById("isClosedIncluded").checked;
+    settingKeywordAndSearchType();
     fetchFilteredContests({
         page: 1,
         categoryIds: Array.from(selectedCategories),
         sort: currentSort,
-        isClosedIncluded
+        isClosedIncluded,
+        keyword,
+        searchType
     });
 }
 
 // UI 상태 복원
-function restoreContestUI(categoryIds = [], isClosedVal = false, sort = "recent") {
+function restoreContestUI(categoryIds = [], isClosedVal = false, sort = "recent",keyword = "", searchType = "") {
     // 카테고리 버튼 상태 업데이트 (공통 유틸 사용)
     FilterUtils.updateCategoryButtonsUI(categoryIds);
+
 
     // 마감 여부 체크박스 반영
     const closedCheckbox = document.getElementById("isClosedIncluded");
@@ -292,4 +323,16 @@ function restoreContestUI(categoryIds = [], isClosedVal = false, sort = "recent"
     document.querySelectorAll(".sort-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.sort === sort);
     });
+
+    const searchInput = document.getElementById("search-input");
+    searchInput.value = keyword;
+    const searchTypeSelect = document.getElementById("searchType");
+    if (searchTypeSelect) {
+        searchTypeSelect.value = searchType;
+    }
+}
+
+function settingKeywordAndSearchType() {
+    keyword = document.getElementById("search-input").value.trim() || "";
+    searchType = document.getElementById("searchType").value;
 }

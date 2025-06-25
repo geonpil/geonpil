@@ -34,7 +34,7 @@ public class ContestSearchController {
     }
 
     @GetMapping
-    public String searchContest(@RequestParam String keyword,
+    public String searchContest(@RequestParam(required = false, defaultValue = "") String keyword,
                               @RequestParam(defaultValue = "1") int page,
                               @RequestParam Integer boardCode,
                               @RequestParam(required = false, defaultValue = "") String categoryIds,
@@ -61,6 +61,7 @@ public class ContestSearchController {
         model.addAttribute("isClosedIncluded", isClosedIncluded);
         model.addAttribute("categoryIds", categoryIds);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("searchType", searchType);
 
         // 통합된 프래그먼트 반환 (목록과 페이지네이션 함께)
         return "contest/_contest-combined-fragment::combinedContestFragment";

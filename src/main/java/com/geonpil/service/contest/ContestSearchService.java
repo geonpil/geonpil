@@ -138,79 +138,121 @@ public class ContestSearchService {
 
     /**
      * 키워드로 공모전 검색
+     * @param keyword 검색 키워드
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     * @param boardCode 게시판 코드
+     * @param categoryIds 카테고리 ID 목록 (쉼표로 구분된 문자열)
+     * @param isClosedIncluded 마감된 공모전 포함 여부
+     * @param sort 정렬 기준
+     * @param searchType 검색 유형
+     * @return 검색 결과
      */
     public SearchResult<ContestPost> searchByKeyword(
             String keyword, int page, int size, Integer boardCode,
-            String categoryIds, boolean isClosedIncluded, String sort) {
+            String categoryIds, boolean isClosedIncluded, String sort, String searchType) {
 
-        log.info("공모전 검색: 키워드={}, 페이지={}, 게시판={}, 카테고리={}, 마감포함={}, 정렬={}",
-                keyword, page, boardCode, categoryIds, isClosedIncluded, sort);
+        log.info("공모전 검색: 키워드={}, 페이지={}, 게시판={}, 카테고리={}, 마감포함={}, 정렬={}, 검색유형={}",
+                keyword, page, boardCode, categoryIds, isClosedIncluded, sort, searchType);
 
         try {
             // 검색어가 없으면 빈 결과 반환
             if (!StringUtils.hasText(keyword)) {
-                return new SearchResult<>(Collections.emptyList(), 0, 0, 0, page);
+                log.info("검색어가 없습니다.");
+                return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
             }
 
-            // 기본 검색 조건 - 게시판 코드 필터
+            // 항상 필드를 지정하여 Criteria 생성 (boardCode로 시작)
             Criteria criteria = new Criteria("boardCode").is(boardCode);
 
-            // 키워드 검색 조건 - contains 대신 matches 사용
-            Criteria keywordCriteria = new Criteria("title").matches("*" + keyword + "*")
-                    .or(new Criteria("content").matches("*" + keyword + "*"))
-                    .or(new Criteria("subtitle").matches("*" + keyword + "*"))
-                    .or(new Criteria("hostName").matches("*" + keyword + "*"));
+            // 검색 유형에 따른 키워드 검색 조건 설정
+            Criteria keywordCriteria;
 
-            // 검색 조건 결합
+            switch (searchType) {
+                case "all": // 전체
+                    // OR 조건으로 모든 필드 검색
+                    keywordCriteria = new Criteria("title").contains(keyword)
+                            .or(new Criteria("subtitle").contains(keyword))
+                            .or(new Criteria("content").contains(keyword))
+                            .or(new Criteria("hostName").contains(keyword));
+                    break;
+
+                case "titleContent": // 제목+내용
+                    keywordCriteria = new Criteria("title").contains(keyword)
+                            .or(new Criteria("content").contains(keyword));
+                    break;
+
+                case "title": // 제목
+                    keywordCriteria = new Criteria("title").contains(keyword);
+                    break;
+
+                case "content": // 내용
+                    keywordCriteria = new Criteria("content").contains(keyword);
+                    break;
+
+                case "host": // 주최자
+                    keywordCriteria = new Criteria("hostName").contains(keyword);
+                    break;
+
+                default: // 기본값은 전체 검색
+                    keywordCriteria = new Criteria("title").contains(keyword)
+                            .or(new Criteria("subtitle").contains(keyword))
+                            .or(new Criteria("content").contains(keyword))
+                            .or(new Criteria("hostName").contains(keyword));
+                    break;
+            }
+
+            // 검색 조건 결합 (기존 조건에 AND로 키워드 조건 추가)
             criteria = criteria.and(keywordCriteria);
 
             // 카테고리 필터 적용
-            if (StringUtils.hasText(categoryIds)) {
+            if (StringUtils.hasText(categoryIds) && !categoryIds.equals("0")) {
                 String[] ids = categoryIds.split(",");
                 if (ids.length > 0) {
-                    // Object 배열로 변환하여 in 메소드에 전달
-                    Object[] categoryIdObjs = new Object[ids.length];
-                    for (int i = 0; i < ids.length; i++) {
+                    List<Object> validIds = new java.util.ArrayList<>();
+                    for (String id : ids) {
                         try {
-                            categoryIdObjs[i] = Long.parseLong(ids[i].trim());
+                            validIds.add(Long.parseLong(id.trim()));
                         } catch (NumberFormatException e) {
-                            log.warn("유효하지 않은 카테고리 ID: {}", ids[i]);
+                            log.warn("유효하지 않은 카테고리 ID: {}", id);
                         }
                     }
-                    criteria = criteria.and(new Criteria("categoryId").in(categoryIdObjs));
+
+                    // 유효한 카테고리 ID가 있는 경우에만 필터 적용
+                    if (!validIds.isEmpty()) {
+                        criteria = criteria.and(new Criteria("categoryId").in(validIds.toArray()));
+                        log.debug("카테고리 필터 적용: {}", validIds);
+                    }
                 }
             }
 
             // 마감 여부 필터 적용 (isClosedIncluded가 false면 마감되지 않은 공모전만)
             if (!isClosedIncluded) {
-                String today = LocalDate.now().toString();
-
-                // 마감일이 없거나(존재하지 않음) OR 마감일이 오늘 이후인 경우
-                // Criteria 오브젝트를 생성할 때 반드시 필드명 지정 필요
-                Criteria endDateDoesNotExist = new Criteria("endDate").exists().not(); // endDate 필드가 없는 경우
-                Criteria endDateAfterToday = new Criteria("endDate").greaterThanEqual(today); // endDate가 오늘 이후인 경우
-
-                // OR 조건으로 두 조건 결합
-                criteria = criteria.and(new Criteria("endDate").subCriteria(
-                    new Criteria().or(endDateDoesNotExist).or(endDateAfterToday)
-                ));
+                LocalDate today = LocalDate.now();
+                // 마감일이 오늘 이후인 공모전만 필터링
+                criteria = criteria.and(new Criteria("endDate").greaterThanEqual(today));
+                log.debug("마감되지 않은 공모전만 필터링 적용 (날짜: {})", today);
             }
 
-            // 쿼리 생성 및 페이지네이션 설정
+            // 쿼리 생성
             CriteriaQuery query = new CriteriaQuery(criteria);
-            query.setPageable(PageRequest.of(page - 1, size));
 
-            // 디버깅용 로깅 추가
-            log.debug("검색 쿼리: {}", query.getCriteria().toString());
+            // 페이지네이션 설정
+            query.setPageable(PageRequest.of(page - 1, size));
 
             // 정렬 조건 적용
             if ("deadline".equals(sort)) {
                 // 마감일 순 (마감일이 가까운 순)
                 query.addSort(Sort.by(Sort.Order.asc("endDate").with(Sort.NullHandling.NULLS_LAST)));
+                log.debug("정렬: 마감일 순");
             } else {
                 // 최신순 (기본)
                 query.addSort(Sort.by(Sort.Direction.DESC, "postId"));
+                log.debug("정렬: 최신순");
             }
+
+            // 디버깅용 로깅 추가
+            log.debug("검색 쿼리: {}", query.getCriteria().toString());
 
             // 검색 실행
             SearchHits<ContestDocument> searchHits = elasticsearchOperations.search(query, ContestDocument.class);
@@ -224,15 +266,18 @@ public class ContestSearchService {
 
             // 결과가 없는 경우
             if (postIds.isEmpty()) {
+                log.debug("검색 결과 없음");
                 return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
             }
 
             // ID로 DB에서 실제 공모전 정보 조회
             List<ContestPost> contests = contestMapper.findContestsByPostIds(postIds);
+            log.debug("DB에서 조회된 공모전 수: {}", contests != null ? contests.size() : 0);
 
             // 검색 결과가 없거나 DB 조회 결과가 없는 경우
             if (contests == null || contests.isEmpty()) {
-                return new SearchResult<>(Collections.emptyList(), 0, 0, 0, page);
+                log.debug("DB 조회 결과 없음");
+                return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
             }
 
             // 검색 결과 정렬 순서에 맞게 재정렬
@@ -244,17 +289,22 @@ public class ContestSearchService {
                     .filter(p -> p != null)
                     .collect(Collectors.toList());
 
-            // 검색 결과 반환 (SearchResult 생성자 순서에 맞게 수정)
+            // 검색 결과 반환
+            long totalHits = searchHits.getTotalHits();
+            int totalPages = calculateTotalPages((int) totalHits, size);
+            log.debug("최종 검색 결과: totalHits={}, totalPages={}, 결과 개수={}",
+                    totalHits, totalPages, sortedContests.size());
+
             return new SearchResult<>(
-                    sortedContests,                                  // content: 검색 결과 목록
-                    page,                                            // page: 현재 페이지 번호
-                    size,                                            // size: 페이지당 아이템 수
-                    searchHits.getTotalHits(),                       // totalHits: 총 검색 결과 수
-                    calculateTotalPages((int) searchHits.getTotalHits(), size) // totalPages: 총 페이지 수
+                    sortedContests,       // content: 검색 결과 목록
+                    page,                 // page: 현재 페이지 번호
+                    size,                 // size: 페이지당 아이템 수
+                    totalHits,            // totalHits: 총 검색 결과 수
+                    totalPages            // totalPages: 총 페이지 수
             );
         } catch (Exception e) {
             log.error("공모전 검색 중 오류 발생: {}", e.getMessage(), e);
-            return new SearchResult<>(Collections.emptyList(), 0, 0, 0, page);
+            return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
         }
     }
 
