@@ -131,6 +131,7 @@ function searchHandler() {
             // 이벤트 바인딩
             if (pageType === 'contest') {
                 bindContestCategoryClickEvents();
+                bindContestPostClickEvents();
             }
 
             history.pushState(null, "", currentUrl.toString());
