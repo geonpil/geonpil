@@ -276,8 +276,10 @@ public class ContestSearchService {
             log.debug("DB에서 조회된 공모전 수: {}", contests != null ? contests.size() : 0);
 
             //dDay 계산
-            for(ContestPost post : contests) {
-                post.setDDay(DdayUtils.calculateDDay(post.getEndDate()));
+            if(contests != null && !contests.isEmpty()) {
+                for(ContestPost post : contests) {
+                    post.setDDay(DdayUtils.calculateDDay(post.getEndDate()));
+                }
             }
 
             // 검색 결과가 없거나 DB 조회 결과가 없는 경우
