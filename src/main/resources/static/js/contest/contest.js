@@ -13,8 +13,12 @@ let searchType = "";
 document.addEventListener("DOMContentLoaded", function () {
     console.log("DOMContentLoaded 이벤트 발생");
 
-    boardCode = document.getElementById("boardCode").value;
-    isClosedIncluded = document.getElementById("isClosedIncluded").checked;
+    // 기본값 설정 시 null/undefined 체크 추가
+    const boardCodeElement = document.getElementById("boardCode");
+    boardCode = boardCodeElement ? boardCodeElement.value : "";
+
+    const closedCheckbox = document.getElementById("isClosedIncluded");
+    isClosedIncluded = closedCheckbox ? closedCheckbox.checked : false;
 
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -51,6 +55,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+    // 무조건 이벤트 바인딩 실행
+    bindContestPostClickEvents();
+    bindContestCategoryClickEvents();
+    console.log("이벤트 바인딩 완료");
+
     // 최초 로드가 아닌 경우에만 데이터 다시 가져오기
     if (!initialLoadCheck) {
         console.log("파라미터가 있는 로드: 데이터 다시 가져오기");
@@ -66,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("최초 로드: 서버 렌더링 데이터 사용");
         // 이미 서버에서 렌더링된 데이터 사용, 추가 요청하지 않음
         FilterUtils.initSelectAllCategory("contest");
-        bindContestClickEvents(); // 이벤트 바인딩만 수행
     }
 });
 
@@ -195,7 +203,7 @@ function fetchFilteredContests({ page = 1, categoryIds = [], isClosedIncluded = 
 
             // UI 상태 업데이트 및 이벤트 핸들러 재바인딩
             highlightSelectedButtons();
-            bindContestClickEvents();
+            bindContestPostClickEvents();
         })
         .catch(err => console.error("공모전 데이터 로드 실패", err));
 
@@ -221,15 +229,82 @@ function highlightSelectedButtons() {
 }
 
 // 게시물 클릭 이벤트 바인딩
-function bindContestClickEvents() {
-    document.querySelectorAll(".contest-row").forEach(row => {
+function bindContestPostClickEvents() {
+    const contestRows = document.querySelectorAll(".contest-row");
+    console.log(`바인딩할 공모전 행 개수: ${contestRows.length}`);
+
+    if (contestRows.length === 0) {
+        console.warn("바인딩할 공모전 행이 없습니다. DOM이 완전히 로드되었는지 확인하세요.");
+        // DOM 요소가 늦게 로드되는 경우를 대비해 약간의 지연 후 재시도
+        setTimeout(checkAndBindContestEvents, 500);
+        return;
+    }
+
+    contestRows.forEach(row => {
         row.addEventListener("click", function () {
             const id = this.dataset.id;
+            console.log(`공모전 행 클릭됨: ${id}`);
             if (id) {
                 window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
             }
         });
     });
+}
+
+
+// 공모전 페이지 내 카테고리등 클릭 이벤트 재바인딩 함수
+function bindContestCategoryClickEvents() {
+    // 카테고리 버튼 이벤트 리바인딩
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    categoryButtons.forEach(btn => {
+        btn.onclick = function() {
+            if (this.getAttribute('data-id') === '') {
+                selectAllCategories(this);
+            } else {
+                toggleCategory(this);
+            }
+        };
+    });
+
+    // 정렬 버튼 이벤트 리바인딩
+    const sortButtons = document.querySelectorAll('.sort-btn');
+    sortButtons.forEach(btn => {
+        btn.onclick = function() {
+            changeSort(this);
+        };
+    });
+
+    // 체크박스 이벤트 리바인딩
+    const checkbox = document.getElementById('isClosedIncluded');
+    if (checkbox) {
+        checkbox.onclick = function() {
+            changeShow();
+        };
+    }
+
+    console.log('공모전 페이지 이벤트가 재바인딩되었습니다.');
+}
+
+
+// 지연 로딩된 DOM 요소 확인 및 이벤트 바인딩 재시도
+function checkAndBindContestEvents() {
+    const contestRows = document.querySelectorAll(".contest-row");
+    console.log(`재시도: 바인딩할 공모전 행 개수: ${contestRows.length}`);
+
+    if (contestRows.length > 0) {
+        contestRows.forEach(row => {
+            row.addEventListener("click", function () {
+                const id = this.dataset.id;
+                console.log(`공모전 행 클릭됨: ${id}`);
+                if (id) {
+                    window.location.href = `/contest/detail/${id}?boardCode=${boardCode}`;
+                }
+            });
+        });
+        console.log("지연 로딩 후 이벤트 바인딩 완료");
+    } else {
+        console.warn("여전히 바인딩할 공모전 행이 없습니다. 페이지 구조를 확인하세요.");
+    }
 }
 
 // 카테고리 토글 처리

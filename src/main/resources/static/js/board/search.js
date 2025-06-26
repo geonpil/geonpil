@@ -130,7 +130,7 @@ function searchHandler() {
 
             // 이벤트 바인딩
             if (pageType === 'contest') {
-                bindContestClickEvents();
+                bindContestCategoryClickEvents();
             }
 
             history.pushState(null, "", currentUrl.toString());
@@ -144,35 +144,4 @@ function searchHandler() {
     });
 }
 
-// 공모전 페이지 내 클릭 이벤트 재바인딩 함수
-function bindContestClickEvents() {
-    // 카테고리 버튼 이벤트 리바인딩
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    categoryButtons.forEach(btn => {
-        btn.onclick = function() {
-            if (this.getAttribute('data-id') === '') {
-                selectAllCategories(this);
-            } else {
-                toggleCategory(this);
-            }
-        };
-    });
 
-    // 정렬 버튼 이벤트 리바인딩
-    const sortButtons = document.querySelectorAll('.sort-btn');
-    sortButtons.forEach(btn => {
-        btn.onclick = function() {
-            changeSort(this);
-        };
-    });
-
-    // 체크박스 이벤트 리바인딩
-    const checkbox = document.getElementById('isClosedIncluded');
-    if (checkbox) {
-        checkbox.onclick = function() {
-            changeShow();
-        };
-    }
-
-    console.log('공모전 페이지 이벤트가 재바인딩되었습니다.');
-}
