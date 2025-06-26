@@ -167,16 +167,15 @@ public class ContestSearchService {
 
                 switch (searchType) {
                     case "all": // 전체
-                        // OR 조건으로 모든 필드 검색
-                        keywordCriteria = new Criteria("title").contains(keyword)
-                                .or(new Criteria("subtitle").contains(keyword))
-                                .or(new Criteria("content").contains(keyword))
-                                .or(new Criteria("hostName").contains(keyword));
+                        keywordCriteria = new Criteria().or("title").contains(keyword)
+                                .or("subtitle").contains(keyword)
+                                .or("content").contains(keyword)
+                                .or("hostName").contains(keyword);
                         break;
 
                     case "titleContent": // 제목+내용
-                        keywordCriteria = new Criteria("title").contains(keyword)
-                                .or(new Criteria("content").contains(keyword));
+                        keywordCriteria = new Criteria().or("title").contains(keyword)
+                                .or("content").contains(keyword);
                         break;
 
                     case "title": // 제목
@@ -192,15 +191,15 @@ public class ContestSearchService {
                         break;
 
                     default: // 기본값은 전체 검색
-                        keywordCriteria = new Criteria("title").contains(keyword)
-                                .or(new Criteria("subtitle").contains(keyword))
-                                .or(new Criteria("content").contains(keyword))
-                                .or(new Criteria("hostName").contains(keyword));
+                        keywordCriteria = new Criteria().or("title").contains(keyword)
+                                .or("subtitle").contains(keyword)
+                                .or("content").contains(keyword)
+                                .or("hostName").contains(keyword);
                         break;
                 }
 
                 // 검색 조건 결합 (기존 조건에 AND로 키워드 조건 추가)
-                criteria = criteria.and(keywordCriteria);
+                criteria = criteria.subCriteria(keywordCriteria);
                 log.debug("키워드 검색 조건 추가: {}", keyword);
             } else {
                 log.info("키워드 없이 필터 조건만으로 검색합니다.");
