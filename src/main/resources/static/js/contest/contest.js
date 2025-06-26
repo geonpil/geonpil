@@ -67,7 +67,9 @@ document.addEventListener("DOMContentLoaded", function () {
             page: currentPage,
             categoryIds: Array.from(selectedCategories),
             isClosedIncluded: isClosedIncluded,
-            sort: currentSort
+            sort: currentSort,
+            keyword : keyword,
+            searchType : searchType
         });
         // UI 업데이트
         restoreContestUI(Array.from(selectedCategories), isClosedIncluded, currentSort,keyword, searchType);
@@ -96,6 +98,8 @@ window.addEventListener("popstate", function(event) {
         currentSort = event.state.sort || "recent";
         isClosedIncluded = event.state.isClosedIncluded || false;
         currentPage = event.state.page || 1;
+        keyword = event.state.keyword || "";
+        searchType = event.state.searchType || "";
 
         // UI 복원
         restoreContestUI(Array.from(selectedCategories), isClosedIncluded, currentSort);
@@ -105,7 +109,9 @@ window.addEventListener("popstate", function(event) {
             page: currentPage,
             categoryIds: Array.from(selectedCategories),
             isClosedIncluded: isClosedIncluded,
-            sort: currentSort
+            sort: currentSort,
+            keyword : keyword,
+            searchType : searchType
         });
     } else {
         // state가 없는 경우 기본값으로 초기화
