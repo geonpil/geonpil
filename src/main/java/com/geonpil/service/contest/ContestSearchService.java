@@ -5,6 +5,7 @@ import com.geonpil.dto.boardSearch.SearchResult;
 import com.geonpil.elasticsearch.ContestDocument;
 import com.geonpil.mapper.board.ContestMapper;
 import com.geonpil.repository.search.ContestSearchRepository;
+import com.geonpil.util.DdayUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,7 +70,7 @@ public class ContestSearchService {
         try {
             // DB에서 모든 공모전을 가져옴
             List<ContestPost> allContests = contestMapper.findAllContestForIndexing();
-            log.info("색인할 공모전 수: {}", allContests.size());
+            log.info("색인할 공모전 ���: {}", allContests.size());
 
             List<ContestDocument> docs = allContests.stream()
                     .map(contest -> {
@@ -152,58 +153,58 @@ public class ContestSearchService {
             String keyword, int page, int size, Integer boardCode,
             String categoryIds, boolean isClosedIncluded, String sort, String searchType) {
 
-        log.info("공모전 검색: 키워드={}, 페이지={}, 게시판={}, 카테고리={}, 마감포함={}, 정렬={}, 검색유형={}",
+        log.info("공모전 검색: 키워드={}, 페이지={}, ��시판={}, 카테고리={}, 마감포함={}, 정렬={}, 검색유형={}",
                 keyword, page, boardCode, categoryIds, isClosedIncluded, sort, searchType);
 
         try {
-            // 검색어가 없으면 빈 결과 반환
-            if (!StringUtils.hasText(keyword)) {
-                log.info("검색어가 없습니다.");
-                return new SearchResult<>(Collections.emptyList(), page, size, 0, 0);
-            }
-
             // 항상 필드를 지정하여 Criteria 생성 (boardCode로 시작)
             Criteria criteria = new Criteria("boardCode").is(boardCode);
 
-            // 검색 유형에 따른 키워드 검색 조건 설정
-            Criteria keywordCriteria;
+            // 키워드가 있는 경우에만 키워드 검색 조건 추가
+            if (StringUtils.hasText(keyword)) {
+                // 검색 유형에 따른 키워드 검색 조건 설정
+                Criteria keywordCriteria;
 
-            switch (searchType) {
-                case "all": // 전체
-                    // OR 조건으로 모든 필드 검색
-                    keywordCriteria = new Criteria("title").contains(keyword)
-                            .or(new Criteria("subtitle").contains(keyword))
-                            .or(new Criteria("content").contains(keyword))
-                            .or(new Criteria("hostName").contains(keyword));
-                    break;
+                switch (searchType) {
+                    case "all": // 전체
+                        // OR 조건으로 모든 필드 검색
+                        keywordCriteria = new Criteria("title").contains(keyword)
+                                .or(new Criteria("subtitle").contains(keyword))
+                                .or(new Criteria("content").contains(keyword))
+                                .or(new Criteria("hostName").contains(keyword));
+                        break;
 
-                case "titleContent": // 제목+내용
-                    keywordCriteria = new Criteria("title").contains(keyword)
-                            .or(new Criteria("content").contains(keyword));
-                    break;
+                    case "titleContent": // 제목+내용
+                        keywordCriteria = new Criteria("title").contains(keyword)
+                                .or(new Criteria("content").contains(keyword));
+                        break;
 
-                case "title": // 제목
-                    keywordCriteria = new Criteria("title").contains(keyword);
-                    break;
+                    case "title": // 제목
+                        keywordCriteria = new Criteria("title").contains(keyword);
+                        break;
 
-                case "content": // 내용
-                    keywordCriteria = new Criteria("content").contains(keyword);
-                    break;
+                    case "content": // 내용
+                        keywordCriteria = new Criteria("content").contains(keyword);
+                        break;
 
-                case "host": // 주최자
-                    keywordCriteria = new Criteria("hostName").contains(keyword);
-                    break;
+                    case "host": // 주최자
+                        keywordCriteria = new Criteria("hostName").contains(keyword);
+                        break;
 
-                default: // 기본값은 전체 검색
-                    keywordCriteria = new Criteria("title").contains(keyword)
-                            .or(new Criteria("subtitle").contains(keyword))
-                            .or(new Criteria("content").contains(keyword))
-                            .or(new Criteria("hostName").contains(keyword));
-                    break;
+                    default: // 기본값은 전체 검색
+                        keywordCriteria = new Criteria("title").contains(keyword)
+                                .or(new Criteria("subtitle").contains(keyword))
+                                .or(new Criteria("content").contains(keyword))
+                                .or(new Criteria("hostName").contains(keyword));
+                        break;
+                }
+
+                // 검색 조건 결합 (기존 조건에 AND로 키워드 조건 추가)
+                criteria = criteria.and(keywordCriteria);
+                log.debug("키워드 검색 조건 추가: {}", keyword);
+            } else {
+                log.info("키워드 없이 필터 조건만으로 검색합니다.");
             }
-
-            // 검색 조건 결합 (기존 조건에 AND로 키워드 조건 추가)
-            criteria = criteria.and(keywordCriteria);
 
             // 카테고리 필터 적용
             if (StringUtils.hasText(categoryIds) && !categoryIds.equals("0")) {
@@ -273,6 +274,11 @@ public class ContestSearchService {
             // ID로 DB에서 실제 공모전 정보 조회
             List<ContestPost> contests = contestMapper.findContestsByPostIds(postIds);
             log.debug("DB에서 조회된 공모전 수: {}", contests != null ? contests.size() : 0);
+
+            //dDay 계산
+            for(ContestPost post : contests) {
+                post.setDDay(DdayUtils.calculateDDay(post.getEndDate()));
+            }
 
             // 검색 결과가 없거나 DB 조회 결과가 없는 경우
             if (contests == null || contests.isEmpty()) {
