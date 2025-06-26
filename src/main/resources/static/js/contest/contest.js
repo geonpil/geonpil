@@ -102,7 +102,7 @@ window.addEventListener("popstate", function(event) {
         searchType = event.state.searchType || "";
 
         // UI 복원
-        restoreContestUI(Array.from(selectedCategories), isClosedIncluded, currentSort);
+        restoreContestUI(Array.from(selectedCategories), isClosedIncluded, currentSort,keyword, searchType);
 
         // 데이터 다시 로드
         fetchFilteredContests({
