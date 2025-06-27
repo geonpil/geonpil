@@ -29,8 +29,18 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     implementation 'org.elasticsearch:elasticsearch:7.17.10'
+
 }
 
 test {
     useJUnitPlatform()
+}
+
+
+jar {
+    enabled = false
+}
+
+bootJar {
+    enabled = true
 }
