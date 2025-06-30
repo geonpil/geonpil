@@ -127,7 +127,7 @@
         b.like_count AS likeCount,
         b.created_at AS createdAt,
         b.updated_at AS updatedAt,
-        (SELECT COUNT(*) FROM COMMENTS c WHERE b.post_Id =  c.post_id AND c.is_deleted = false) AS commentCount
+        (SELECT COUNT(*) FROM comments c WHERE b.post_Id =  c.post_id AND c.is_deleted = false) AS commentCount
         FROM board b
         JOIN category c ON b.category_id = c.category_id
         JOIN users u on b.user_id = u.id
@@ -148,7 +148,7 @@
         b.created_at AS createdAt,
         b.updated_at AS updatedAt,
         u.nickname,
-        (SELECT COUNT(*) FROM COMMENTS cm WHERE b.post_Id =  cm.post_id AND cm.is_deleted = false) AS commentCount
+        (SELECT COUNT(*) FROM comments cm WHERE b.post_Id =  cm.post_id AND cm.is_deleted = false) AS commentCount
         FROM board b
         JOIN category c ON b.category_id = c.category_id
         JOIN users u ON b.user_id = u.id
