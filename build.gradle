@@ -28,9 +28,19 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-    implementation 'org.elasticsearch:elasticsearch:7.17.10'
+    implementation 'co.elastic.clients:elasticsearch-java:8.13.4'
+
 }
 
 test {
     useJUnitPlatform()
+}
+
+
+jar {
+    enabled = false
+}
+
+bootJar {
+    enabled = true
 }

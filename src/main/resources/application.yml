@@ -4,8 +4,8 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/geonpil?serverTimezone=Asia/Seoul
-    username: root
+    url: jdbc:mysql://ls-55ddd67844901b51bf6deac3c8ad80a6f1905007.cbk2u2qwo6ey.ap-northeast-2.rds.amazonaws.com:3306/geonpil?serverTimezone=Asia/Seoul
+    username: geonpil
     password: clzlsrnxk15
     driver-class-name: com.mysql.cj.jdbc.Driver
 
@@ -45,11 +45,12 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-  elasticsearch:
-    uris: http://localhost:9200
-    connection-timeout: 5s
-    socket-timeout: 10s
 
+  # Elasticsearch 설정 업데이트
+  elasticsearch:
+    host: http://3.36.74.240:9200
+    username: elastic
+    password: 2OTI4z_JMM0rCD3o_h52
 
   security:
     oauth2:

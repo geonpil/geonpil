@@ -31,3 +31,5 @@ public class BoardDocument {
     private Long categoryId;
 
 }
+
+
