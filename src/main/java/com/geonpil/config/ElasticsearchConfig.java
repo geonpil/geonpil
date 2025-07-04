@@ -34,6 +34,7 @@ public class ElasticsearchConfig {
                 .setDefaultHeaders(new Header[]{
                         new BasicHeader("Authorization", basicAuthHeader(username, password))
                 })
+                .setPathPrefix("/es")
                 .build();
 
         ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());

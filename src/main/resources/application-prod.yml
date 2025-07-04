@@ -2,10 +2,12 @@ server:
   address: 0.0.0.0
   port: 8080
 
+
 elasticsearch:
-  host: http://54.180.30.38:9200
+  host: https://geonpil.com
   username: elastic
-  password: clzls1
+  password: FwjX2u2=wnT76QQ=ZLDE
+
 
 spring:
   datasource:
