@@ -31,3 +31,4 @@ Thumbs.db
 
 # Others
 node_modules/
+application-prod.yml
