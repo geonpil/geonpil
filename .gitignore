@@ -30,8 +30,11 @@ Thumbs.db
 *.swp
 
 # nginx 설정
-nginx/ssl/*
+nginx/ssl/**
 !nginx/ssl/.keep
+
+*.crt
+*.key
 
 # Others
 node_modules/
