@@ -12,6 +12,7 @@
 
 # Build
 /build/
+/logs/
 /target/
 /out/
 
@@ -39,3 +40,14 @@ nginx/ssl/**
 # Others
 node_modules/
 application-prod.yml
+
+elasticsearch-*/
+
+*.lock
+*.pid
+
+.idea/
+*.iml
+
+
+*.log
