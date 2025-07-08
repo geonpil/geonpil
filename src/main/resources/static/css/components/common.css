@@ -278,3 +278,43 @@
 }
 
 /* END : 검색바 디자인 */
+
+
+/* START : 이미지 확대 */
+
+ .image-modal {
+     display: none;
+     position: fixed;
+     z-index: 1000;
+     padding-top: 50px;
+     left: 0;
+     top: 0;
+     width: 100%;
+     height: 100%;
+     overflow: auto;
+     background-color: rgba(0,0,0,0.9);
+ }
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+}
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.poster-image {
+    cursor: pointer;
+    transition: 0.3s;
+}
+.poster-image:hover {
+    opacity: 0.8;
+}
+
+/* END : 이미지 확대 */

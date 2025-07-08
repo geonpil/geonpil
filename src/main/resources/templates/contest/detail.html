@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="layout.html"
       th:inline="text">
 
@@ -79,7 +80,7 @@
                                 <div>링크복사</div>
                             </button>
                             <button id="kakao-link-btn" type="button" class="kakao-link-btn">
-                                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"  alt ="카카오톡"/>
+                                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"  alt ="카카���톡"/>
                                 <div>카카오톡</div>
                             </button>
                         </div>
@@ -87,8 +88,13 @@
                 </div>
 
                 <div class="post-image-wrapper">
-                    <img th:src="@{${post.posterUrl}}" alt="포스터 이미지" class="poster-image">
+                    <img th:src="@{${post.posterUrl}}" alt="포스터 이미지" class="poster-image" onclick="openImageModal(this)">
                 </div>
+                <div id="imageModal" class="image-modal">
+                    <span class="close-modal" onclick="closeImageModal()">&times;</span>
+                    <img class="modal-content" id="expandedImg">
+                </div>
+
             </div>
         </div>
 
@@ -129,6 +135,33 @@
     </script>
 
     <script>
+        // 이미지 모달 관련 함수
+        function openImageModal(img) {
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("expandedImg");
+            modal.style.display = "block";
+            modalImg.src = img.src;
+        }
+
+        function closeImageModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeImageModal();
+            }
+        });
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById("imageModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+
         function copyLink() {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {
@@ -167,7 +200,6 @@
                 }
             ]
         });
-
     </script>
 </th:block>
 </body>

@@ -3,9 +3,9 @@ server:
   port: 8080
 
 elasticsearch:
-  host: http://localhost:9200
+  host: http://localhost
   username: elastic
-  password: clzls1
+  password: V4r7d5dd4pe_Xlms5uf0
 
 spring:
   datasource:
