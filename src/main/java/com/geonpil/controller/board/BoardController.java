@@ -11,6 +11,9 @@ import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
 import com.geonpil.service.board.BoardSearchService;
+import com.geonpil.service.board.BoardAttachmentService;
+import com.geonpil.domain.book.BoardAttachment;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,12 +35,14 @@ public class BoardController {
     private final CategoryService categoryService;
     private final CommentService commentService;
     private final BoardSearchService boardSearchService;
+    private final BoardAttachmentService boardAttachmentService;
 
-    public BoardController(BoardService boardService, CategoryService categoryService, CommentService commentService, BoardSearchService boardSearchService) {
+    public BoardController(BoardService boardService, CategoryService categoryService, CommentService commentService, BoardSearchService boardSearchService, BoardAttachmentService boardAttachmentService) {
         this.boardService = boardService;
         this.categoryService = categoryService;
         this.commentService = commentService;
         this.boardSearchService = boardSearchService;
+        this.boardAttachmentService = boardAttachmentService;
     }
 
 
@@ -88,11 +93,14 @@ public class BoardController {
     //글쓰기 저장
     @PostMapping("/write/save")
     public String savePost(@ModelAttribute BoardDTO boardDTO,
+                           @RequestParam(value = "files", required = false) List<MultipartFile> files,
                            @AuthenticationPrincipal AppUserInfo user,
-                           RedirectAttributes redirectAttributes) {
+                           RedirectAttributes redirectAttributes) throws java.io.IOException {
 
         boardDTO.setUserId(user.getId());
         boardService.save(boardDTO);
+        // 첨부파일 저장
+        boardAttachmentService.saveFiles(boardDTO.getPostId(), files);
         boardSearchService.index(boardDTO);
         redirectAttributes.addFlashAttribute("message", "글이 성공적으로 등록되었습니다.");
         return "redirect:/board/list?boardCode=" + boardDTO.getBoardCode();
@@ -107,11 +115,13 @@ public class BoardController {
 
         BoardDTO post = boardService.findById(postId);
         List<Comment> comments = commentService.getComments(postId);
+        List<BoardAttachment> attachments = boardAttachmentService.getFiles(postId);
 
 
         model.addAttribute("post", post);
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("comments", comments);
+        model.addAttribute("attachments", attachments);
         return "board/detail"; // templates/board/detail.html
     }
 

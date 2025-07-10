@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geonpil.mapper.board.BoardAttachmentMapper">
+
+    <!-- Result Mapping -->
+    <resultMap id="attachmentResultMap" type="com.geonpil.domain.book.BoardAttachment">
+        <id     property="attachmentId" column="attachment_id" />
+        <result property="postId"       column="post_id" />
+        <result property="originalName" column="original_name" />
+        <result property="storedName"   column="stored_name" />
+        <result property="filePath"     column="file_path" />
+        <result property="fileSize"     column="file_size" />
+        <result property="createdAt"    column="created_at" />
+        <result property="isDeleted"    column="is_deleted" />
+    </resultMap>
+
+    <!-- Insert attachment -->
+    <insert id="insert"
+            parameterType="com.geonpil.domain.book.BoardAttachment"
+            useGeneratedKeys="true"
+            keyProperty="attachmentId">
+        INSERT INTO board_attachment (
+            post_id,
+            original_name,
+            stored_name,
+            file_path,
+            file_size,
+            created_at,
+            is_deleted
+        ) VALUES (
+            #{postId},
+            #{originalName},
+            #{storedName},
+            #{filePath},
+            #{fileSize},
+            NOW(),
+            0
+        )
+    </insert>
+
+    <!-- Find attachments by post -->
+    <select id="findByPostId" parameterType="long" resultMap="attachmentResultMap">
+        SELECT
+            attachment_id,
+            post_id,
+            original_name,
+            stored_name,
+            file_path,
+            file_size,
+            created_at,
+            is_deleted
+        FROM board_attachment
+        WHERE post_id = #{postId}
+          AND is_deleted = 0
+        ORDER BY attachment_id
+    </select>
+
+    <!-- Soft delete -->
+    <update id="softDeleteById" parameterType="long">
+        UPDATE board_attachment
+        SET is_deleted = 1
+        WHERE attachment_id = #{attachmentId}
+    </update>
+
+</mapper> 
