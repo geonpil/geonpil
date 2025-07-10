@@ -121,3 +121,101 @@
 
 
 
+
+/* ------------------------------- */
+/* 첨부파일 (write/detail 공통)    */
+/* ------------------------------- */
+
+/* write.html 파일 선택 */
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;            /* 텍스트 input 과 높이 맞춤 */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* detail.html 첨부 목록 */
+.attachment-wrapper {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    background: #fafafa;
+}
+
+.attachment-wrapper h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.attachment-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 1rem 0;
+}
+.attachment-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+
+/* 
+   .attachment-list li + li 선택자는 
+   .attachment-list 안에서 li 요소가 연속해서 있을 때,
+   바로 앞에 li가 있는(li 다음에 오는) li 요소에만 적용됩니다.
+
+   즉, 두 번째 이후의 li에만 스타일을 적용할 때 사용합니다.
+   예시:
+   <ul class="attachment-list">
+     <li>첫 번째</li>   <-- 적용 안 됨
+     <li>두 번째</li>   <-- 적용됨
+     <li>세 번째</li>   <-- 적용됨
+   </ul>
+*/
+.attachment-list li + li {
+    margin-top: 6px;
+}
+
+.attachment-list a {
+    color: var(--primary-color, #1F4EB2);
+    text-decoration: underline;
+    font-size: 0.95rem;
+}
+
+.attachment-list a:hover {
+    text-decoration: none;
+}
+
+.attachment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.delete-label input {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .attachment-wrapper {
+        padding: 10px 12px;
+    }
+}
+
+
+
+
+
+

@@ -164,12 +164,14 @@ public class BoardController {
                            Model model) {
         BoardDTO post = boardService.findById(id);
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
+        List<BoardAttachment> attachments = boardAttachmentService.getFiles(id);
         if (!post.getUserId().equals(user.getId())) {
             throw new AccessDeniedException("수정 권한이 없습니다.");
         }
         model.addAttribute("post", post);
         model.addAttribute("categories", categories);
         model.addAttribute("boardCode", boardCode);
+        model.addAttribute("attachments", attachments);
         return "board/edit";
     }
 
@@ -178,10 +180,16 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public String editPost(@PathVariable Long id,
                            @ModelAttribute BoardDTO updatedPost,
+                           @RequestParam(value="files", required = false) List<MultipartFile> files,
+                           @RequestParam(value="deleteAttachmentIds", required = false) List<Long> deleteAttachmentIds,
                            @AuthenticationPrincipal AppUserInfo user
-                           ) {
+                           ) throws java.io.IOException {
 
         boardService.updatePost(id, updatedPost, user.getId());
+        // 삭제 요청 처리
+        boardAttachmentService.deleteFiles(deleteAttachmentIds, user.getId());
+        // 새 파일 저장
+        boardAttachmentService.saveFiles(id, files);
         return "redirect:/board/list/detail/" + id + "?boardCode=" + updatedPost.getBoardCode();
     }
 

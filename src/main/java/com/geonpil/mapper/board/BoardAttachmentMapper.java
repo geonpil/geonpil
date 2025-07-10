@@ -24,4 +24,7 @@ public interface BoardAttachmentMapper {
      * 첨부파일 소프트 삭제
      */
     void softDeleteById(@Param("attachmentId") Long attachmentId);
+
+    /** 단일 첨부 조회 */
+    BoardAttachment findById(@Param("attachmentId") Long attachmentId);
 } 

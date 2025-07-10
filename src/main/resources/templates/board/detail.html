@@ -37,6 +37,16 @@
 
             <div class="post-content toastui-editor-contents" th:utext="${post.content}">내용</div>
 
+            <!-- 첨부 파일 목록 -->
+            <div class="attachment-wrapper" th:if="${attachments != null and !#lists.isEmpty(attachments)}" style="margin-top: 15px;">
+                <h4>📎 첨부 파일</h4>
+                <ul class="attachment-list">
+                    <li th:each="att : ${attachments}">
+                        <a th:href="${att.filePath}" th:text="${att.originalName}" target="_blank" download></a>
+                    </li>
+                </ul>
+            </div>
+
             <div class="post-action-wrapper">
                 <form th:action="@{/board/like/{id}(id=${post.postId}, boardCode=${boardCode})}" method="post">
                     <button type="submit" class="like-btn">👍 추천하기 (<span th:text="${post.likeCount}">0</span>)</button>
@@ -100,34 +110,7 @@
                                     th:attr="data-id=${comment.commentId}"
                                     onclick="submitEdit(this)">
                                 등록
-                            </button>
-                        </div>
-
-                        <!-- 답글 버튼 및 폼 -->
-                        <th:block sec:authorize="isAuthenticated()">
-                            <button type="button" class="reply-toggle-btn" th:attr="data-id=${comment.commentId}"
-                                    onclick="toggleReplyForm(this)">💬 답글
-                            </button>
-                            <button type="button"
-                                    class="edit-reply-btn"
-                                    th:if="${comment.userId == #authentication.principal.id}"
-                                    th:attr="data-id=${comment.commentId}"
-                                    onclick="toggleEdit(this)">
-                                수정
-                            </button>
-                            <!-- 삭제 버튼 및 폼 -->
-                            <button type="button"
-                                    class="delete-reply-btn"
-                                    th:if="${comment.userId == #authentication.principal.id}"
-                                    th:attr="data-id=${comment.commentId}"
-                                    onclick="deleteComment(this)">
-                                삭제
-                            </button>
-                            <div class="reply-form" th:attr="id='reply-form-' + ${comment.commentId}"
-                                 style="display: none; margin-top: 10px;">
-              <textarea th:id="'reply-content-' + ${comment.commentId}"
-                        rows="2"
-                        placeholder="대댓글을 입력하세요..."
+                            </button> </div> <!-- 답글 버튼 및 폼 --> <th:block sec:authorize="isAuthenticated()"> <button type="button" class="reply-toggle-btn" th:attr="data-id=${comment.commentId}" onclick="toggleReplyForm(this)">💬 답글 </button> <button type="button" class="edit-reply-btn" th:if="${comment.userId == #authentication.principal.id}" th:attr="data-id=${comment.commentId}" onclick="toggleEdit(this)"> 수정 </button> <!-- 삭제 버튼 및 폼 --> <button type="button" class="delete-reply-btn" th:if="${comment.userId == #authentication.principal.id}" th:attr="data-id=${comment.commentId}" onclick="deleteComment(this)"> 삭제 </button> <div class="reply-form" th:attr="id='reply-form-' + ${comment.commentId}" style="display: none; margin-top: 10px;"> <textarea th:id="'reply-content-' + ${comment.commentId}" rows="2" placeholder="대댓글을 입력하세요..."
                         required class="comment-input"></textarea>
                                 <button type="button"
                                         class="basic-btn reply-btn"

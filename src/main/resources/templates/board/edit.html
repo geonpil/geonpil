@@ -15,11 +15,11 @@
 
 <body>
 <div layout:fragment="content">
-  <div class="write-wrapper">
+  <div class="write-wrapper card p-20">
     <div class="write-card">
     <h2 class="form-title">✍ 글쓰기</h2>
 
-      <form id = "postForm"  th:action="@{/board/edit/{id}(id=${post.postId})}" method="post">
+      <form id = "postForm"  th:action="@{/board/edit/{id}(id=${post.postId})}" method="post" enctype="multipart/form-data">
 
       <!-- 분류 선택 -->
         <div class="form-group">
@@ -42,6 +42,30 @@
         <!-- 내용 -->
         <div class="form-group">
           <div id="editor" class="form-editor"></div>
+        </div>
+
+        <!-- 파일 첨부 수정 -->
+        <div class="form-group">
+          <label>기존 첨부파일</label>
+          <div th:if="${attachments != null and !#lists.isEmpty(attachments)}">
+            <ul class="attachment-list">
+              <li th:each="att : ${attachments}" class="attachment-item">
+                <span th:text="${att.originalName}"></span>
+                <label class="delete-label">
+                  <input type="checkbox" name="deleteAttachmentIds" th:value="${att.attachmentId}" />
+                  삭제
+                </label>
+              </li>
+            </ul>
+          </div>
+          <div th:if="${attachments == null or #lists.isEmpty(attachments)}">
+            <p style="color:#888">첨부된 파일이 없습니다.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="files">새 파일 추가</label>
+          <input type="file" id="files" name="files" multiple class="form-input" />
         </div>
 
         <!-- 버튼 -->

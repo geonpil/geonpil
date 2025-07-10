@@ -67,12 +67,7 @@ public class BoardAttachmentService {
      */
     @Transactional
     public void deleteFile(Long attachmentId, Long currentUserId) {
-        // 첨부 가져오기
-        List<BoardAttachment> list = attachmentMapper.findByPostId(null);
-        // For simplicity we'll load a single attachment
-        BoardAttachment target = list.stream().filter(a -> a.getAttachmentId().equals(attachmentId)).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("첨부파일을 찾을 수 없습니다."));
-
+        BoardAttachment target = attachmentMapper.findById(attachmentId);
         // 게시글 소유자인지 확인
         Long postId = target.getPostId();
         var post = boardMapper.findById(postId);
@@ -84,5 +79,14 @@ public class BoardAttachmentService {
         String subDir = "board/" + postId;
         fileStorageService.delete(subDir, target.getStoredName());
         attachmentMapper.softDeleteById(attachmentId);
+    }
+
+    /** 여러 첨부파일 삭제 */
+    @Transactional
+    public void deleteFiles(List<Long> attachmentIds, Long currentUserId) {
+        if (attachmentIds == null || attachmentIds.isEmpty()) return;
+        for (Long id : attachmentIds) {
+            deleteFile(id, currentUserId);
+        }
     }
 } 

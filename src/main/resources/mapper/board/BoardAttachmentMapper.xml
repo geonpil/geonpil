@@ -65,4 +65,19 @@
         WHERE attachment_id = #{attachmentId}
     </update>
 
+    <!-- Get attachment by id -->
+    <select id="findById" parameterType="long" resultMap="attachmentResultMap">
+        SELECT
+            attachment_id,
+            post_id,
+            original_name,
+            stored_name,
+            file_path,
+            file_size,
+            created_at,
+            is_deleted
+        FROM board_attachment
+        WHERE attachment_id = #{attachmentId}
+    </select>
+
 </mapper> 

@@ -22,7 +22,7 @@
     <div class="write-card">
     <h2 class="form-title">✍ 글쓰기</h2>
 
-    <form id="postForm" action="/board/write/save" method="post">
+    <form id="postForm" action="/board/write/save" method="post" enctype="multipart/form-data">
 
       <!-- 분류 선택 -->
         <div class="form-group">
@@ -42,6 +42,12 @@
         <!-- 내용 -->
         <div class="form-group">
           <div id="editor" class="form-editor"></div>
+        </div>
+
+        <!-- 파일 첨부 -->
+        <div class="form-group">
+          <label for="files">파일 첨부</label>
+          <input type="file" id="files" name="files" multiple class="form-input"/>
         </div>
 
         <!-- 버튼 -->
