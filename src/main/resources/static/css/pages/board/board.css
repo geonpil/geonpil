@@ -160,19 +160,6 @@
 }
 
 
-/* 
-   .attachment-list li + li 선택자는 
-   .attachment-list 안에서 li 요소가 연속해서 있을 때,
-   바로 앞에 li가 있는(li 다음에 오는) li 요소에만 적용됩니다.
-
-   즉, 두 번째 이후의 li에만 스타일을 적용할 때 사용합니다.
-   예시:
-   <ul class="attachment-list">
-     <li>첫 번째</li>   <-- 적용 안 됨
-     <li>두 번째</li>   <-- 적용됨
-     <li>세 번째</li>   <-- 적용됨
-   </ul>
-*/
 .attachment-list li + li {
     margin-top: 6px;
 }
