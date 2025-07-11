@@ -31,6 +31,8 @@
             <div th:if="${param.error}" style="margin-top: 10px; color: red;">
                 <p th:text="${param.error}"></p>
             </div>
+            <!-- 복구 메시지 div (hidden) -->
+            <div th:if="${param.message}" id="recoverMsgDiv" th:text="${param.message}" style="display:none;"></div>
         </form>
 
         <div style="margin-top: 20px; font-size: 0.9rem;">
@@ -62,6 +64,14 @@
           if (urlParams.get('resetSuccess') === 'true') {
             alert("✅ 비밀번호가 성공적으로 변경되었습니다! 이제 로그인해주세요.");
           }
+
+          let recoverMsg = urlParams.get('message');
+          if (!recoverMsg) {
+            // fallback: try hidden div (server-side param)
+            const div = document.getElementById('recoverMsgDiv');
+            if (div) recoverMsg = div.textContent;
+          }
+          if (recoverMsg) alert(recoverMsg);
         }
     </script>
 </th:block>

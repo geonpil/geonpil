@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<th:block layout:fragment="meta">
+    <title>건필 - 계정 복구 확인</title>
+</th:block>
+
+<th:block layout:fragment="css">
+    <!-- 기본 공통 스타일 -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/components/common.css" />
+</th:block>
+
+<body>
+<div layout:fragment="content">
+    <div class="form-card" style="text-align:center; max-width:400px; margin:0 auto;">
+        <h2 style="margin-bottom:20px; color:var(--primary-color);">계정 복구</h2>
+        <p style="margin-bottom:30px;">탈퇴했던 계정을 복구하시겠습니까?</p>
+
+        <form action="/recover/confirm" method="post" style="display:inline-block;">
+            <input type="hidden" name="userId" th:value="${userId}" />
+            <button type="submit" class="basic-btn" style="width:150px;">네, 복구합니다</button>
+        </form>
+        <a th:href="@{/login(error='복구를 취소하셨습니다.')}" class="cancel-btn" style="margin-left:10px;">아니오</a>
+    </div>
+</div>
+</body>
+</html> 

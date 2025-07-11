@@ -50,7 +50,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //누구나 접근
                         .requestMatchers(
-                                "/", "/signup", "/login","/find-password","/withdrawal-complete", "signup-success"
+                                "/", "/signup", "/login","/find-password","/withdrawal-complete", "signup-success",
+                                "/recover/**"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
                                 "/api/search/**", "/books/**","/reviews/**","/bug-report/**"
@@ -80,6 +81,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(customOAuth2SuccessHandler)
+                        .failureHandler(customAuthFailureHandler)
                         )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")

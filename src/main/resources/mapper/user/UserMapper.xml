@@ -74,7 +74,7 @@
 
     <!-- 회원 탈퇴 -->
     <update id="softDeleteUserId" parameterType="long">
-        UPDATE users SET is_deleted = true WHERE id = #{userId}
+        UPDATE users SET is_deleted = true WHERE id = #{id}
     </update>
 
 
@@ -100,5 +100,9 @@
                  JOIN users u ON u.id = ur.id
         WHERE u.id = #{id}
     </select>
+
+    <update id="updateForRecover" parameterType="com.geonpil.domain.user.User">
+        UPDATE users SET is_deleted = false WHERE id = #{id}
+    </update>
 
 </mapper>

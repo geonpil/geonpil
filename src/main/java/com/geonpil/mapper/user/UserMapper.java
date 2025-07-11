@@ -35,7 +35,7 @@ public interface UserMapper {
 
     Optional<User> findUserById(long id);
 
-    void softDeleteUserId(Long id);
+    void softDeleteUserId(@Param("id") Long id);
 
     void updatePassword(@Param("userId") Long id, @Param("newPassword") String encodedPassword);
 
@@ -43,4 +43,5 @@ public interface UserMapper {
 
     List<String> findRolesById(long Id);
 
+    void updateForRecover(User user);
 }

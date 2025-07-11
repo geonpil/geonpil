@@ -62,13 +62,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         User user;
         if (userOpt.isPresent()) {
             user = userOpt.get();
-            user.setRoles(userMapper.findRolesById(user.getId()));
-            if(user.isDeleted()){
-                throw new OAuth2AuthenticationException("탈퇴한 계정입니다. oauth");
+            if (user.isDeleted()) {
+                throw new OAuth2AuthenticationException("RECOVER_REQUIRED:" + user.getId());
             }
-        }  else {
-            user = new User(email, nickname, registrationId, providerId, List.of("ROLE_USER"));  // 소셜 로그인용 생성자 사용
-
+            user.setRoles(userMapper.findRolesById(user.getId()));
+        } else {
+            user = new User(email, nickname, registrationId, providerId, List.of("ROLE_USER"));  // 2️⃣ 신규 소셜 가입
             userMapper.insertSocialUser(user);
         }
 
@@ -87,4 +86,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 user.getId()// DB에 저장된 nickname 사용
         );
     }
+
+    // 계정 복구는 AccountRecoveryController에서 별도로 수행한다.
 }
