@@ -13,13 +13,15 @@
 
     </resultMap>
 
-    <insert id="insertLocalUser" parameterType="com.geonpil.domain.user.User">
+    <!-- 신규 로컬 회원 가입 시 자동 증가값(id) 을 User 객체의 id 필드에 매핑 -->
+    <insert id="insertLocalUser" parameterType="com.geonpil.domain.user.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO users (email, password, nickname)
         VALUES (#{email}, #{password}, #{nickname})
     </insert>
 
 
-    <insert id="insertSocialUser" parameterType="com.geonpil.domain.user.User">
+    <!-- 신규 소셜 회원 가입 시 자동 증가값(id) 을 User 객체의 id 필드에 매핑 -->
+    <insert id="insertSocialUser" parameterType="com.geonpil.domain.user.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO users (email, nickname, provider, provider_id)
         VALUES (#{email}, #{nickname}, #{provider}, #{providerId})
     </insert>
