@@ -33,6 +33,8 @@ Thumbs.db
 # nginx 설정
 nginx/ssl/**
 !nginx/ssl/.keep
+nginx/**
+nginx/nginx.exe
 
 *.crt
 *.key
@@ -52,5 +54,6 @@ elasticsearch-*/
 
 *.log
 
+*.png
 
-.vscode/
+*.jpg
