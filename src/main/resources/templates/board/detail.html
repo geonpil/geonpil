@@ -38,7 +38,7 @@
             <div class="post-content toastui-editor-contents" th:utext="${post.content}">내용</div>
 
             <!-- 첨부 파일 목록 -->
-            <div class="attachment-wrapper" th:if="${attachments != null and !#lists.isEmpty(attachments)}" style="margin-top: 15px;">
+            <div class="attachment-wrapper" th:if="${attachments != null and !#lists.isEmpty(attachments)}" style="margin-top: 15px; margin-bottom: 15px;">
                 <h4>📎 첨부 파일</h4>
                 <ul class="attachment-list">
                     <li th:each="att : ${attachments}">
