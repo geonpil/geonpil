@@ -51,3 +51,6 @@ elasticsearch-*/
 
 
 *.log
+
+
+.vscode/
