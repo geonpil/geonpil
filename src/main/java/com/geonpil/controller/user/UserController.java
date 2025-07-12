@@ -83,12 +83,18 @@ public class UserController {
     //회원 탈퇴 처리
     @PostMapping("/withdraw")
     public String handleWithdraw(@AuthenticationPrincipal AppUserInfo userInfo,
-                                 @RequestParam List<String> reasons,
+                                 @RequestParam(value = "reasons", required = false) List<String> reasons,
                                  @RequestParam(required = false) String feedback,
                                  HttpServletRequest request,
-                                 HttpServletResponse response) {
+                                 HttpServletResponse response,
+                                 RedirectAttributes redirectAttributes) {
 
-        withdrawlService.process(userInfo.getId(), reasons, feedback);
+        try {
+            withdrawlService.process(userInfo.getId(), reasons, feedback);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/withdraw";
+        }
 
         // ✅ 세션 무효화 및 로그아웃 처리
         request.getSession().invalidate(); // 세션 삭제

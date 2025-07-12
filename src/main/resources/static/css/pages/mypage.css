@@ -64,14 +64,6 @@ max-width: 800px;
     gap :16px;
 }
 
-.withdrawal-box {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.withdrawal-box a {
-    padding: 10px 20px;
-}
 
 
 /* END : 회원정보 수정 */

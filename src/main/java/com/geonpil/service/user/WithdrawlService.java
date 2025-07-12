@@ -26,6 +26,10 @@ public class WithdrawlService {
         historyMapper.insertStatusHistory(userId, "DELETE");
 
 
+        if (reasons == null || reasons.isEmpty()) {
+            throw new IllegalArgumentException("탈퇴 사유를 한 가지 이상 선택해주세요.");
+        }
+
         String reasonString = String.join(",", reasons);
 
         // 2. 탈퇴 사유 저장

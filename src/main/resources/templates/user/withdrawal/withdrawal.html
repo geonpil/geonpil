@@ -17,9 +17,9 @@
             <div class="withdraw-guide card-wrapper">
                 <h4>회원탈퇴 시 처리내용</h4>
                 <ul>
-                    <li>-작성하신 게시물(글, 댓글)은 자동 삭제되지 않습니다.</li>
-                    <li>-탈퇴 후 본인 확인이 어려워 게시물 수정 및 삭제 요청이 불가합니다. 원하신다면 탈퇴 전 삭제해 주세요.</li>
-                    <li>-개인정보는 관련 법령에 따라 보관 또는 파기됩니다.</li>
+                    <li>작성하신 게시물(글, 댓글)은 자동 삭제되지 않습니다.</li>
+                    <li>탈퇴 후 본인 확인이 어려워 게시물 수정 및 삭제 요청이 불가합니다. 원하신다면 탈퇴 전 삭제해 주세요.</li>
+                    <li>개인정보는 관련 법령에 따라 보관 또는 파기됩니다.</li>
                 </ul>
             </div>
 
@@ -49,8 +49,8 @@
                 </div>
 
                 <div class="withdraw-actions">
-                    <button type="submit" class="btn btn-danger">탈퇴 신청</button>
-                    <a href="/" class="btn">취소하기</a>
+                    <button type="submit" class="delete-btn">탈퇴 신청</button>
+                    <a href="/" class="basic-btn">취소하기</a>
                 </div>
             </form>
         </div>
@@ -69,6 +69,16 @@
                     countEl.textContent = `${this.value.length} / 2000`;
                 });
             }
+
+            // 탈퇴 사유 체크 여부 검사
+            const form = document.querySelector("form");
+            form.addEventListener("submit", function (e) {
+                const checked = document.querySelectorAll("input[name='reasons']:checked");
+                if (checked.length === 0) {
+                    alert("탈퇴 사유를 한 가지 이상 선택해주세요.");
+                    e.preventDefault();
+                }
+            });
         });
     </script>
 </th:block>
