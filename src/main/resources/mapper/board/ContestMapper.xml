@@ -65,7 +65,7 @@
 
 
     <insert id="insertContestCategory">
-        INSERT INTO CONTEST_CATEGORY (
+        INSERT INTO contest_category (
         contest_id,
         category_id
         )

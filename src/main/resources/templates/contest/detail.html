@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/css/pages/contest/contest.css"/>
     <link rel="stylesheet" href="/css/pages/contest/detail.css"/>
+    <link rel="stylesheet" href="/css/pages/board/board.css"/>
 </th:block>
 
 <body>
@@ -66,10 +67,19 @@
                             </a>
                         </span>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">첨부파일</span>
-                        <span class="info-value">모집요강.pdf</span>
-                    </div>
+                    <!-- 첨부 파일 -->
+                    <th:block th:if="${attachments != null and !#lists.isEmpty(attachments)}">
+                      <div class="info-row">
+                          <span class="info-label">첨부파일</span>
+                          <span class="info-value">
+                              <ul class="attachment-list">
+                                  <li th:each="att : ${attachments}">
+                                      <a th:href="${att.filePath}" th:text="${att.originalName}" target="_blank" download></a>
+                                  </li>
+                              </ul>
+                          </span>
+                      </div>
+                    </th:block>
 
 
                     <div class="info-row">
@@ -80,7 +90,7 @@
                                 <div>링크복사</div>
                             </button>
                             <button id="kakao-link-btn" type="button" class="kakao-link-btn">
-                                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"  alt ="카카���톡"/>
+                                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"  alt ="카카오톡"/>
                                 <div>카카오톡</div>
                             </button>
                         </div>

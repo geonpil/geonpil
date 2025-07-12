@@ -5,6 +5,8 @@ import com.geonpil.dto.commons.PageInfo;
 import com.geonpil.service.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.ContestService;
+import com.geonpil.service.board.BoardAttachmentService;
+import com.geonpil.service.FileStorageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.geonpil.util.PaginationUtil.buildPageInfo;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.geonpil.security.AppUserInfo;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.geonpil.domain.book.BoardAttachment;
 
 
 @Controller
@@ -21,12 +28,20 @@ public class ContestController {
     private final ContestService contestService;
     private final CategoryService categoryService;
     private final BoardService boardService;
+    private final BoardAttachmentService boardAttachmentService;
+    private final FileStorageService fileStorageService;
 
 
-    public ContestController(ContestService contestService, CategoryService categoryService, BoardService boardService) {
+    public ContestController(ContestService contestService,
+                             CategoryService categoryService,
+                             BoardService boardService,
+                             BoardAttachmentService boardAttachmentService,
+                             FileStorageService fileStorageService) {
         this.contestService = contestService;
         this.categoryService = categoryService;
         this.boardService = boardService;
+        this.boardAttachmentService = boardAttachmentService;
+        this.fileStorageService = fileStorageService;
     }
 
     // 공모전 게시판 리스트
@@ -81,8 +96,13 @@ public class ContestController {
                                 Model model) {
         ContestPost post = contestService.findContestById(id);
         boardService.increaseViewCount(id);
+
+        // 첨부파일 조회
+        List<BoardAttachment> attachments = boardAttachmentService.getFiles(id);
+
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("post", post);
+        model.addAttribute("attachments", attachments);
         return "contest/detail";
     }
 
@@ -93,10 +113,86 @@ public class ContestController {
                                 Model model) {
         ContestPost post = contestService.findContestById(id);
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
+        List<BoardAttachment> attachments = boardAttachmentService.getFiles(id);
         model.addAttribute("categories", categories);
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("post", post);
+        model.addAttribute("attachments", attachments);
         return "contest/edit";
+    }
+
+    // 수정 처리 (첨부파일 삭제/추가 포함)
+    @PostMapping("/edit/{id}")
+    public String updateContest(@PathVariable Long id,
+                                @ModelAttribute ContestPost contestPost,
+                                @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds,
+                                @RequestParam(value = "posterFile", required = false) MultipartFile posterFile,
+                                @RequestParam(value = "existingPosterUrl", required = false) String existingPosterUrl,
+                                @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                                @RequestParam(value = "deleteAttachmentIds", required = false) List<Long> deleteAttachmentIds,
+                                @AuthenticationPrincipal AppUserInfo user,
+                                RedirectAttributes redirectAttributes) throws java.io.IOException {
+
+        contestPost.setPostId(id);
+        contestPost.setUserId(user.getId());
+        if (categoryIds != null) {
+            contestPost.setCategoryIds(categoryIds);
+        }
+
+        // 포스터 처리
+        if (posterFile != null && !posterFile.isEmpty()) {
+            String storedName = fileStorageService.store(posterFile, "contest/poster");
+            String url = fileStorageService.buildFileUrl("contest/poster", storedName);
+            contestPost.setPosterUrl(url);
+        } else {
+            contestPost.setPosterUrl(existingPosterUrl);
+        }
+
+        // 업데이트 (board + contest)
+        contestService.updateContestPost(contestPost, user.getId());
+
+        // 첨부파일 삭제 & 추가
+        boardAttachmentService.deleteFiles(deleteAttachmentIds, user.getId());
+        boardAttachmentService.saveFiles(id, files);
+
+        redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
+        return "redirect:/contest/detail/" + id + "?boardCode=" + contestPost.getBoardCode();
+    }
+
+    // 글쓰기 저장 (첨부파일 포함)
+    @PostMapping("/write/save")
+    public String saveContest(@ModelAttribute ContestPost contestPost,
+                              @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds,
+                              @RequestParam(value = "posterFile", required = false) MultipartFile posterFile,
+                              @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                              @AuthenticationPrincipal AppUserInfo user,
+                              RedirectAttributes redirectAttributes) throws java.io.IOException {
+
+        // 작성자 세팅
+        contestPost.setUserId(user.getId());
+
+        // 포스터 이미지 저장
+        if (posterFile != null && !posterFile.isEmpty()) {
+            String storedName = fileStorageService.store(posterFile, "contest/poster");
+            String posterUrl = fileStorageService.buildFileUrl("contest/poster", storedName);
+            contestPost.setPosterUrl(posterUrl);
+        }
+
+        // 카테고리 파라미터 보정
+        if (categoryIds == null) {
+            categoryIds = List.of();
+        }
+
+        // 게시글 + 공모전 정보 저장
+        contestService.saveContest(contestPost, categoryIds);
+
+        // 첨부파일 저장
+        if (files != null && !files.isEmpty()) {
+            boardAttachmentService.saveFiles(contestPost.getPostId(), files);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "글이 성공적으로 등록되었습니다.");
+        return "redirect:/contest/list?boardCode=" + contestPost.getBoardCode();
     }
 
 

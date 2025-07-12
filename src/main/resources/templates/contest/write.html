@@ -21,7 +21,7 @@
 <div layout:fragment="content">
   <div class="card p-20">
     <h2 class="form-title">✍ 공모전 글쓰기</h2>
-    <form id="postForm">
+    <form id="postForm" action="/contest/write/save" method="post" enctype="multipart/form-data">
       <div class="form-group">
         <input type="text" id="title" name="title" class="form-input" placeholder="제목을 입력하세요." required />
       </div>
@@ -64,7 +64,13 @@
 
       <div class="form-group">
         <label for="posterFile">포스터 이미지</label>
-        <input type="file" id="posterFile" accept="image/*">
+        <input type="file" id="posterFile" name="posterFile" accept="image/*">
+      </div>
+
+      <!-- 첨부 파일 -->
+      <div class="form-group">
+        <label for="files">첨부 파일 (이미지, PDF)</label>
+        <input type="file" id="files" name="files" multiple accept="image/*,application/pdf" class="form-input"/>
       </div>
 
       <div class="form-group">
@@ -86,11 +92,12 @@
 
       <!-- 버튼 -->
       <div class="form-buttons">
-        <button type="button" id = "submit-btn" class="basic-btn">등록</button>
+        <button type="submit" class="basic-btn">등록</button>
         <button type="button" class="cancel-btn" onclick="history.back()">취소</button>
       </div>
 
-      <input type="hidden" id="boardCode" th:value="${boardCode}">
+      <input type="hidden" name="boardCode" th:value="${boardCode}">
+      <input type="hidden" name="content" id="content-hidden" />
     </form>
   </div>
 </div>
@@ -98,87 +105,45 @@
 <th:block layout:fragment="script">
   <!-- 공통 toast editor 초기화 -->
   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-  <script src="/js/toast-editor-rest.js"></script>
+  <script src="/js/toast-editor.js"></script>
   <script src="/js/contest/setDate.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", initContestDateFields);
+    document.addEventListener("DOMContentLoaded", function () {
+      initContestDateFields();
 
+      const form = document.getElementById("postForm");
+      form.addEventListener("submit", function (e) {
+        const today = new Date();
+        const start = new Date(document.getElementById("startDate").value);
+        const end = new Date(document.getElementById("endDate").value);
+        today.setHours(0, 0, 0, 0);
 
-    document.getElementById("submit-btn").addEventListener("click", async function () {
-      const start = new Date(startDate.value);
-      const end = new Date(endDate.value);
-      today.setHours(0, 0, 0, 0);
+        if (end <= today) {
+          alert("종료일은 오늘보다 이후여야 합니다.");
+          e.preventDefault();
+          return;
+        } else if (end < start) {
+          alert("시작일은 종료일 이전이어야 합니다.");
+          e.preventDefault();
+          return;
+        }
+      });
 
-    <!--  if (start > today) {-->
-    <!--    alert("시작일은 오늘 이후로 설정할 수 없습니다.");-->
-    <!--    return;-->
-    <!--  }-->
+          // 마감일 미정 체크박스
+          const endDateInput = document.getElementById("endDate");
+          const endDateUndefined = document.getElementById("endDateUndefined");
+          if (endDateUndefined) {
+            endDateUndefined.addEventListener("change", function () {
+              if (this.checked) {
+                endDateInput.disabled = true;
+                endDateInput.value = "";
+              } else {
+                endDateInput.disabled = false;
+              }
+            });
+          }
 
-      if (end <= today) {
-        alert("종료일은 오늘보다 이후여야 합니다.");
-        return;
-      } else if(end < start) {
-        alert("시작일은 종료일 이전이어야 합니다.");
-        return;
-      }
-
-
-      const checkedCategoryInputs = document.querySelectorAll('input[name="categoryIds"]:checked');
-      const categoryIds = Array.from(checkedCategoryInputs).map(input => input.value);
-
-      const data = {
-        title: document.getElementById("title").value,
-        subtitle: document.getElementById("subtitle").value,
-        startDate: document.getElementById("startDate").value,
-        endDate: document.getElementById("endDate").value,
-        hostName: document.getElementById("hostName").value,
-        totalPrize: document.getElementById("totalPrize").value,
-        boardCode: document.getElementById("boardCode").value,
-        applyUrl : document.getElementById("applyUrl").value,
-        contactInfo : document.getElementById("contactInfo").value,
-        categoryIds: categoryIds
-      };
-
-      const posterFile = document.getElementById("posterFile").files[0];
-      if (posterFile) {
-        const posterUrl = await uploadPosterFile(posterFile); // ✅ OK now
-        data.posterUrl = posterUrl.startsWith("http") ? posterUrl : window.location.origin + posterUrl;
-      }
-
-      submitToastEditor(data);
-    });
-
-
-
- document.addEventListener("DOMContentLoaded", function () {
-  const endDateInput = document.getElementById("endDate");
-  const endDateUndefined = document.getElementById("endDateUndefined");
-
-  endDateUndefined.addEventListener("change", function () {
-    if (this.checked) {
-      endDateInput.disabled = true;
-      endDateInput.value = ""; // 필드 비움
-    } else {
-      endDateInput.disabled = false;
-    }
-  });
-});
-
-async function uploadPosterFile(file) {
-  const formData = new FormData();
-  formData.append("image", file);
-
-  const res = await fetch("/upload-image", {
-    method: "POST",
-    body: formData
-  });
-
-  const result = await res.json();
-  return result.url;
-}
-
-
-
+       });
   </script>
 </th:block>
 </body>

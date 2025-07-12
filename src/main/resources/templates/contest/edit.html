@@ -14,6 +14,7 @@
 <th:block layout:fragment="css">
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
   <link rel="stylesheet" href="/css/pages/contest/contest.css">
+  <link rel="stylesheet" href="/css/pages/board/board.css">
 </th:block>
 
 
@@ -21,7 +22,7 @@
 <div layout:fragment="content">
   <div class="card p-20">
     <h2 class="form-title">✍ 공모전 수정</h2>
-    <form id="postForm">
+    <form id="postForm" th:action="@{/contest/edit/{id}(id=${post.postId})}" method="post" enctype="multipart/form-data">
       <div class="form-group">
         <input type="text" id="title" name="title" th:value="${post.title}" class="form-input" required />
       </div>
@@ -66,8 +67,33 @@
         <label for="posterFile">포스터 이미지</label>
         <img id="poster-preview" th:if="${post.posterUrl}" th:src="@{${post.posterUrl}}" style="max-width: 200px; display: block; margin-bottom: 10px;">
         <button type="button" id="remove-poster-btn" class="delete-btn">포스터 제거</button>
-        <input class ="img-upload" type="file" id="posterFile" accept="image/*" />
-        <input type="hidden" id="existingPosterUrl" th:value="${post.posterUrl}" />
+        <input class ="img-upload" type="file" id="posterFile" name="posterFile" accept="image/*" />
+        <input type="hidden" id="existingPosterUrl" name="existingPosterUrl" th:value="${post.posterUrl}" />
+      </div>
+
+      <!-- 기존 첨부파일 목록 -->
+      <div class="form-group">
+        <label>기존 첨부파일</label>
+        <div th:if="${attachments != null and !#lists.isEmpty(attachments)}">
+          <ul class="attachment-list">
+            <li th:each="att : ${attachments}" class="attachment-item">
+              <span th:text="${att.originalName}"></span>
+              <label class="delete-label">
+                <input type="checkbox" name="deleteAttachmentIds" th:value="${att.attachmentId}" />
+                삭제
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div th:if="${attachments == null or #lists.isEmpty(attachments)}">
+          <p style="color:#888">첨부된 파일이 없습니다.</p>
+        </div>
+      </div>
+
+      <!-- 새 첨부파일 -->
+      <div class="form-group">
+        <label for="files">새 파일 추가 (이미지, PDF)</label>
+        <input type="file" id="files" name="files" multiple accept="image/*,application/pdf" class="form-input" />
       </div>
 
       <div class="form-group">
@@ -86,17 +112,18 @@
       <div class="form-group">
         <label>내용</label>
         <div id="editor"></div>
-        <input type="hidden" id="content" name="content" th:value="${post.content}" />
+        <input type="hidden" id="original-content" th:value="${post.content}" />
       </div>
 
       <!-- 버튼 -->
       <div class="form-buttons">
-        <button type="button" id="update-btn" class="basic-btn">수정 완료</button>
+        <button type="submit" class="basic-btn">수정 완료</button>
         <button type="button" class="cancel-btn" onclick="history.back()">취소</button>
       </div>
 
-      <input type="hidden" id="boardCode" th:value="${boardCode}">
-      <input type="hidden" id="postId" th:value="${post.postId}">
+      <input type="hidden" name="boardCode" th:value="${boardCode}">
+      <input type="hidden" name="postId" th:value="${post.postId}">
+      <input type="hidden" name="content" id="content-hidden" />
     </form>
   </div>
 </div>
@@ -104,148 +131,70 @@
 <th:block layout:fragment="script">
   <!-- 공통 toast editor 초기화 -->
   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <script src="/js/toast-editor.js"></script>
   <script src="/js/contest/setDate.js"></script>
-  <script src="/js/toast-editor-rest.js"></script>
   <script>
-    // 에디터 초기화와 기존 내용 로딩
-    document.addEventListener('DOMContentLoaded', function() {
-      // 기존 에디터 초기화
+    document.addEventListener("DOMContentLoaded", function () {
       initContestDateFields();
 
-      // hidden input에서 컨텐츠 값 가져오기
-      const contentValue = document.getElementById("content").value;
-
-      // 에디터가 초기화된 후 내용 설정
-      if (window.editor && contentValue) {
-        // HTML 형식의 내용을 에디터에 설정
-        editor.setHTML(contentValue);
-      }
-    });
-
-    document.getElementById("update-btn").addEventListener("click", async function () {
-
-      const checkedCategoryInputs = document.querySelectorAll('input[name="categoryIds"]:checked');
-      const categoryIds = Array.from(checkedCategoryInputs).map(input => input.value);
-
-      if (checkedCategoryInputs.length === 0) {
-        alert("장르(카테고리)를 하나 이상 선택해주세요.");
-        // 선택 항목이 없으면 중단
-        return;
+      // 에디터 기존 내용 세팅
+      const original = document.getElementById("original-content");
+      if (original && window.editor) {
+        editor.setHTML(original.value);
       }
 
-      const start = new Date(startDate.value);
-      const end = new Date(endDate.value);
-      const boardCode = document.getElementById("boardCode").value;
-      today.setHours(0, 0, 0, 0);
+      const form = document.getElementById("postForm");
+      const hiddenContent = document.getElementById("content-hidden");
 
-
-
-
-        <!--  if (start > today) {-->
-        <!--    alert("시작일은 오늘 이후로 설정할 수 없습니다.");-->
-        <!--    return;-->
-        <!--  }-->
-
+      form.addEventListener("submit", function (e) {
+        // 날짜 검증
+        const today = new Date();
+        const start = new Date(document.getElementById("startDate").value);
+        const end = new Date(document.getElementById("endDate").value);
+        today.setHours(0,0,0,0);
         if (end <= today) {
           alert("종료일은 오늘보다 이후여야 합니다.");
+          e.preventDefault();
           return;
-        } else if(end < start) {
+        }
+        if (end < start) {
           alert("시작일은 종료일 이전이어야 합니다.");
+          e.preventDefault();
           return;
         }
 
-      const data = {
-        title: document.getElementById("title").value,
-        subtitle: document.getElementById("subtitle").value,
-        startDate: document.getElementById("startDate").value,
-        endDate: document.getElementById("endDate").value,
-        hostName: document.getElementById("hostName").value,
-        totalPrize: document.getElementById("totalPrize").value,
-        boardCode: document.getElementById("boardCode").value,
-        applyUrl : document.getElementById("applyUrl").value,
-        contactInfo : document.getElementById("contactInfo").value,
-        categoryIds: categoryIds,
-        postId : document.getElementById("postId").value,
-        content: editor.getHTML()
-      };
-
-      const posterFile = document.getElementById("posterFile").files[0];
-        if (posterFile) {
-          const posterUrl = await uploadPosterFile(posterFile); // ✅ OK now
-          data.posterUrl = posterUrl.startsWith("http") ? posterUrl : window.location.origin + posterUrl;
-        } else {
-          data.posterUrl = document.getElementById("existingPosterUrl").value;
-        }
-
-        await fetch("/api/contest/update", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        }).then(res => {
-          if (res.ok) {
-            alert("수정 완료!");
-            location.href = `/contest/detail/${data.postId}?boardCode=${boardCode}`;
-          } else {
-            alert("수정 실패");
-          }
-        });
+        // content 입력
+        hiddenContent.value = editor.getHTML();
       });
 
-
-
-     document.addEventListener("DOMContentLoaded", function () {
+      // 마감일 미정 체크박스 처리
       const endDateInput = document.getElementById("endDate");
       const endDateUndefined = document.getElementById("endDateUndefined");
-
       endDateUndefined.addEventListener("change", function () {
         if (this.checked) {
           endDateInput.disabled = true;
-          endDateInput.value = ""; // 필드 비움
+          endDateInput.value = "";
         } else {
           endDateInput.disabled = false;
         }
       });
-    });
 
-    async function uploadPosterFile(file) {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const res = await fetch("/upload-image", {
-        method: "POST",
-        body: formData
+      // 포스터 미리보기 & 제거
+      document.getElementById("posterFile").addEventListener("change", function () {
+        const preview = document.getElementById("poster-preview");
+        if (this.files && this.files[0] && preview) {
+          preview.src = URL.createObjectURL(this.files[0]);
+        }
       });
 
-      const result = await res.json();
-      return result.url;
-    }
-
-
-
-    document.getElementById("posterFile").addEventListener("change", async function () {
-      const file = this.files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const res = await fetch("/upload-image", {
-        method: "POST",
-        body: formData
+      document.getElementById("remove-poster-btn").addEventListener("click", function () {
+        const preview = document.getElementById("poster-preview");
+        if (preview) preview.src = "";
+        document.getElementById("posterFile").value = "";
+        document.getElementById("existingPosterUrl").value = "";
       });
-
-      const result = await res.json();
-      document.getElementById("poster-preview").src = result.url;
-      document.getElementById("existingPosterUrl").value = result.url;
     });
-
-    document.getElementById("remove-poster-btn").addEventListener("click", function () {
-      const preview = document.getElementById("poster-preview");
-      if (preview) preview.src = "";
-      document.getElementById("posterFile").value = "";
-      document.getElementById("existingPosterUrl").value = "";
-    });
-    </script>
+  </script>
 </th:block>
 </body>
 </html>
