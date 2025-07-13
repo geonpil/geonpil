@@ -3,3 +3,17 @@
   margin: 0 auto 5px auto;
   width: 60px;
 }
+
+
+.social-login-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.social-login-section img {
+  width: 210px;
+  height: 56px;
+}
