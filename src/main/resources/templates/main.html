@@ -61,7 +61,7 @@
                 <div class="swiper-container book-carousel">
                     <div class ="latest-books-wrapper swiper-wrapper">
                         <div class="latest-book-card swiper-slide" th:each="book : ${lastestReviewedBooks}">
-                                <a th:href="@{/books/isbn/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
+                                <a th:href="@{books/isbn/{isbn}(isbn=${book.isbn})}" style="text-decoration: none; color: inherit;">
                                 <!-- 썸네일 -->
                                 <img th:src="${book.thumbnail}" alt="책 표지" width="150" height="200" style="object-fit: cover;"/>
 
@@ -91,7 +91,7 @@
                 <div class="swiper-container book-pick-carousel">
                     <div class ="latest-books-wrapper swiper-wrapper">
                         <div class="latest-book-card swiper-slide" th:each="bookPick : ${bookPicks}">
-                            <a th:href="@{/books/isbn/{isbn}(isbn=${bookPick.isbn13 != null ? bookPick.isbn13 : bookPick.isbn10})}"
+                            <a th:href="@{books/isbn/{isbn}(isbn=${bookPick.isbn13 != null ? bookPick.isbn13 : bookPick.isbn10})}"
                                style="text-decoration: none; color: inherit;">
                                 <!-- 썸네일 -->
                                 <div class="img-wrapper">
@@ -135,7 +135,7 @@
                     <span class="nickname" th:text="${post.nickname}">작성자</span>
                 </a>
             </div>
-            <div class="card-footer"><a href="board/list?boardCode=1">커뮤니티 글 더보기 ></a></div>
+            <div class="card-footer"><a href="/board/list?boardCode=1">커뮤니티 글 더보기 ></a></div>
         </div>
 
         <div class="card challenge">
@@ -155,7 +155,7 @@
                     <span class="nickname" th:text="${post.nickname}">작성자</span>
                 </a>
             </div>
-            <div class="card-footer"><a href="board/list?boardCode=2">도전 건필 더보기 ></a></div>
+            <div class="card-footer"><a href="/board/list?boardCode=2">도전 건필 더보기 ></a></div>
         </div>
 
         <div class="card contest">
@@ -167,7 +167,7 @@
 
                 <div class="main-contest-container">
                     <a class="main-contest-wrapper"
-                       th:href="@{/contest/detail/{id}(id=${contest.postId}, boardCode=${contest.boardCode})}"
+                       th:href="@{contest/detail/{id}(id=${contest.postId}, boardCode=${contest.boardCode})}"
                        th:each="contest : ${contestPost}">
                         <div class="contest-poster">
                             <img th:src="@{${contest.posterUrl}}" onerror="this.onerror=null; this.src='/images/commons/no-poster.png';" alt ="공모전 포스터" >
