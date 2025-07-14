@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/verify")
@@ -43,16 +42,11 @@ public class VerificationController {
         return exists ? "duplicate" : "available";
     }
 
-    // 회원가입용 인증코드 전송
+    // 회원가입용 인증코드 전송 (서비스에 위임)
     @PostMapping("/send-code")
     @ResponseBody
     public String sendVerificationEmail(@RequestParam String email, HttpSession session) {
-        String code = UUID.randomUUID().toString().substring(0, 6);
-        mailService.sendEmail(
-                email,
-                "[건필] 이메일 인증 코드 안내",
-                "<h3>인증 코드: " + code + "</h3>"
-        );
+        String code = mailService.sendSignupVerificationCode(email);
         session.setAttribute("emailVerificationCode", code);
         return "success";
     }
