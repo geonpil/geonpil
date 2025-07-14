@@ -60,3 +60,5 @@ elasticsearch-*/
 *.jpg
 
 *.pdf
+
+.vscode/*
