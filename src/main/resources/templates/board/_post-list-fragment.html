@@ -19,13 +19,13 @@
         <span class="views" th:text="${post.viewCount}">147</span>
         <span class="likes" th:text="${post.likeCount}">1</span>
 
-        <span class="title mobile-title">
+        <span class="title mobile-title mobile">
             <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
                th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
                th:title="${post.title}">제목</a>
         </span>
 
-        <div class="meta">
+        <div class="meta mobile">
             <span class="author" th:text="${post.nickname}">작성자</span>
             <span class="date" th:text="${#dates.format(post.createdAt, 'MM-dd')}">25-05-01</span>
             <span class="views" th:text="${post.viewCount}">147</span>
