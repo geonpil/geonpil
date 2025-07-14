@@ -35,6 +35,7 @@ nginx/ssl/**
 !nginx/ssl/.keep
 nginx/**
 nginx/nginx.exe
+!nginx/conf/nginx.conf
 
 *.crt
 *.key
