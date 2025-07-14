@@ -19,7 +19,7 @@
         <h2 style="margin-bottom:20px; color:var(--primary-color);">계정 복구</h2>
         <p style="margin-bottom:30px;">탈퇴했던 계정을 복구하시겠습니까?</p>
 
-        <form action="/recover/confirm" method="post" style="display:inline-block;">
+        <form th:action="@{/recover/confirm}" method="post" style="display:inline-block;">
             <input type="hidden" name="userId" th:value="${userId}" />
             <button type="submit" class="basic-btn" style="width:150px;">네, 복구합니다</button>
         </form>

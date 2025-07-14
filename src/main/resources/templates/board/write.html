@@ -22,7 +22,7 @@
     <div class="write-card">
     <h2 class="form-title">✍ 글쓰기</h2>
 
-    <form id="postForm" action="/board/write/save" method="post" enctype="multipart/form-data">
+    <form id="postForm" th:action="@{/board/write/save}" method="post" enctype="multipart/form-data">
 
       <!-- 분류 선택 -->
         <div class="form-group">
