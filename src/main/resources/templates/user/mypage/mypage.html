@@ -50,7 +50,7 @@
             });
 
             function loadFragment(target){
-                fetch(`/mypage/fragment/${target}`)
+                csrfFetch(`/mypage/fragment/${target}`)
                     .then(res => res.text())
                     .then(html => {document.getElementById("mypage-content").innerHTML = html;
 

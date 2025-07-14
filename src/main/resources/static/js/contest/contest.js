@@ -179,7 +179,7 @@ function fetchFilteredContests({ page = 1, categoryIds = [], isClosedIncluded = 
     });
 
     // 통합된 엔드포인트로 요청하여 게시글 목록과 페이지네이션을 한 번에 가져옴
-    fetch("/api/search/contest?" + params.toString())
+    csrfFetch("/api/search/contest?" + params.toString())
         .then(res => res.text())
         .then(html => {
             // 응답에 목록과 페이지네이션이 모두 포함되어 있으므로

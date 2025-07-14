@@ -158,7 +158,7 @@
 
 
                     try {
-                        const response = await fetch('/api/reviews', {
+                        const response = await csrfFetch('/api/reviews', {
                             method: 'POST',
                             headers: {
                                 'content-type': 'application/json',
@@ -217,7 +217,7 @@
                 const reviewId = likeBtn.dataset.reviewId;
 
                 try {
-                    const res = await fetch(`/api/reviews/${reviewId}/like`, {method: "POST"});
+                    const res = await csrfFetch(`/api/reviews/${reviewId}/like`, {method: "POST"});
 
                     if (res.ok) {
                         const count = await res.text();
@@ -273,7 +273,7 @@
                 if (!confirmDelete) return;
 
                 try {
-                    const res = await fetch(`/api/reviews/${reviewId}`, {method: "DELETE"});
+                    const res = await csrfFetch(`/api/reviews/${reviewId}`, {method: "DELETE"});
                     if (res.ok) {
 
 
@@ -333,7 +333,7 @@
                     }
 
 
-                    fetch("/api/reviews/comments", {
+                    csrfFetch("/api/reviews/comments", {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: JSON.stringify({reviewId, content})
@@ -368,7 +368,7 @@
                     const commentId = deleteBtn.dataset.reviewcommentId;
 
                     if (confirm("댓글을 삭제하시겠습니까?")) {
-                        fetch(`/api/reviews/comments/${commentId}`, {
+                        csrfFetch(`/api/reviews/comments/${commentId}`, {
                             method: 'DELETE',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -461,7 +461,7 @@
 
 
         function fetchReviews(bookId, sortType = 'recent') {
-            fetch(`/reviews/${bookId}?sort=${sortType}`)
+            csrfFetch(`/reviews/${bookId}?sort=${sortType}`)
                 .then(res => res.text())
                 .then(html => {
                     document.querySelector("#review-list").innerHTML = html;
@@ -505,7 +505,7 @@
 
 
         async function getAvgRating(bookId) {
-            const avgRes = await fetch(`/api/reviews/average?bookId=${bookId}`);
+            const avgRes = await csrfFetch(`/api/reviews/average?bookId=${bookId}`);
             document.querySelector(".book-reviews h1 span").innerHTML = await avgRes.text();
         }
 

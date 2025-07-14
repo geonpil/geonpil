@@ -45,7 +45,7 @@ function initSubmitBookPick() {
             isVisible: true
         };
 
-        fetch("/api/admin/book-picks", {
+        csrfFetch("/api/admin/book-picks", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -81,7 +81,7 @@ function initDeleteBookPick() {
 
             const id = del.dataset.id;
 
-            fetch(`/api/admin/book-picks/${id}`,{
+            csrfFetch(`/api/admin/book-picks/${id}`,{
                 method : "PUT",
                 headers: {
                     "Content-Type": "application/json"

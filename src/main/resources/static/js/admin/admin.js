@@ -3,7 +3,7 @@ document.querySelectorAll('.admin-menu').forEach(menu => {
         e.preventDefault();
         const action = menu.dataset.action;
 
-        fetch(`/admin/book-picks/fragment/${action}`)
+        csrfFetch(`/admin/book-picks/fragment/${action}`)
             .then(res => res.text())
             .then(html => {
                 document.getElementById("admin-content").innerHTML = html;

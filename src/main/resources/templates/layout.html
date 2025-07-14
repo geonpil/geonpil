@@ -12,6 +12,10 @@
         <title>건필</title> <!-- 기본 제목 -->
     </th:block>
 
+    <!-- ✅ CSRF 토큰 (Ajax에서 사용) -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
     <!-- ✅ CSS 슬롯 -->
     <th:block layout:fragment="css"></th:block>
 
@@ -29,6 +33,8 @@
 
     <th:block layout:fragment="script"></th:block>
 
+    <!-- CSRF fetch util -->
+    <script src="/js/commons/csrf-fetch.js"></script>
 
     <div class="bug-report-btn-wrapper">
         <a href="/bug-report" class="bug-report-btn" target="_blank">🐞 버그 제보 및 개선 사항 남기기</a>

@@ -28,7 +28,7 @@ export function initNicknameChange () {
             return;
         }
 
-        fetch("/api/users/check-nickname?nickname=" + encodeURIComponent(nickname))
+        csrfFetch("/api/users/check-nickname?nickname=" + encodeURIComponent(nickname))
             .then(res => res.json())
             .then(data => {
                 if (data.exists) {
@@ -46,7 +46,7 @@ export function initNicknameChange () {
     document.getElementById("changeNicknameBtn").addEventListener("click", function (e) {
         e.preventDefault();
 
-        fetch("/api/users/nickname", {
+        csrfFetch("/api/users/nickname", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

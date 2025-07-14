@@ -65,7 +65,7 @@ function fetchContestSearchResults(page, keyword, categoryIds, isClosedIncluded,
     history.pushState(null, "", currentUrl.toString());
 
     // API 호출
-    fetch(apiUrl, {
+    csrfFetch(apiUrl, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"

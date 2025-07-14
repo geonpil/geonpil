@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const formData = new FormData();
         formData.append('image', blob);
         try {
-          const res = await fetch('/upload-image', {
+          const res = await csrfFetch('/upload-image', {
             method: 'POST',
             body: formData
           });
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.submitToastEditor = function (data) {
     data.content = editor.getHTML();
 
-    fetch("/api/contest", {
+    csrfFetch("/api/contest", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)

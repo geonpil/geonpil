@@ -16,7 +16,7 @@ export function initPasswordChange () {
         const newPassword = document.querySelector("#newPassword").value;
         const confirmPassword = document.querySelector("#confirmPassword").value;
 
-        fetch("/api/users/password", {
+        csrfFetch("/api/users/password", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

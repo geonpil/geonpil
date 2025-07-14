@@ -51,7 +51,7 @@ function fetchBoardPosts(page = 1, keyword = "", categoryParam = new Set(), sear
     });
 
     // 게시글 목록 로드
-    fetch(url)
+    csrfFetch(url)
         .then(res => res.text())
         .then(html => {
             document.getElementById("post-list").innerHTML = html;

@@ -148,7 +148,7 @@
       return;
     }
 
-    fetch(`/verify/email?email=${email}`)
+    csrfFetch(`/verify/email?email=${email}`)
       .then(res => res.text())
       .then(result => {
         if (result === "available") {
@@ -203,7 +203,7 @@
       return;
     }
 
-    fetch(`/verify/nickname?nickname=${nickname}`)
+    csrfFetch(`/verify/nickname?nickname=${nickname}`)
       .then(res => res.text())
       .then(result => {
         if (result === "available") {
@@ -232,14 +232,14 @@ function sendVerificationCode() {
   }
 
   // 서버에 중복 체크 요청
-  fetch(`/verify/email?email=${email}`)
+  csrfFetch(`/verify/email?email=${email}`)
     .then(res => res.text())
     .then(result => {
       if (result === "duplicate") {
         alert("이미 사용 중인 이메일입니다.");
       } else {
         // 통과한 경우에만 인증코드 전송
-        fetch(`/verify/send-code`, {
+        csrfFetch(`/verify/send-code`, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: `email=${encodeURIComponent(email)}`
@@ -268,7 +268,7 @@ function verifyCode() {
   const verificationSection = document.getElementById("verification-section");
   const verificationCheck = document.getElementById("verification-check");
 
-  fetch("/verify/code", {
+  csrfFetch("/verify/code", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: `code=${encodeURIComponent(inputCode)}`

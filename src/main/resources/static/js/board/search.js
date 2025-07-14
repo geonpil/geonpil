@@ -65,7 +65,7 @@ function searchHandler() {
         apiUrl += `&isClosedIncluded=${isClosedIncluded}&sort=${sort}`;
     }
 
-    fetch(apiUrl, {
+    csrfFetch(apiUrl, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"

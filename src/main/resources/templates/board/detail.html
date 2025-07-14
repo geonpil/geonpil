@@ -234,7 +234,7 @@
             return;
           }
 
-          fetch('/comments/save', {
+          csrfFetch('/comments/save', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -281,7 +281,7 @@
         return;
       }
 
-      fetch("/comments/save", {
+      csrfFetch("/comments/save", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -313,7 +313,7 @@
 
       if (!confirm("정말 삭제하시겠습니까?")) return;
 
-      fetch(`/comments/delete/${commentId}`, {
+      csrfFetch(`/comments/delete/${commentId}`, {
         method: "POST"
       })
       .then(response => {
@@ -351,7 +351,7 @@
       const id = button.getAttribute("data-id");
       const newContent = document.getElementById("edit-input-" + id).value;
 
-      fetch(`/comments/edit/${id}`, {
+      csrfFetch(`/comments/edit/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `content=${encodeURIComponent(newContent)}`

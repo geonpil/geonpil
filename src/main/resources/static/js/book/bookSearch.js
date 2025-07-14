@@ -18,14 +18,14 @@ function fetchBookSearchResults(page, query = 1) {
         //document.querySelector(".search-header h2").textContent = "검색어: " + query;
 
 
-        fetch(`/api/search/fragment/result?query=${encodeURIComponent(query)}&page=${page}&mode=${mode}`)
+        csrfFetch(`/api/search/fragment/result?query=${encodeURIComponent(query)}&page=${page}&mode=${mode}`)
             .then(res => res.text())
             .then(html => {
                 document.querySelector("#book-list-area").innerHTML = html;
                 window.scrollTo({top: 0, behavior: 'smooth'});
             });
 
-        fetch(`/api/search/fragment/pagination?query=${encodeURIComponent(query)}&page=${page}`)
+        csrfFetch(`/api/search/fragment/pagination?query=${encodeURIComponent(query)}&page=${page}`)
             .then(res => res.text())
             .then(html => {
                 document.querySelector("#pagination-area").innerHTML = html;

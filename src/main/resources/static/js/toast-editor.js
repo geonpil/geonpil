@@ -21,7 +21,7 @@
           const formData = new FormData();
           formData.append('image', blob);
           try {
-            const res = await fetch('/upload-image', {
+            const res = await csrfFetch('/upload-image', {
               method: 'POST',
               body: formData
             });
