@@ -2,7 +2,7 @@ package com.geonpil.controller.contest;
 
 import com.geonpil.domain.ContestPost;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.service.ContestService;
+import com.geonpil.service.contest.ContestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -2,9 +2,9 @@ package com.geonpil.controller.contest;
 
 import com.geonpil.domain.*;
 import com.geonpil.dto.commons.PageInfo;
-import com.geonpil.service.BoardService;
+import com.geonpil.service.board.BoardService;
 import com.geonpil.service.CategoryService;
-import com.geonpil.service.ContestService;
+import com.geonpil.service.contest.ContestService;
 import com.geonpil.service.board.BoardAttachmentService;
 import com.geonpil.service.FileStorageService;
 import org.springframework.stereotype.Controller;
