@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="meta">
+    <title th:text="${owner.nickname} + '님의 게시글'">사용자의 게시글</title>
+</th:block>
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/pages/board/board.css"/>
+    <link rel="stylesheet" href="/css/pages/user/user-posts.css"/>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="user-posts-container">
+        <header class="user-posts-header">
+            <h2>
+                <span th:text="${owner.nickname}">사용자</span>님의 게시글
+                <span class="post-count" th:text="'(' + ${#lists.size(posts)} + ')'"></span>
+            </h2>
+        </header>
+
+        <div class="post-list-container">
+            <!-- 게시글이 없을 때 -->
+            <div th:if="${#lists.isEmpty(posts)}" class="empty-message">
+                <i class="fa-solid fa-message"></i>
+                <p>작성한 글이 없습니다.</p>
+            </div>
+
+            <!-- 게시글 목록 -->
+            <div class="post-list" th:unless="${#lists.isEmpty(posts)}">
+                <div class="post-header">
+                    <span class="board-code">게시판</span>
+                    <span class="title">제목</span>
+                    <span class="date">작성일</span>
+                    <span class="views">조회</span>
+                    <span class="likes">추천</span>
+                </div>
+
+                <a class="post-row"
+                   th:each="post : ${posts}"
+                   th:href="@{${post.boardCode == 3 ? '/contest/detail/' + post.postId : '/board/list/detail/' + post.postId}(boardCode=${post.boardCode})}">
+                    <span class="board-code" th:text="${post.boardName}">게시판</span>
+                    <span class="title-wrapper">
+                        <span class="title" th:text="${post.title}">제목</span>
+                        <span class="comment-count" th:if="${post.commentCount > 0}"
+                              th:text="'[' + ${post.commentCount} + ']'"></span>
+                    </span>
+                    <span class="date" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">2024-03-21</span>
+                    <span class="views" th:text="${post.viewCount}">0</span>
+                    <span class="likes" th:text="${post.likeCount}">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script src="/js/post/user-posts.js"></script>
+</th:block>
+</html> 

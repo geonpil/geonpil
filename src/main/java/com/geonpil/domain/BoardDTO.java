@@ -13,6 +13,7 @@ public class BoardDTO {
     private int boardCode;
     private Long categoryId;
     private String categoryName;
+    private String boardName;
     private String nickname;
     private String title;
     private String content;

@@ -1,4 +1,4 @@
-package com.geonpil.service;
+package com.geonpil.service.board;
 
 import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.PageResult;
@@ -103,5 +103,8 @@ public class BoardService {
     }
 
 
+    public List<BoardDTO> findByUserId(Long userId){
+        return boardMapper.findByUserId(userId);
+    }
 
 }

@@ -15,6 +15,7 @@
         <result property="createdAt" column="created_at"/>
         <result property="nickname" column="nickname"/>
         <result property="categoryName" column="category_name"/>
+        <result property="boardName" column="board_name"/>
     </resultMap>
 
 
@@ -228,4 +229,25 @@
             </otherwise>
         </choose>
     </select>
+
+
+    <select id="findByUserId" resultMap="boardResultMap">
+        SELECT b.post_id
+        , b.title
+        , b.content
+        , b.board_code
+        , b.view_count
+        , b.like_count
+        , b.created_at
+        , ct.category_name
+        , bt.board_name
+        FROM board b
+        LEFT JOIN category ct ON b.category_id = ct.category_id
+        LEFT JOIN board_type bt ON b.board_code = bt.board_code
+        WHERE user_id = #{userId}
+          AND is_deleted = false
+        ORDER BY created_at DESC
+    </select>
+
+
 </mapper>

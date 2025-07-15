@@ -1,0 +1,128 @@
+.user-posts-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.user-posts-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.user-posts-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.post-count {
+    color: #666;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 3rem 0;
+    color: #666;
+}
+
+.empty-message i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ddd;
+}
+
+.empty-message p {
+    font-size: 1.1rem;
+}
+
+.post-list {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.post-header {
+    display: grid;
+    grid-template-columns: 120px 1fr 100px 80px 80px;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.post-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 100px 80px 80px;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s;
+}
+
+.post-row:hover {
+    background-color: #f8f9fa;
+}
+
+.post-row:last-child {
+    border-bottom: none;
+}
+
+.category {
+    color: #1971c2;
+}
+
+.title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comment-count {
+    color: #f59f00;
+    font-size: 0.9rem;
+}
+
+.date, .views, .likes {
+    text-align: center;
+    color: #666;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .post-header {
+        display: none;
+    }
+
+    .post-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+
+    .category {
+        font-size: 0.9rem;
+    }
+
+    .title-wrapper {
+        font-size: 1.1rem;
+        margin: 0.5rem 0;
+    }
+
+    .date, .views, .likes {
+        font-size: 0.9rem;
+        text-align: left;
+    }
+
+    .meta-info {
+        display: flex;
+        gap: 1rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
+} 
