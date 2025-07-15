@@ -7,7 +7,7 @@ import com.geonpil.domain.PageResult;
 import com.geonpil.dto.commons.PageInfo;
 import com.geonpil.resolver.BoardNameResolver;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.service.BoardService;
+import com.geonpil.service.board.BoardService;
 import com.geonpil.service.CategoryService;
 import com.geonpil.service.CommentService;
 import com.geonpil.service.board.BoardSearchService;

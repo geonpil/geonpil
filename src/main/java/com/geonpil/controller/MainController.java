@@ -1,7 +1,7 @@
 package com.geonpil.controller;
 
-import com.geonpil.service.BoardService;
-import com.geonpil.service.ContestService;
+import com.geonpil.service.board.BoardService;
+import com.geonpil.service.contest.ContestService;
 import com.geonpil.service.admin.BookPickService;
 import com.geonpil.service.book.BookService;
 import org.springframework.stereotype.Controller;
