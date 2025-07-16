@@ -41,6 +41,9 @@ document.addEventListener("click", function (e) {
                     sort
                 });
             }
+        } else if (action === "user-posts") {
+            fetchUserPosts(page, query);
+
         }
     }
 });

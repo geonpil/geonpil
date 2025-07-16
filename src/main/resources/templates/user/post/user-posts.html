@@ -18,7 +18,7 @@
         <header class="user-posts-header">
             <h2>
                 <span th:text="${owner.nickname}">사용자</span>님의 게시글
-                <span class="post-count" th:text="'(' + ${#lists.size(posts)} + ')'"></span>
+                <span class="post-count" th:text="'(' + ${totalCount} + ')'"></span>
             </h2>
         </header>
 
@@ -41,12 +41,12 @@
 
                 <a class="post-row"
                    th:each="post : ${posts}"
-                   th:href="@{${post.boardCode == 3 ? '/contest/detail/' + post.postId : '/board/list/detail/' + post.postId}(boardCode=${post.boardCode})}">
+                   th:href="@{${post.boardCode == 3 ? '/contest/detail/' + post.postId : '/board/list/detail/' + post.postId + '?boardCode=' + post.boardCode}}">
                     <span class="board-code" th:text="${post.boardName}">게시판</span>
                     <span class="title-wrapper">
                         <span class="title" th:text="${post.title}">제목</span>
                         <span class="comment-count" th:if="${post.commentCount > 0}"
-                              th:text="'[' + ${post.commentCount} + ']'"></span>
+                              th:text="|[${post.commentCount}]|"></span>
                     </span>
                     <span class="date" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">2024-03-21</span>
                     <span class="views" th:text="${post.viewCount}">0</span>
@@ -54,10 +54,18 @@
                 </a>
             </div>
         </div>
+
+        <div class="pagination-container" style = "margin-top: 20px;">
+            <div id="pagination-wrapper">
+                <!-- 링크 기반 SSR 페이지네이션 -->
+                <div th:replace="~{commons/_pagination-link-fragment :: paginationLinkFragment(${pageInfo}, ${baseUrl})}"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <th:block layout:fragment="script">
     <script src="/js/post/user-posts.js"></script>
+    <script src="/js/commons/pagination.js"></script>
 </th:block>
 </html> 

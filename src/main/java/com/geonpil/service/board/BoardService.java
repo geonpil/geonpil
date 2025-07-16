@@ -3,8 +3,11 @@ package com.geonpil.service.board;
 import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.PageResult;
 import com.geonpil.domain.PostLike;
+import com.geonpil.dto.commons.PageInfo;
 import com.geonpil.mapper.board.BoardMapper;
 import com.geonpil.mapper.board.PostLikeMapper;
+import com.geonpil.util.PaginationUtil;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardService {
@@ -103,8 +107,21 @@ public class BoardService {
     }
 
 
-    public List<BoardDTO> findByUserId(Long userId){
-        return boardMapper.findByUserId(userId);
+    public PageResult<BoardDTO> findByUserId(Long userId, int currentPage){
+
+        int totalCount = boardMapper.findByUserIdCount(userId);
+
+        int totalPages = (int) Math.ceil((double) totalCount / 10);
+
+        int offset = (currentPage - 1) * 10;
+        List<BoardDTO> posts = boardMapper.findByUserId(userId, offset, 10);
+
+        return new PageResult<>(posts, currentPage, totalPages);
+    }
+
+
+    public int findByUserIdCount(Long userId){
+        return boardMapper.findByUserIdCount(userId);
     }
 
 }

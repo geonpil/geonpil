@@ -1,0 +1,28 @@
+<th:block th:fragment="paginationLinkFragment(pageInfo, baseUrl)">
+    <div class="pagination">
+        <!-- Previous group -->
+        <button type="button"
+                th:if="${pageInfo.hasPrevGroup}"
+                class="page-button"
+                th:onclick="|location.href='@{${baseUrl}(page=${pageInfo.startPage - 1})}'|">
+            ◀
+        </button>
+
+        <!-- Page numbers -->
+        <button type="button"
+                th:each="i : ${#numbers.sequence(pageInfo.startPage, pageInfo.endPage)}"
+                th:text="${i}"
+                class="page-button"
+                th:classappend="${i == pageInfo.currentPage} ? 'active'"
+                th:onclick="|location.href='@{${baseUrl}(page=${i})}'|">
+        </button>
+
+        <!-- Next group -->
+        <button type="button"
+                th:if="${pageInfo.hasNextGroup}"
+                class="page-button"
+                th:onclick="|location.href='@{${baseUrl}(page=${pageInfo.endPage + 1})}'|">
+            ▶
+        </button>
+    </div>
+</th:block> 

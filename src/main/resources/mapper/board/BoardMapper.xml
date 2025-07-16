@@ -246,8 +246,14 @@
         LEFT JOIN board_type bt ON b.board_code = bt.board_code
         WHERE user_id = #{userId}
           AND is_deleted = false
-        ORDER BY created_at DESC
+        ORDER BY b.created_at DESC
+        LIMIT #{size} OFFSET #{offset}
     </select>
 
-
+    <select id="findByUserIdCount" resultType="int">
+        SELECT COUNT(*)
+        FROM board b
+        WHERE user_id = #{userId}
+          AND is_deleted = false
+    </select>
 </mapper>
