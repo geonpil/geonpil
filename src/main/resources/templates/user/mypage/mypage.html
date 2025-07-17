@@ -34,7 +34,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const tabButtons = document.querySelectorAll(".tab-btn");
             const tabContents = document.querySelectorAll(".tab-content");
-            const provider = [[${user.provider}]];
+            const provider = /*[[${user?.provider}]]*/ null;
 
             tabButtons.forEach(btn => {
                 btn.addEventListener("click", function () {

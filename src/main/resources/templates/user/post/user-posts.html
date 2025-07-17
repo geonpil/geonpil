@@ -9,6 +9,7 @@
 </th:block>
 
 <th:block layout:fragment="css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/css/pages/board/board.css"/>
     <link rel="stylesheet" href="/css/pages/user/user-posts.css"/>
 </th:block>
@@ -51,6 +52,11 @@
                     <span class="date" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">2024-03-21</span>
                     <span class="views" th:text="${post.viewCount}">0</span>
                     <span class="likes" th:text="${post.likeCount}">0</span>
+                    <div class="mobile-meta">
+                        <span th:text="${#dates.format(post.createdAt, 'MM-dd')}">03-21</span>
+                        <span class="views" th:text="${post.viewCount}">0</span>
+                        <span class="likes" th:text="${post.likeCount}">0</span>
+                    </div>
                 </a>
             </div>
         </div>

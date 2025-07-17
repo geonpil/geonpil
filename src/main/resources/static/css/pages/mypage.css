@@ -64,6 +64,91 @@ max-width: 800px;
     gap :16px;
 }
 
-
-
 /* END : 회원정보 수정 */
+
+/* START : 모바일 반응형 디자인 */
+@media (max-width: 768px) {
+    .mypage-wrapper {
+        max-width: 100%;
+        margin: 0 16px;
+        padding: 16px;
+    }
+    
+    .tabs {
+        gap: 4px;
+        margin-bottom: 16px;
+    }
+    
+    .tabs button {
+        min-width: 80px;
+        padding: 10px 6px;
+        font-size: 14px;
+    }
+    
+    .info-item label {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    
+    .input-box input {
+        height: 44px; /* 모바일에서 터치하기 쉽게 */
+        padding: 0 12px;
+        font-size: 16px; /* iOS에서 줌 방지 */
+    }
+    
+    .button-box .basic-btn {
+        height: 44px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mypage-wrapper {
+        margin: 0 8px;
+        padding: 12px;
+    }
+    
+    .tabs {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .tabs button {
+        width: 100%;
+        padding: 12px;
+        min-width: unset;
+    }
+    
+    .info-item label {
+        font-size: 16px;
+    }
+    
+    .my-info,
+    .edit-info,
+    .edit-password {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mypage-wrapper {
+        margin: 0 4px;
+        padding: 8px;
+    }
+    
+    .info-item label {
+        font-size: 15px;
+    }
+    
+    .input-box input {
+        height: 40px;
+        padding: 0 8px;
+        font-size: 15px;
+    }
+    
+    .button-box .basic-btn {
+        height: 40px;
+        padding: 0 12px;
+    }
+}
+/* END : 모바일 반응형 디자인 */

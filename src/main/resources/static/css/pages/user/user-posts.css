@@ -24,24 +24,31 @@
 
 .empty-message {
     text-align: center;
-    padding: 3rem 0;
+    padding: 60px 20px;
     color: #666;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-height: 300px;
 }
 
 .empty-message i {
-    font-size: 3rem;
+    font-size: 48px;
+    color: #c0c0c0;
     margin-bottom: 1rem;
-    color: #ddd;
 }
 
 .empty-message p {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .post-list {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
 .post-header {
@@ -53,6 +60,7 @@
     border-top-right-radius: 8px;
     font-weight: 600;
     color: #495057;
+    align-items: center;
 }
 
 .post-row {
@@ -63,6 +71,8 @@
     text-decoration: none;
     color: inherit;
     transition: background-color 0.2s;
+    align-items: center;
+    min-height: 50px;
 }
 
 .post-row:hover {
@@ -73,8 +83,9 @@
     border-bottom: none;
 }
 
-.category {
+.board-code {
     color: #1971c2;
+    font-weight: bold;
 }
 
 .title-wrapper {
@@ -83,46 +94,155 @@
     gap: 0.5rem;
 }
 
+.title {
+    word-break: break-word;
+}
+
 .comment-count {
     color: #f59f00;
     font-size: 0.9rem;
+    font-weight: normal;
 }
 
 .date, .views, .likes {
     text-align: center;
     color: #666;
+    font-size: 0.9rem;
 }
 
-/* 모바일 반응형 */
+.pagination-container {
+    margin-top: 20px;
+}
+
+/* 모바일 메타 정보는 기본적으로 숨김 */
+.mobile-meta {
+    display: none;
+}
+
+/* 모바일 반응형 - board/list 디자인 패턴 적용 */
 @media (max-width: 768px) {
+    .user-posts-container {
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+    }
+    
+    .user-posts-header {
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem 1rem;
+    }
+    
+    .user-posts-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .post-count {
+        font-size: 1rem;
+    }
+    
+    /* 데스크톱 헤더 숨기기 */
     .post-header {
+        display: none !important;
+    }
+    
+    /* 모바일용 그리드 레이아웃 */
+    .post-row {
+        display: grid;
+        grid-template-areas:
+            "title title"
+            "board-code meta";
+        grid-template-columns: 1fr 2fr;
+        row-gap: 8px;
+        column-gap: 8px;
+        padding: 12px 10px;
+        font-size: 0.95rem;
+        align-items: center;
+        min-height: auto;
+    }
+    
+    .post-row .board-code {
+        grid-area: board-code;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    
+    .post-row .title-wrapper {
+        grid-area: title;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    
+    .post-row .title {
+        font-weight: bold;
+    }
+    
+    /* 메타 정보를 하나의 영역으로 통합 */
+    .post-row .date,
+    .post-row .views,
+    .post-row .likes {
         display: none;
     }
-
-    .post-row {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-        padding: 1rem;
-    }
-
-    .category {
-        font-size: 0.9rem;
-    }
-
-    .title-wrapper {
-        font-size: 1.1rem;
-        margin: 0.5rem 0;
-    }
-
-    .date, .views, .likes {
-        font-size: 0.9rem;
-        text-align: left;
-    }
-
-    .meta-info {
+    
+    /* 모바일용 메타 정보 영역 표시 */
+    .post-row .mobile-meta {
+        grid-area: meta;
         display: flex;
-        gap: 1rem;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: 0.85rem;
         color: #666;
+        gap: 6px;
+    }
+    
+    /* 구분자 스타일 */
+    .mobile-meta span:not(:last-child)::after {
+        content: "|";
+        margin: 0 6px;
+        color: #bbb;
+    }
+    
+    .mobile-meta .views::before {
+        content: "\f06e";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        margin-right: 4px;
+    }
+    
+    .mobile-meta .likes::before {
+        content: "\f164";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        margin-right: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-posts-container {
+        padding: 0 0.25rem;
+    }
+    
+    .user-posts-header {
+        padding: 0 0.25rem 1rem;
+    }
+    
+    .user-posts-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .post-row {
+        padding: 10px 8px;
         font-size: 0.9rem;
+    }
+    
+    .post-row .title-wrapper {
+        font-size: 0.95rem;
+    }
+    
+    .post-row .board-code {
+        font-size: 0.85rem;
+    }
+    
+    .pagination-container {
+        margin-top: 15px;
+        padding: 0 0.25rem;
     }
 } 
