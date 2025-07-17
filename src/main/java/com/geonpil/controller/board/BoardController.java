@@ -101,7 +101,7 @@ public class BoardController {
         boardService.save(boardDTO);
         // 첨부파일 저장
         boardAttachmentService.saveFiles(boardDTO.getPostId(), files);
-        boardSearchService.index(boardDTO);
+        
         redirectAttributes.addFlashAttribute("message", "글이 성공적으로 등록되었습니다.");
         return "redirect:/board/list?boardCode=" + boardDTO.getBoardCode();
     }

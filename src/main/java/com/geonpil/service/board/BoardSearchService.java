@@ -30,6 +30,26 @@ public class BoardSearchService {
         boardSearchRepository.save(doc);
     }
 
+    public void deleteFromIndex(Long postId) {
+        try {
+            boardSearchRepository.deleteById(postId);
+            System.out.println("ES에서 게시글 삭제 완료: postId=" + postId);
+        } catch (Exception e) {
+            System.err.println("ES에서 게시글 삭제 실패: postId=" + postId + ", error=" + e.getMessage());
+        }
+    }
+
+    public void updateIndex(BoardDTO dto) {
+        try {
+            // ES에서는 같은 ID로 다시 저장하면 업데이트됨
+            BoardDocument doc = new BoardDocument(dto.getPostId(), dto.getTitle(), dto.getContent(), dto.getBoardCode(), dto.getCategoryId());
+            boardSearchRepository.save(doc);
+            System.out.println("ES에서 게시글 업데이트 완료: postId=" + dto.getPostId());
+        } catch (Exception e) {
+            System.err.println("ES에서 게시글 업데이트 실패: postId=" + dto.getPostId() + ", error=" + e.getMessage());
+        }
+    }
+
 
     public SearchResult<BoardDTO> searchByKeyword(String keyword, int page, int size, Integer boardCode, String categoryIds, String searchType) {
 

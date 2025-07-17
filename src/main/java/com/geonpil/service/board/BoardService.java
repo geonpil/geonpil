@@ -22,14 +22,19 @@ public class BoardService {
 
     private final BoardMapper boardMapper;
     private final PostLikeMapper postLikeMapper;
+    private final BoardSearchService boardSearchService;
 
-    public BoardService(BoardMapper boardMapper, PostLikeMapper postLikeMapper) {
+    public BoardService(BoardMapper boardMapper, PostLikeMapper postLikeMapper, BoardSearchService boardSearchService) {
         this.boardMapper = boardMapper;
         this.postLikeMapper = postLikeMapper;
+        this.boardSearchService = boardSearchService;
     }
 
+    @Transactional
     public void save(BoardDTO boardDTO) {
         boardMapper.insertBoard(boardDTO);
+        // ES에 인덱싱
+        boardSearchService.index(boardDTO);
     }
 
 
@@ -48,16 +53,19 @@ public class BoardService {
     }
 
 
-
+    //게시글 삭제
+    @Transactional
     public void softDeleteById(Long postId, Long currentUserId) {
         BoardDTO post = boardMapper.findById(postId);
         if (post != null && post.getUserId().equals(currentUserId)) {
             boardMapper.softDeleteById(postId);
+            // ES에서도 삭제
+            boardSearchService.deleteFromIndex(postId);
         } else {
             throw new RuntimeException("삭제 권한이 없습니다.");
         }
     }
-
+    //좋아요
     @Transactional
     public void likePost(Long postId, Long userId) {
         if (postLikeMapper.countByPostIdAndUserId(postId, userId) == 0) {
@@ -74,7 +82,8 @@ public class BoardService {
         }
     }
 
-
+    
+    //게시글 수정
     @Transactional
     public void updatePost(Long id, BoardDTO updatedPost, Long userId) {
         BoardDTO existing = boardMapper.findById(id);
@@ -89,6 +98,8 @@ public class BoardService {
 
         existing.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         boardMapper.updatePost(existing);
+        // ES에서도 업데이트
+        boardSearchService.updateIndex(existing);
     }
 
 
