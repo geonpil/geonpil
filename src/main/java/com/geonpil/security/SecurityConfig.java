@@ -57,11 +57,12 @@ public class SecurityConfig {
                                 "/recover/**"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
-                                "/api/search/**", "/books/**","/reviews/**","/bug-report/**"
+                                "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**"
                         ).permitAll()
-                        //관리자 접근
+                        //관리자만 접근
                         .requestMatchers(
-                                "/admin/**"
+                                "/admin/**",
+                                "/api/search/*/index", "/api/search/*/index-all", "/api/search/*/delete"
                         ).hasRole("ADMIN")
                         //로그인한 사용자만 접근
                         .requestMatchers("/api/reviews/**").authenticated()
