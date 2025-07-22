@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +49,10 @@ public class ContestSearchService {
         doc.setTitle(dto.getTitle());
         doc.setContent(dto.getContent());
         doc.setBoardCode(dto.getBoardCode());
-        doc.setCategoryId(dto.getCategoryId());
+        // 단일 카테고리를 List로 변환하여 저장
+        if (dto.getCategoryId() != null) {
+            doc.setCategoryIds(List.of(dto.getCategoryId()));
+        }
 
         // ContestDocument 필드 설정
         doc.setSubtitle(dto.getSubtitle());
@@ -61,6 +65,17 @@ public class ContestSearchService {
         log.info("공모전 색인 완료: {}", doc);
     }
 
+
+
+
+    public void deleteFromIndex(Long postId) {
+        try {
+            contestSearchRepository.deleteById(postId);
+            System.out.println("ES에서 공모전 삭제 완료: postId=" + postId);
+        } catch (Exception e) {
+            System.err.println("ES에서 공모전 삭제 실패: postId=" + postId + ", error=" + e.getMessage());
+        }
+    }
     /**
      * 모든 공모전을 데이터베이스에서 가져와 검색 인덱스에 추가
      */
@@ -85,15 +100,18 @@ public class ContestSearchService {
 
                             // 카테고리 ID 설정 - categoryIdsRaw가 문자열로 들어있으므로 처리 필요
                             if (contest.getCategoryIdsRaw() != null && !contest.getCategoryIdsRaw().isEmpty()) {
-                                // 콤마로 분리된 카테고리 ID 문자열을 처리
-                                String[] categoryIds = contest.getCategoryIdsRaw().split(",");
-                                if (categoryIds.length > 0) {
+                                // 콤마로 분리된 카테고리 ID 문자열을 처리하여 모든 카테고리 저장
+                                String[] categoryIdStrings = contest.getCategoryIdsRaw().split(",");
+                                List<Long> categoryIds = new ArrayList<>();
+                                for (String categoryIdStr : categoryIdStrings) {
                                     try {
-                                        doc.setCategoryId(Long.parseLong(categoryIds[0]));
+                                        Long categoryId = Long.parseLong(categoryIdStr.trim());
+                                        categoryIds.add(categoryId);
                                     } catch (NumberFormatException e) {
                                         log.warn("카테고리 ID 변환 오류: {}", e.getMessage());
                                     }
                                 }
+                                doc.setCategoryIds(categoryIds);
                             }
 
                             // ContestDocument 필드 설정
@@ -220,7 +238,7 @@ public class ContestSearchService {
 
                     // 유효한 카테고리 ID가 있는 경우에만 필터 적용
                     if (!validIds.isEmpty()) {
-                        criteria = criteria.and(new Criteria("categoryId").in(validIds.toArray()));
+                        criteria = criteria.and(new Criteria("categoryIds").in(validIds.toArray()));
                         log.debug("카테고리 필터 적용: {}", validIds);
                     }
                 }

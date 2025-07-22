@@ -17,11 +17,13 @@ public class ContestService {
     private final BoardMapper boardMapper;
     private final ContestMapper contestMapper;
     private final BoardService boardService;
+    private final ContestSearchService contestSearchService;
 
-    public ContestService(BoardMapper boardMapper, ContestMapper contestMapper, BoardService boardService) {
+    public ContestService(BoardMapper boardMapper, ContestMapper contestMapper, BoardService boardService, ContestSearchService contestSearchService) {
         this.boardMapper = boardMapper;
         this.contestMapper = contestMapper;
         this.boardService = boardService;
+        this.contestSearchService = contestSearchService;
     }
 
 
@@ -29,7 +31,7 @@ public class ContestService {
     public void saveContest(ContestPost contest, List<Long> categoryIds) {
         boardMapper.insertBoard(contest);           // BoardDTO 필드 처리
         contestMapper.insertContestPost(contest);   // contest_post 필드 처리
-
+        contestSearchService.index(contest);
         long postId = contest.getPostId();
 
         for (Long categoryId : categoryIds) {
@@ -51,15 +53,12 @@ public class ContestService {
 
 
 
-        boardService.updatePost(postId, contestPost, id);
+        boardService.updatePost(postId, contestPost, id); // 게시글수정
 
         contestMapper.deleteCategoriesByPostId(postId);
 
-        System.out.println("디버그그 : " +  contestPost.getCategoryIds());
-
 
         for(Long categoryId : categoryIds){
-            System.out.println("디버그 : " + categoryId);
             contestMapper.insertContestCategory(postId, categoryId);
         }
 

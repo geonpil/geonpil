@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Document(indexName = "contest")  // Elasticsearch 인덱스명
@@ -29,7 +30,7 @@ public class ContestDocument {
     private int boardCode;
 
     @Field(type = FieldType.Long)
-    private Long categoryId;
+    private List<Long> categoryIds;
 
     // ContestDocument 고유 필드
     @Field(type = FieldType.Text, analyzer = "standard", searchAnalyzer = "standard")
