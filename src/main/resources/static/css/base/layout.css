@@ -100,6 +100,18 @@
   display: none;
 }
 
+
+@media (max-width: 768px) {
+  .header-left a div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .header-left a div span:last-child {
+    margin-left: 0 !important;
+    /* margin-top: -0.5rem; */
+  }
+}
+
 /* ========== 메인 레이아웃 ========== */
 .main-section {
   display: grid;
