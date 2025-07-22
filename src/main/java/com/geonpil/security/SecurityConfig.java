@@ -88,7 +88,10 @@ public class SecurityConfig {
                         .failureHandler(customAuthFailureHandler)
                         )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
                 .userDetailsService(userDetailsService())
