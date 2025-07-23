@@ -45,20 +45,13 @@ public class ReviewService {
 
 
     public double getAverageRating(Long bookId) {
-        return Optional.ofNullable(reviewMapper.getAverageRatingByBookId(bookId))
-                .orElse(0.0);
+        Double avgRating = reviewMapper.getAverageRatingByBookId(bookId);
+        if (avgRating == null) {
+            return 0.0;
+        }
+        return Math.round(avgRating * 100.0) / 100.0;
     }
 
-    public double calculateAverageRating(List<Review> reviews) {
-        return reviews.isEmpty()
-                ? 0.0
-                : Math.round(
-                reviews.stream()
-                        .mapToDouble(Review::getRating)
-                        .average()
-                        .orElse(0.0) * 100.0
-        ) / 100.0;
-    }
 
 
     public boolean hasUserReviewedBook(Long userId, Long bookId) {
