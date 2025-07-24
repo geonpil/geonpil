@@ -42,7 +42,7 @@
 
                 <a class="post-row"
                    th:each="post : ${posts}"
-                   th:href="@{${post.boardCode == 3 ? '/contest/detail/' + post.postId : '/board/list/detail/' + post.postId + '?boardCode=' + post.boardCode}}">
+                   th:href="@{${post.boardCode == 3 ? '/contest/detail/' + post.postId + '?boardCode=' + post.boardCode : '/board/list/detail/' + post.postId + '?boardCode=' + post.boardCode}}">
                     <span class="board-code" th:text="${post.boardName}">게시판</span>
                     <span class="title-wrapper">
                         <span class="title" th:text="${post.title}">제목</span>
