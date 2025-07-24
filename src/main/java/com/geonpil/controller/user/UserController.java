@@ -24,11 +24,29 @@ public class UserController {
     private final UserService userService;
     private final WithdrawlService withdrawlService;
 
-    // 회원가입 폼 페이지
+    // 약관 동의 페이지
     @GetMapping("/signup")
-    public String showSignupForm(Model model) {
+    public String showSignupTerms() {
+        return "account/signup-terms"; // templates/account/signup-terms.html
+    }
+
+    // 회원가입 폼 페이지 (약관 동의 후 진입)
+    @GetMapping("/signup/form")
+    public String showSignupForm(@RequestParam(value = "agreed", required = false) Boolean agreed,
+                                 HttpSession session,
+                                 Model model) {
+        // 약관 동의 여부 확인
+        if (Boolean.TRUE.equals(agreed)) {
+            session.setAttribute("agreedTerms", true);
+        }
+
+        // 세션에 동의 정보가 없으면 약관 페이지로 리다이렉트
+        if (session.getAttribute("agreedTerms") == null) {
+            return "redirect:/signup";
+        }
+
         model.addAttribute("user", new User());
-        return "signup"; // signup.html
+        return "account/signup"; // signup.html
     }
 
 
@@ -36,17 +54,27 @@ public class UserController {
     @PostMapping("/signup")
     public String processSignup(@ModelAttribute User user,
                                 @RequestParam String passwordConfirm,
+                                HttpSession session,
                                 Model model) {
+
+        // 약관 동의 세션 체크
+        if (session.getAttribute("agreedTerms") == null) {
+            return "redirect:/signup";
+        }
+
         if (!user.getPassword().equals(passwordConfirm)) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "signup";
+            return "account/signup";
         }
 
         boolean result = userService.register(user);
         if (!result) {
             model.addAttribute("error", "이미 사용 중인 이메일 또는 닉네임입니다.");
-            return "signup";
+            return "account/signup";
         }
+
+        // 동의 정보 세션에서 제거
+        session.removeAttribute("agreedTerms");
 
         return "redirect:/signup-success";
     }
@@ -54,7 +82,7 @@ public class UserController {
     // 회원가입 성공 페이지
     @GetMapping("/signup-success")
     public String signupSuccess() {
-        return "signup-success";
+        return "account/signup-success";
     }
 
 
@@ -70,14 +98,14 @@ public class UserController {
             session.removeAttribute("SPRING_SECURITY_SAVED_REQUEST");
         }
 
-        return "login"; // templates/login.html 보여주기
+        return "account/login"; // templates/login.html 보여주기
     }
 
 
     //회원탈퇴 화면
     @GetMapping("/withdraw")
     public String withdrawForm() {
-        return "user/withdrawal/withdrawal";  // ex) templates/user/mypage.html
+        return "account/withdrawal";  // ex) templates/user/mypage.html
     }
 
     //회원 탈퇴 처리
@@ -108,7 +136,7 @@ public class UserController {
     //회원 탈퇴 완료
     @GetMapping("/withdrawal-complete")
     public String withdrawComplete() {
-        return "user/withdrawal/withdrawal-complete";
+        return "account/withdrawal-complete";
     }
 
 
