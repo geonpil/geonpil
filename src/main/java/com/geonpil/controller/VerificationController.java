@@ -22,7 +22,7 @@ public class VerificationController {
 
     @GetMapping("/find-password")
     public String showFindPasswordForm() {
-        return "find-password"; // templates/find-password.html 보여주기
+        return "account/find-password"; // templates/account/find-password.html
     }
 
 
@@ -91,7 +91,7 @@ public class VerificationController {
         if (session.getAttribute("resetEmail") == null) {
             return "redirect:/login";
         }
-        return "reset-password";
+        return "account/reset-password";
     }
 
     // 비밀번호 재설정 처리
@@ -105,7 +105,7 @@ public class VerificationController {
         Optional<User> user = userService.findByEmail(email);
         if (user.isEmpty()) {
             model.addAttribute("error", "사용자를 찾을 수 없습니다.");
-            return "reset-password";
+            return "account/reset-password";
         }
 
         userService.updatePassword(email, password);
