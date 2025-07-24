@@ -4,6 +4,7 @@ import com.geonpil.domain.*;
 import com.geonpil.mapper.board.BoardMapper;
 import com.geonpil.mapper.board.ContestMapper;
 import com.geonpil.service.board.BoardService;
+import com.geonpil.service.board.BoardSearchService;
 import com.geonpil.util.DdayUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,14 @@ public class ContestService {
     private final ContestMapper contestMapper;
     private final BoardService boardService;
     private final ContestSearchService contestSearchService;
+    private final BoardSearchService boardSearchService;
 
-    public ContestService(BoardMapper boardMapper, ContestMapper contestMapper, BoardService boardService, ContestSearchService contestSearchService) {
+    public ContestService(BoardMapper boardMapper, ContestMapper contestMapper, BoardService boardService, ContestSearchService contestSearchService, BoardSearchService boardSearchService) {
         this.boardMapper = boardMapper;
         this.contestMapper = contestMapper;
         this.boardService = boardService;
         this.contestSearchService = contestSearchService;
+        this.boardSearchService = boardSearchService;
     }
 
 
@@ -63,6 +66,10 @@ public class ContestService {
         }
 
         contestMapper.updateContestPost(contestPost);
+
+        //ES 업데이트
+        boardSearchService.updateIndex(contestPost);
+        contestSearchService.updateIndex(contestPost);
 
     }
 

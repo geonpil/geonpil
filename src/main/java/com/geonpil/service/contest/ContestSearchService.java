@@ -333,8 +333,37 @@ public class ContestSearchService {
         }
     }
 
+
+    public void updateIndex(ContestPost dto) {
+        ContestDocument doc = new ContestDocument();
+        
+        // 기본 필드들 (BoardDocument 상당 필드들)
+        doc.setPostId(dto.getPostId());
+        doc.setTitle(dto.getTitle());
+        doc.setContent(dto.getContent());
+        doc.setBoardCode(dto.getBoardCode());
+        
+        // 카테고리 처리
+        if (dto.getCategoryIds() != null && !dto.getCategoryIds().isEmpty()) {
+            doc.setCategoryIds(dto.getCategoryIds());
+        } else if (dto.getCategoryId() != null) {
+            doc.setCategoryIds(List.of(dto.getCategoryId()));
+        }
+        
+        // Contest 고유 필드들
+        doc.setSubtitle(dto.getSubtitle());
+        doc.setHostName(dto.getHostName());
+        doc.setTarget(dto.getTarget());
+        doc.setStartDate(dto.getStartDate());
+        doc.setEndDate(dto.getEndDate());
+
+        contestSearchRepository.save(doc);
+    }
     // 총 페이지 수 계산
     private int calculateTotalPages(int totalHits, int size) {
         return totalHits == 0 ? 0 : (int) Math.ceil((double) totalHits / size);
     }
+
+
+
 }
