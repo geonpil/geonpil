@@ -140,38 +140,13 @@
 
 <th:block layout:fragment="script">
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script src="/js/commons/modal.js"></script>
     <script>
         Kakao.init('11874ab3e4119c5f4875a16ec07ee765'); // 네이티브 앱 키
     </script>
+    
 
     <script>
-        // 이미지 모달 관련 함수
-        function openImageModal(img) {
-            const modal = document.getElementById("imageModal");
-            const modalImg = document.getElementById("expandedImg");
-            modal.style.display = "block";
-            modalImg.src = img.src;
-        }
-
-        function closeImageModal() {
-            document.getElementById("imageModal").style.display = "none";
-        }
-
-        // ESC 키로 모달 닫기
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                closeImageModal();
-            }
-        });
-
-        // 모달 외부 클릭 시 닫기
-        window.onclick = function(event) {
-            const modal = document.getElementById("imageModal");
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        }
-
         function copyLink() {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {

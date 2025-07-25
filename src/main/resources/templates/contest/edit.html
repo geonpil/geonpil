@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
   <link rel="stylesheet" href="/css/pages/contest/contest.css">
   <link rel="stylesheet" href="/css/pages/board/board.css">
+  <link rel="stylesheet" href="/css/components/common.css">
 </th:block>
 
 
@@ -65,7 +66,7 @@
 
       <div class="form-group">
         <label for="posterFile">포스터 이미지</label>
-        <img id="poster-preview" th:if="${post.posterUrl}" th:src="@{${post.posterUrl}}" style="max-width: 200px; display: block; margin-bottom: 10px;">
+        <img id="poster-preview" th:if="${post.posterUrl}" th:src="@{${post.posterUrl}}" style="max-width: 200px; display: block; margin-bottom: 10px; cursor: pointer;" onclick="openImageModal(this)">
         <button type="button" id="remove-poster-btn" class="delete-btn">포스터 제거</button>
         <input class ="img-upload" type="file" id="posterFile" name="posterFile" accept="image/*" />
         <input type="hidden" id="existingPosterUrl" name="existingPosterUrl" th:value="${post.posterUrl}" />
@@ -74,10 +75,14 @@
       <!-- 기존 첨부파일 목록 -->
       <div class="form-group">
         <label>기존 첨부파일</label>
+        <script th:inline="javascript">
+          console.log("첨부파일 데이터:", /*[[${attachments}]]*/ null);
+        </script>
         <div th:if="${attachments != null and !#lists.isEmpty(attachments)}">
           <ul class="attachment-list">
             <li th:each="att : ${attachments}" class="attachment-item">
-              <span th:text="${att.originalName}"></span>
+              <span th:text="${att.originalName}" style="margin-right: 10px;"></span>
+              <small th:text="'(' + ${att.fileSize} + ' bytes)'" style="color: #666; margin-right: 10px;"></small>
               <label class="delete-label">
                 <input type="checkbox" name="deleteAttachmentIds" th:value="${att.attachmentId}" />
                 삭제
@@ -126,6 +131,12 @@
       <input type="hidden" name="content" id="content-hidden" />
     </form>
   </div>
+
+  <!-- 이미지 모달 (form 밖으로 이동) -->
+  <div id="imageModal" class="image-modal">
+    <span class="close-modal" onclick="closeImageModal()">&times;</span>
+    <img class="modal-content" id="expandedImg">
+  </div>
 </div>
 
 <th:block layout:fragment="script">
@@ -133,15 +144,12 @@
   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
   <script src="/js/toast-editor.js"></script>
   <script src="/js/contest/setDate.js"></script>
+  <script src="/js/commons/modal.js"></script>
   <script>
+
+
     document.addEventListener("DOMContentLoaded", function () {
       initContestDateFields();
-
-      // 에디터 기존 내용 세팅
-      const original = document.getElementById("original-content");
-      if (original && window.editor) {
-        editor.setHTML(original.value);
-      }
 
       const form = document.getElementById("postForm");
       const hiddenContent = document.getElementById("content-hidden");
@@ -163,8 +171,7 @@
           return;
         }
 
-        // content 입력
-        hiddenContent.value = editor.getHTML();
+        // content는 toast-editor.js에서 처리됨
       });
 
       // 마감일 미정 체크박스 처리
@@ -182,17 +189,51 @@
       // 포스터 미리보기 & 제거
       document.getElementById("posterFile").addEventListener("change", function () {
         const preview = document.getElementById("poster-preview");
+        const removePosterBtn = document.getElementById("remove-poster-btn");
         if (this.files && this.files[0] && preview) {
           preview.src = URL.createObjectURL(this.files[0]);
+          preview.style.display = "block";
+          // 새 포스터 선택 시 제거 버튼 다시 표시
+          if (removePosterBtn) {
+            removePosterBtn.style.display = "inline-block";
+          }
         }
       });
 
-      document.getElementById("remove-poster-btn").addEventListener("click", function () {
-        const preview = document.getElementById("poster-preview");
-        if (preview) preview.src = "";
-        document.getElementById("posterFile").value = "";
-        document.getElementById("existingPosterUrl").value = "";
-      });
+      // 포스터 제거 버튼 이벤트
+      const removePosterBtn = document.getElementById("remove-poster-btn");
+      if (removePosterBtn) {
+        console.log("포스터 제거 버튼 찾음");
+        removePosterBtn.addEventListener("click", function (e) {
+          console.log("포스터 제거 버튼 클릭됨");
+          e.preventDefault();
+          
+          const preview = document.getElementById("poster-preview");
+          const posterFile = document.getElementById("posterFile");
+          const existingPosterUrl = document.getElementById("existingPosterUrl");
+          
+          if (preview) {
+            preview.src = "";
+            preview.style.display = "none";
+            console.log("포스터 미리보기 제거됨");
+          }
+          
+          // 제거 버튼도 숨김
+          removePosterBtn.style.display = "none";
+          
+          if (posterFile) {
+            posterFile.value = "";
+            console.log("포스터 파일 입력 초기화됨");
+          }
+          
+          if (existingPosterUrl) {
+            existingPosterUrl.value = "";
+            console.log("기존 포스터 URL 초기화됨");
+          }
+        });
+      } else {
+        console.log("포스터 제거 버튼을 찾을 수 없음");
+      }
     });
   </script>
 </th:block>
