@@ -1,0 +1,12 @@
+<!-- 작성자 이름 + 드롭다운 재사용용 -->
+<div class="author-dropdown" th:with="uid=${userId}, nick=${nickname}">
+    <!-- 클릭 대상 -->
+    <a href="javascript:void(0)" class="author-name"
+       th:data-uid="${uid}" th:text="${nick}">닉네임</a>
+    <!-- 메뉴 -->
+    <ul class="author-menu">
+        <li>
+            <a th:href="@{'/users/' + ${uid} + '/posts'}">작성글 보기</a>
+        </li>
+    </ul>
+</div>
