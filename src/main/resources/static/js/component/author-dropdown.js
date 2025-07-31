@@ -8,7 +8,8 @@
     if(toggler){
       e.preventDefault();
       toggler.parentElement.classList.toggle('open');
-      e.stopPropagation();
+      // Prevent other click handlers on the document from running so the menu stays open
+      e.stopImmediatePropagation();
     }
   });
   // 바깥 클릭 시 드롭다운 닫기
