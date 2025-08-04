@@ -78,7 +78,8 @@ public class SecurityConfig {
                         .loginProcessingUrl("/do-login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .successHandler(loginSuccessHandler())
+                        .failureHandler(customAuthFailureHandler)
+                        //.successHandler(loginSuccessHandler())
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -125,6 +126,9 @@ public class SecurityConfig {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                 Authentication authentication)
                     throws ServletException, IOException {
+                SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
+                handler.setDefaultTargetUrl("/");
+                handler.setAlwaysUseDefaultTargetUrl(false);
 
                 HttpSession session = request.getSession(false);
 
@@ -140,7 +144,7 @@ public class SecurityConfig {
                 }
 
                 // 기본 처리 (SavedRequest가 있을 경우 자동 사용됨)
-                super.onAuthenticationSuccess(request, response, authentication);
+                handler.onAuthenticationSuccess(request, response, authentication);
             }
         };
     }
