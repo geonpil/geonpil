@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 "/recover/**"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
-                                "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**"
+                                "/api/search", "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**"
                         ).permitAll()
                         //관리자만 접근
                         .requestMatchers(
