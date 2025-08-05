@@ -133,6 +133,7 @@
         JOIN category c ON b.category_id = c.category_id
         JOIN users u on b.user_id = u.id
         WHERE b.board_code = #{boardCode}
+          AND b.is_deleted = false
         ORDER BY b.created_at DESC
         LIMIT #{limit}
     </select>
