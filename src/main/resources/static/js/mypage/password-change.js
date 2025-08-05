@@ -45,7 +45,7 @@ export function initPasswordChange () {
         const pw = newPw.value;
         const confirm = confirmPw.value;
 
-        const isValidPw = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(pw);
+        const isValidPw = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(pw);
         const isConfirmed = pw === confirm;
 
         // 비밀번호 유효성
