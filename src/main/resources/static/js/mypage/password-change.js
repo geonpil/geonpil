@@ -31,11 +31,11 @@ export function initPasswordChange () {
             .then(data => {
                 alert(data.message);
                 if (data.success) {
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/logout';
-                    document.body.appendChild(form);
-                    form.submit();
+                    csrfFetch('/logout', { method: 'POST' })
+                        .then(() => {
+                            // 로그아웃 후 로그인 페이지로 이동 (파라미터로 성공 알림)
+                            window.location.href = '/login?resetSuccess=true';
+                        });
                 }
             });
     });
