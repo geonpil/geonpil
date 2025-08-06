@@ -30,6 +30,12 @@ public class UserController {
         return "account/signup-terms"; // templates/account/signup-terms.html
     }
 
+    // 약관 조회 페이지 (팝업용)
+    @GetMapping("/terms")
+    public String showTermsView() {
+        return "account/terms-view"; // templates/account/terms-view.html
+    }
+
     // 회원가입 폼 페이지 (약관 동의 후 진입)
     @GetMapping("/signup/form")
     public String showSignupForm(@RequestParam(value = "agreed", required = false) Boolean agreed,

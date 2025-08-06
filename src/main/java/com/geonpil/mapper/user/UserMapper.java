@@ -20,6 +20,9 @@ public interface UserMapper {
     @Select("SELECT COUNT(*) > 0 FROM users WHERE email = #{email}")
     boolean existsByEmail(String email);
 
+    @Select("SELECT COUNT(*) > 0 FROM users WHERE nickname = #{nickname}")
+    boolean existsByNickname(String nickname);
+
 
     Optional<User> findByEmail(String email);
 

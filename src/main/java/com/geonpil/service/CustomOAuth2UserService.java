@@ -1,6 +1,7 @@
 package com.geonpil.service;
 
 import com.geonpil.domain.user.User;
+import com.geonpil.dto.user.SocialProfile;
 import com.geonpil.mapper.user.UserMapper;
 import com.geonpil.security.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,10 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,34 +61,48 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         }
 
-        // 회원 조회 or 가입 처리
+        // 회원 조회
         Optional<User> userOpt = userMapper.findByProviderAndProviderId(registrationId, providerId);
-        User user;
+        
         if (userOpt.isPresent()) {
-            user = userOpt.get();
+            // 기존 회원 - 정상 로그인
+            User user = userOpt.get();
             if (user.isDeleted()) {
                 throw new OAuth2AuthenticationException("RECOVER_REQUIRED:" + user.getId());
             }
             user.setRoles(userMapper.findRolesById(user.getId()));
+
+            List<GrantedAuthority> authorities = user.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role))
+                    .collect(Collectors.toList());
+
+            return new CustomOAuth2User(
+                    authorities,
+                    flatAttributes,
+                    "id",
+                    user.getNickname(),
+                    user.getId()
+            );
         } else {
-            user = new User(email, nickname, registrationId, providerId, List.of("ROLE_USER"));  // 2️⃣ 신규 소셜 가입
-            userMapper.insertSocialUser(user);
+            // 신규 소셜 사용자 - 가입 보류 상태로 처리
+            SocialProfile profile = new SocialProfile(email, nickname, registrationId, providerId);
+            
+            // 세션에 소셜 프로필 저장
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpSession session = attr.getRequest().getSession();
+            session.setAttribute("OAUTH_PROFILE", profile);
+            
+            // ROLE_PRE_SIGNUP 권한만 부여
+            List<GrantedAuthority> preAuthorities = List.of(new SimpleGrantedAuthority("ROLE_PRE_SIGNUP"));
+            
+            return new CustomOAuth2User(
+                    preAuthorities,
+                    flatAttributes,
+                    "id",
+                    nickname, // 임시 닉네임
+                    null // 아직 DB에 저장되지 않음
+            );
         }
-
-        userMapper.findRolesById(user.getId());
-
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role)) // ex) "ROLE_ADMIN"
-                .collect(Collectors.toList());
-
-
-        return new CustomOAuth2User(
-                authorities,
-                flatAttributes, // nickname이 직접 포함된 Map
-                "id",     // nameAttributeKey
-                user.getNickname(),
-                user.getId()// DB에 저장된 nickname 사용
-        );
     }
 
     // 계정 복구는 AccountRecoveryController에서 별도로 수행한다.

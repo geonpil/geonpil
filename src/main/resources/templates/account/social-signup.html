@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<th:block layout:fragment="meta">
+    <title>소셜 회원가입 - 건필</title>
+</th:block>
+
+<th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/pages/loginAndSignup/login.css" />
+    <link rel="stylesheet" href="/css/pages/loginAndSignup/common.css" />
+</th:block>
+
+<body>
+<div layout:fragment="content">
+    <div class="form-card" style="text-align: center;">
+        
+        <img class="logo-center" src="/images/logo.png" alt="건필 로고" style="width: 60px;">
+        
+        <h2 style="margin-bottom: 30px; color: #1F4EB2;">소셜 회원가입</h2>
+        
+        <div style="margin-bottom: 20px; font-size: 0.9rem; color: #666;">
+            <span th:text="${profile.provider eq 'kakao' ? '카카오' : '네이버'}"></span> 계정으로 로그인하셨습니다.<br>
+            회원가입을 완료하기 위해 아래 정보를 입력해주세요.
+        </div>
+
+        <form th:action="@{/signup/social}" method="post">
+            
+            <!-- 이메일 (읽기 전용) -->
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; text-align: left; margin-bottom: 5px; font-weight: bold;">이메일</label>
+                <input type="email" th:value="${profile.email}" readonly 
+                       style="background-color: #f5f5f5; color: #666;">
+            </div>
+
+            <!-- 닉네임 입력 -->
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; text-align: left; margin-bottom: 5px; font-weight: bold;">닉네임</label>
+                <input type="text" id="nickname" name="nickname" 
+                       th:value="${profile.nickname}" 
+                       placeholder="사용할 닉네임을 입력하세요" 
+                       required maxlength="20">
+                <small style="display: block; text-align: left; color: #666; margin-top: 3px;">
+                    2~20자 이내로 입력해주세요.
+                </small>
+            </div>
+
+            <!-- 약관 동의 -->
+            <div style="margin-bottom: 20px; text-align: left;">
+                <label>
+                    <input type="checkbox" id="agreedTerms" name="agreedTerms" value="true" required>
+                    <a href="/terms" target="_blank" style="color: #1F4EB2; text-decoration: underline;">
+                        이용약관 및 개인정보 처리방침
+                    </a>에 동의합니다.
+                </label>
+            </div>
+
+            <!-- 오류 메시지 -->
+            <div th:if="${error}" style="margin-bottom: 15px; color: red; font-size: 0.9rem;">
+                <p th:text="${error}"></p>
+            </div>
+
+            <!-- 완료 버튼 -->
+            <button class="basic-btn" type="submit" style="width: 100%;">
+                회원가입 완료
+            </button>
+            
+        </form>
+
+        <div style="margin-top: 20px; font-size: 0.9rem;">
+            <a href="/login">다른 방법으로 로그인</a>
+        </div>
+
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        // 닉네임 실시간 검증 (선택사항)
+        document.getElementById('nickname').addEventListener('input', function() {
+            const nickname = this.value.trim();
+            if (nickname.length < 2 || nickname.length > 20) {
+                this.style.borderColor = 'red';
+            } else {
+                this.style.borderColor = '';
+            }
+        });
+    </script>
+</th:block>
+</body>
+</html>

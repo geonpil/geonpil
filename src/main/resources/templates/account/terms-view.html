@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>이용약관 및 개인정보 처리방침</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/pages/loginAndSignup/common.css" />
+  <link rel="stylesheet" href="/css/pages/account/signup-terms.css" />
+</head>
+
+<body>
+<div layout:fragment="content">
+  <div class="card p-20">
+        <!-- 이용약관 내용 fragment 포함 -->
+    <th:block th:include="account/_terms-content :: terms-content"></th:block>
+    
+
+    <!-- 개인정보 처리방침 내용 fragment 포함 -->
+    <th:block th:include="account/_terms-content :: privacy-content"></th:block>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button type="button" class="basic-btn" onclick="window.close()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="script">
+  <script>
+    // 팝업창인 경우 닫기 버튼 활성화
+    if (window.opener) {
+      document.querySelector('.basic-btn').style.display = 'inline-block';
+    }
+  </script>
+</th:block>
+</body>
+</html>

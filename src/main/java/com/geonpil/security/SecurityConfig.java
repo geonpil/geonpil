@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //누구나 접근
                         .requestMatchers(
-                                "/", "/signup", "/signup/form", "/login","/find-password","/withdrawal-complete", "signup-success",
+                                "/", "/signup", "/signup/form", "/signup/social", "/login","/find-password","/withdrawal-complete", "signup-success",
                                 "/recover/**"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",

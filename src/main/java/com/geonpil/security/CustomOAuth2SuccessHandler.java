@@ -25,12 +25,19 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
                                         HttpServletResponse response,
                                         Authentication authentication)
             throws IOException, ServletException {
+        
+        // 신규 소셜 사용자인지 확인 (ROLE_PRE_SIGNUP 권한 체크)
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_PRE_SIGNUP"))) {
+            redirectStrategy.sendRedirect(request, response, "/signup/social");
+            return;
+        }
+        
         SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
         if (savedRequest != null) {
             new DefaultRedirectStrategy().sendRedirect(request, response, savedRequest.getRedirectUrl());
             return;
         }
-
 
         HttpSession session = request.getSession(false);
         if (session != null) {
