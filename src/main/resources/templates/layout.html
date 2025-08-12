@@ -10,6 +10,19 @@
     <!-- ✅ 메타데이터 슬롯 -->
     <th:block layout:fragment="meta">
         <title>건필</title> <!-- 기본 제목 -->
+        <!-- Open Graph 기본값: 각 페이지에서 동일 키로 덮어쓸 수 있음 -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="건필" />
+        <meta property="og:title" content="건필" />
+        <meta property="og:description" content="책, 글, 공모전 커뮤니티 건필" />
+        <!-- 절대경로 권장: 호스트 자동 감지용 Thymeleaf 표현 사용 -->
+        <meta property="og:url" th:content="${#httpServletRequest.requestURL}" />
+        <!-- 기본 이미지: 페이지에서 덮어쓰기 가능 -->
+        <meta property="og:image" content="/images/ogImage/preview.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <!-- 카카오/트위터 호환 -->
+        <meta name="twitter:card" content="summary_large_image" />
     </th:block>
 
     <!-- ✅ CSRF 토큰 (Ajax에서 사용) -->
