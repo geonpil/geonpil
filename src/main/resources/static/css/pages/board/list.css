@@ -3,8 +3,10 @@
     flex-direction: column;
     min-height: 568px;         /* ✅ 최소 높이만 유지 */
     margin-bottom: 15px;
-    background-color: white;
-    border-radius: 8px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb; /* 더 또렷한 경계선 */
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06); /* 부드러운 그림자 */
     overflow: hidden;
     position: relative; /* 포지션 컨텍스트 설정 */
 }
@@ -82,10 +84,17 @@
 }
 
 .posts-header {
-    background-color: #f8f9fb;
-    font-weight: bold;
-    color: #333;
-    padding: 11px 10px;
+    /* 캐주얼한 플랫 톤으로 조정 */
+    background-color: #1F4EB2;
+    color: white;
+    padding: 10px 12px;
+    border-bottom: 1px solid #edf2f7; /* 부드러운 구분선 */
+}
+
+/* 헤더 타이포그래피 약간 개선 */
+.posts-header span {
+    font-size: 0.9rem;
+    letter-spacing: 0.05px;
 }
 
 .post-list {
@@ -95,6 +104,11 @@
     flex: 1;
     overflow-y: auto;
     height: 548px;
+}
+
+/* 행 호버 시 가벼운 하이라이트 */
+.post-row:hover {
+    background-color: #f9fafb;
 }
 
 
