@@ -21,7 +21,7 @@ public class FileStorageService {
 
     private static final long MAX_SIZE = 10 * 1024 * 1024; // 10MB
 
-    private static final Set<String> ALLOWED_EXT = Set.of("jpg", "jpeg", "png", "gif", "pdf", "hwp", "doc", "docx");
+    private static final Set<String> ALLOWED_EXT = Set.of("jpg", "jpeg", "png", "gif", "pdf", "hwp", "hwpx", "doc", "docx");
 
     private static final Set<String> ALLOWED_MIME = Set.of(
             "image/jpeg",
@@ -31,6 +31,16 @@ public class FileStorageService {
             "application/x-hwp",
             "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    );
+
+    // Some browsers/clients report HWPX as vendor-specific, owpml, or even zip/octet-stream
+    private static final Set<String> ALLOWED_HWpx_MIME = Set.of(
+            "application/vnd.hancom.hwpx",
+            "application/owpml",
+            "application/x-hwpml",
+            "application/zip",
+            "application/x-zip-compressed",
+            "application/octet-stream"
     );
 
     /**
@@ -78,6 +88,15 @@ public class FileStorageService {
 
         // MIME 타입 화이트리스트 (간단 검사)
         String mime = Optional.ofNullable(file.getContentType()).orElse("").toLowerCase();
+
+        // Special-case for HWPX: different agents often send varying content-types
+        if ("hwpx".equals(ext)) {
+            if (!ALLOWED_HWpx_MIME.contains(mime)) {
+                throw new IllegalStateException("허용되지 않는 HWPX 파일 형식입니다.");
+            }
+            return;
+        }
+
         if (!ALLOWED_MIME.contains(mime)) {
             throw new IllegalStateException("허용되지 않는 파일 형식입니다.");
         }
