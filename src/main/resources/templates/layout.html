@@ -16,11 +16,13 @@
         <meta property="og:title" content="건필" />
         <meta property="og:description" content="책, 글, 공모전 커뮤니티 건필" />
         <!-- 절대경로 권장: 호스트 자동 감지용 Thymeleaf 표현 사용 -->
-        <meta property="og:url" th:content="${#httpServletRequest.requestURL}" />
-        <!-- 기본 이미지: 페이지에서 덮어쓰기 가능 -->
-        <meta property="og:image" content="/images/ogImage/preview.png" />
+        <meta property="og:url" th:content="@{/}" />
+        <!-- 기본 이미지: 페이지에서 덮어쓰기 가능. 크롤러 호환을 위해 절대 URL 제공 -->
+        <meta property="og:image" th:content="@{|/images/ogImage/preview.png|}" />
+        <meta property="og:image:secure_url" th:content="@{|/images/ogImage/preview.png|}" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="ko_KR" />
         <!-- 카카오/트위터 호환 -->
         <meta name="twitter:card" content="summary_large_image" />
     </th:block>
