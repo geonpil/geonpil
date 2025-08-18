@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geonpil.mapper.board.BoardTypeMapper">
+
+
+    <resultMap id="boardTypeResultMap" type="com.geonpil.domain.board.BoardType">
+        <id property="boardCode" column="board_code" />
+        <result property="boardName" column="board_name" />
+        <result property="boardDescription" column="board_description" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <select id="getAllBoardTypes" resultMap="boardTypeResultMap">
+        SELECT *
+        FROM board_types
+    </select>
+
+
+</mapper>

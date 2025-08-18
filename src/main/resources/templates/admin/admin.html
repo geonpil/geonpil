@@ -21,16 +21,25 @@
             <!-- 사이드바 -->
             <aside class="admin-sidebar card p-20">
                 <h1 class="border-bottom">관리자 메뉴</h1>
+                <div>
+                    <h3>건필 픽 관리</h3>
+                    <ul class="dot-list">
+                        <!--<li><a th:href="@{/admin/dashboard}">대시보드</a></li>
+                        <li><a th:href="@{/admin/reports}">버그/신고 내역</a></li>
+                        <li><a th:href="@{/}">사이트 돌아가기</a></li>
+                        <li><a th:href="@{/admin/users}">회원 관리</a></li>-->
+                        <li><a href="#" data-action="add" class="admin-menu">건필 픽 추가</a></li>
+                        <li><a href="#" data-action="delete" class="admin-menu">건필 픽 삭제</a></li>
+                    </ul>
+                </div>
 
-                <h3>건필 픽 관리</h3>
-                <ul class="dot-list">
-                    <!--<li><a th:href="@{/admin/dashboard}">대시보드</a></li>
-                    <li><a th:href="@{/admin/reports}">버그/신고 내역</a></li>
-                    <li><a th:href="@{/}">사이트 돌아가기</a></li>
-                    <li><a th:href="@{/admin/users}">회원 관리</a></li>-->
-                    <li><a href="#" data-action="add" class="admin-menu">건필 픽 추가</a></li>
-                    <li><a href="#" data-action="delete" class="admin-menu">건필 픽 삭제</a></li>
-                </ul>
+                <div>
+                    <h3>카테고리 관리</h3>
+                    <ul class="dot-list">
+                        <li><a href="#" data-action="add" data-section="categories" class="admin-menu">카테고리 추가</a></li>
+                        <li><a href="#" data-action="delete" data-section="categories" class="admin-menu">카테고리 삭제</a></li>
+                    </ul>
+                </div>
             </aside>
 
             <!-- 본문 -->

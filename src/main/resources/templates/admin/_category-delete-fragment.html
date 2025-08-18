@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="categoryDeleteFormFragment">
+    <div class="category-delete-form">
+        <h2>카테고리 삭제</h2>
+        <p class="description">기존 카테고리를 삭제합니다. <strong>사용 중인 카테고리는 삭제할 수 없습니다.</strong></p>
+        
+        <div class="form-container">
+            <div class="form-group">
+                <label for="deleteBoardCode">게시판 선택</label>
+                <select id="deleteBoardCode" name="boardCode">
+                    <option value="">게시판을 선택하세요</option>
+                    <option value="1">커뮤니티</option>
+                    <option value="2">도전 건필</option>
+                    <option value="3">공모전</option>
+                </select>
+            </div>
+            
+            <div id="categoryListContainer" class="category-list-container" style="display: none;">
+                <h3>현재 카테고리 목록</h3>
+                <div id="categoryList" class="category-list">
+                    <!-- 카테고리 목록이 동적으로 로드됩니다 -->
+                </div>
+                
+                <div id="noCategoriesMessage" class="no-data-message" style="display: none;">
+                    해당 게시판에 등록된 카테고리가 없습니다.
+                </div>
+            </div>
+        </div>
+        
+        <div id="categoryDeleteMessage" class="message" style="display: none;"></div>
+    </div>
+    
+    <script>
+        function showDeleteMessage(message, type = 'info') {
+            const messageDiv = document.getElementById('categoryDeleteMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            // 5초 후 메시지 자동 숨기기
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        window.loadCategoriesByBoardCode = function(boardCode) {
+            if (!boardCode) {
+                document.getElementById('categoryListContainer').style.display = 'none';
+                return;
+            }
+            
+            // 로딩 상태 표시
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = '<div class="loading">카테고리 목록을 불러오는 중...</div>';
+            document.getElementById('categoryListContainer').style.display = 'block';
+            document.getElementById('noCategoriesMessage').style.display = 'none';
+            
+            // API 호출하여 카테고리 목록 가져오기
+            csrfFetch(`/admin/categories?boardCode=${boardCode}`)
+                .then(response => response.json())
+                .then(categories => {
+                    if (categories.length === 0) {
+                        categoryList.innerHTML = '';
+                        document.getElementById('noCategoriesMessage').style.display = 'block';
+                    } else {
+                        renderCategoryList(categories);
+                        document.getElementById('noCategoriesMessage').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('카테고리 목록 로드 실패:', error);
+                    categoryList.innerHTML = '<div class="error">카테고리 목록을 불러오는데 실패했습니다.</div>';
+                    showDeleteMessage('카테고리 목록을 불러오는데 실패했습니다.', 'error');
+                });
+        }
+        
+        function renderCategoryList(categories) {
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = categories.map(category => `
+                <div class="category-item">
+                    <span class="category-name">${category.categoryName}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm" 
+                            onclick="deleteCategory(${category.id}, '${category.categoryName}')">
+                        삭제
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function deleteCategory(categoryId, categoryName) {
+            if (!confirm(`"${categoryName}" 카테고리를 정말 삭제하시겠습니까?\\n\\n삭제된 카테고리는 복구할 수 없습니다.`)) {
+                return;
+            }
+            
+            csrfFetch(`/admin/categories/${categoryId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    showDeleteMessage(`"${categoryName}" 카테고리가 삭제되었습니다.`, 'success');
+                    // 목록 다시 로드
+                    const boardCode = document.getElementById('deleteBoardCode').value;
+                    window.loadCategoriesByBoardCode(boardCode);
+                } else {
+                    return response.text().then(errorText => {
+                        throw new Error(errorText || '삭제에 실패했습니다.');
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('카테고리 삭제 실패:', error);
+                showDeleteMessage(error.message || '카테고리 삭제에 실패했습니다.', 'error');
+            });
+        }
+        
+        // 페이지 로드 시 즉시 이벤트 리스너 등록
+        const boardSelect = document.getElementById('deleteBoardCode');
+        if (boardSelect) {
+            boardSelect.addEventListener('change', function() {
+                console.log('게시판 선택됨:', this.value);
+                window.loadCategoriesByBoardCode(this.value);
+            });
+        }
+    </script>
+</th:block>
+
+</html>
