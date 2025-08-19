@@ -42,6 +42,25 @@ document.querySelectorAll('.admin-menu').forEach(menu => {
     });
 });
 
+// 메시지 표시 함수
+window.showMessage = function(message, type = 'info') {
+    const messageDiv = document.getElementById('categoryAddMessage');
+    if (!messageDiv) {
+        console.warn('categoryAddMessage 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    messageDiv.textContent = message;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
+    
+    // 성공 메시지일 때는 5초, 에러는 3초 후 숨기기
+    const hideTime = type === 'success' ? 5000 : 3000;
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, hideTime);
+}
+
 // 카테고리 추가 폼 초기화
 function initCategoryAdd() {
     const form = document.getElementById('categoryAddForm');

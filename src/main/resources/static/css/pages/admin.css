@@ -46,7 +46,8 @@
 
 /* START : 카테고리 관리 스타일 */
 .category-add-form, .category-delete-form {
-    max-width: 600px;
+   /* max-width: 600px; */
+   width: 100%;
 }
 
 .category-add-form h2, .category-delete-form h2 {

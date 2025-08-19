@@ -16,7 +16,7 @@
 
     <select id="getAllBoardTypes" resultMap="boardTypeResultMap">
         SELECT *
-        FROM board_types
+        FROM board_type
     </select>
 
 

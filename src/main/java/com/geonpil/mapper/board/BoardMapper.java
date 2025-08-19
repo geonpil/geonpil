@@ -1,7 +1,6 @@
 package com.geonpil.mapper.board;
 
 import com.geonpil.domain.BoardDTO;
-import com.geonpil.domain.board.BoardType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -42,7 +41,4 @@ public interface BoardMapper {
     List<BoardDTO> findByUserId(@Param("userId") Long userId, @Param("offset") int offset, @Param("size") int size);
 
     int findByUserIdCount(@Param("userId") Long userId);
-
-
-    List<BoardType> findAllBoardTypes();
 }
