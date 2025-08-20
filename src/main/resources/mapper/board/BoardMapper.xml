@@ -170,8 +170,8 @@
     <select id="countAll" resultType="int">
         SELECT COUNT(*)
         FROM board b
-        WHERE board_code = #{boardCode}
-        AND is_deleted = 0
+        WHERE b.board_code = #{boardCode}
+        AND b.is_deleted = 0
         <if test="categoryIds != null and categoryIds.size > 0">
             AND b.category_id IN
             <foreach item="id" collection="categoryIds" open="(" separator="," close=")">
@@ -245,8 +245,8 @@
         FROM board b
         LEFT JOIN category ct ON b.category_id = ct.category_id
         LEFT JOIN board_type bt ON b.board_code = bt.board_code
-        WHERE user_id = #{userId}
-          AND is_deleted = false
+        WHERE b.user_id = #{userId}
+          AND b.is_deleted = false
         ORDER BY b.created_at DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
@@ -254,7 +254,7 @@
     <select id="findByUserIdCount" resultType="int">
         SELECT COUNT(*)
         FROM board b
-        WHERE user_id = #{userId}
-          AND is_deleted = false
+        WHERE b.user_id = #{userId}
+          AND b.is_deleted = false
     </select>
 </mapper>
