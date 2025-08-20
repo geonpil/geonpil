@@ -58,6 +58,8 @@ public class AdminController {
 
     @GetMapping("/categories/fragment/delete")
     public String getCategoryDeleteFragment(Model model) {
+        List<BoardType> boardTypes = boardTypeService.getAllBoardTypes();
+        model.addAttribute("boardTypes", boardTypes);
         return "admin/_category-delete-fragment :: categoryDeleteFormFragment";
     }
 

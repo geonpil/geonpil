@@ -5,36 +5,40 @@
 
 <mapper namespace="com.geonpil.mapper.board.CategoryMapper">
 
-    <!-- 카테고리 가져오기 -->
+    <!-- 카테고리 가져오기 (삭제되지 않은 항목만) -->
     <select id="getCategoriesByBoardCode"
             parameterType="int"
             resultType="com.geonpil.domain.Category">
         SELECT category_id AS id,
                category_name AS categoryName,
-               board_code AS boardCode
+               board_code AS boardCode,
+               is_deleted AS isDeleted
         FROM category
         WHERE board_code = #{boardCode}
+          AND (is_deleted = 0 OR is_deleted IS NULL)
         ORDER BY category_name
     </select>
 
-    <!-- 카테고리 추가 -->
+    <!-- 카테고리 추가 (기본값 is_deleted = 0) -->
     <insert id="insertCategory" parameterType="com.geonpil.domain.Category">
-        INSERT INTO category (category_name, board_code)
-        VALUES (#{categoryName}, #{boardCode})
+        INSERT INTO category (category_name, board_code, is_deleted)
+        VALUES (#{categoryName}, #{boardCode}, 0)
     </insert>
 
-    <!-- 카테고리 삭제 -->
-    <delete id="deleteCategoryById" parameterType="long">
-        DELETE FROM category
+    <!-- 카테고리 소프트 딜리트 -->
+    <update id="deleteCategoryById" parameterType="long">
+        UPDATE category
+        SET is_deleted = 1
         WHERE category_id = #{categoryId}
-    </delete>
+    </update>
 
-    <!-- 카테고리명 중복 검사 -->
+    <!-- 카테고리명 중복 검사 (삭제되지 않은 항목만) -->
     <select id="existsByNameAndBoardCode" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM category
         WHERE board_code = #{boardCode}
           AND category_name = #{categoryName}
+          AND (is_deleted = 0 OR is_deleted IS NULL)
     </select>
 
     <!-- 카테고리를 사용하는 게시글 수 조회 -->
