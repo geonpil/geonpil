@@ -30,7 +30,7 @@ public class BoardSearchController {
     }
 
     @ResponseBody
-    @PostMapping("/index-all")
+    @GetMapping("/index-all")
     public ResponseEntity<String> indexAll() {
         boardSearchService.indexAllFromDatabase();
         return ResponseEntity.ok("모든 게시글 색인 완료!");
