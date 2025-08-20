@@ -31,7 +31,7 @@ public class AdminController {
     // 관리자 메인 페이지
     @GetMapping("/main")    
     public String list(Model model) {
-        return "/admin/admin";
+        return "admin/admin";
     }
 
     // 북픽 관련 fragment
