@@ -1,0 +1,6 @@
+
+
+-- 미반영 (2025-08-20)
+ALTER TABLE category
+ADD COLUMN is_deleted TINYINT NOT NULL DEFAULT 0;
+
