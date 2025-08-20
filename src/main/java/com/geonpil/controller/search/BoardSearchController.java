@@ -36,6 +36,28 @@ public class BoardSearchController {
         return ResponseEntity.ok("모든 게시글 색인 완료!");
     }
 
+    @ResponseBody
+    @GetMapping("/delete-all")
+    public ResponseEntity<String> deleteAll() {
+        try {
+            boardSearchService.deleteAllIndex();
+            return ResponseEntity.ok("모든 게시글 색인이 삭제되었습니다!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("색인 삭제 실패: " + e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/reindex-all")
+    public ResponseEntity<String> reindexAll() {
+        try {
+            boardSearchService.reindexAllFromDatabase();
+            return ResponseEntity.ok("모든 게시글 재색인이 완료되었습니다!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("재색인 실패: " + e.getMessage());
+        }
+    }
+
     @GetMapping
     public String searchBoard(@RequestParam(required = false, defaultValue = "") String keyword,
                               @RequestParam(defaultValue = "1") int page,

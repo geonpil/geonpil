@@ -185,4 +185,35 @@ public class BoardSearchService {
         boardSearchRepository.saveAll(docs);
         System.out.println("총 " + docs.size() + "개 게시글 색인 완료");
     }
+
+    /**
+     * 모든 게시글 색인 삭제
+     */
+    public void deleteAllIndex() {
+        try {
+            boardSearchRepository.deleteAll();
+            System.out.println("모든 게시글 색인이 삭제되었습니다.");
+        } catch (Exception e) {
+            System.err.println("색인 삭제 중 오류 발생: " + e.getMessage());
+            throw new RuntimeException("색인 삭제 실패", e);
+        }
+    }
+
+    /**
+     * 모든 색인을 삭제하고 데이터베이스에서 다시 색인을 생성
+     */
+    public void reindexAllFromDatabase() {
+        try {
+            System.out.println("기존 색인 삭제 시작...");
+            deleteAllIndex();
+            
+            System.out.println("새로운 색인 생성 시작...");
+            indexAllFromDatabase();
+            
+            System.out.println("재색인 작업이 완료되었습니다.");
+        } catch (Exception e) {
+            System.err.println("재색인 작업 중 오류 발생: " + e.getMessage());
+            throw new RuntimeException("재색인 작업 실패", e);
+        }
+    }
 }

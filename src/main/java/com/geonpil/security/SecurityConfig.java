@@ -62,7 +62,7 @@ public class SecurityConfig {
                         //관리자만 접근
                         .requestMatchers(
                                 "/admin/**",
-                                "/api/search/*/index", "/api/search/*/index-all", "/api/search/*/delete"
+                                "/api/search/*/index", "/api/search/*/index-all", "/api/search/*/delete", "/api/search/*/delete-all", "/api/search/*/reindex-all"
                         ).hasRole("ADMIN")
                         //로그인한 사용자만 접근
                         .requestMatchers("/api/reviews/**").authenticated()
