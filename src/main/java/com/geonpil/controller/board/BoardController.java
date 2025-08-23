@@ -114,9 +114,15 @@ public class BoardController {
         boardService.increaseViewCount(postId); // ⭐ 조회수 증가
 
         BoardDTO post = boardService.findById(postId);
+        
+        // null 체크 추가
+        if (post == null) {
+            model.addAttribute("error", "게시글을 찾을 수 없습니다.");
+            return "redirect:/board/list?boardCode=" + boardCode;
+        }
+        
         List<Comment> comments = commentService.getComments(postId);
         List<BoardAttachment> attachments = boardAttachmentService.getFiles(postId);
-
 
         model.addAttribute("post", post);
         model.addAttribute("boardCode", boardCode);
@@ -130,8 +136,15 @@ public class BoardController {
     @PostMapping("/delete/{id}")
     public String deletePost(@PathVariable Long id,
                              @AuthenticationPrincipal AppUserInfo user,
-                             @RequestParam int boardCode,
+                             @RequestParam(required = false) Integer boardCode,
                              RedirectAttributes redirectAttributes) {
+        
+        // boardCode가 null이거나 비어있을 경우 게시글 정보에서 가져오기 (삭제 전에 미리 조회)
+        if (boardCode == null) {
+            BoardDTO post = boardService.findById(id);
+            boardCode = post.getBoardCode();
+        }
+        
         boardService.softDeleteById(id, user.getId()); // 본인 확인 포함
         redirectAttributes.addFlashAttribute("message", "게시글이 삭제되었습니다.");
 
@@ -144,8 +157,15 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public String likePost(@PathVariable Long postId,
                            @AuthenticationPrincipal AppUserInfo user,
-                           @RequestParam int boardCode,
+                           @RequestParam(required = false) Integer boardCode,
                            RedirectAttributes redirectAttributes) {
+        
+        // boardCode가 null일 경우 게시글 정보에서 가져오기
+        if (boardCode == null) {
+            BoardDTO post = boardService.findById(postId);
+            boardCode = post.getBoardCode();
+        }
+        
         try {
             boardService.likePost(postId, user.getId());
             redirectAttributes.addFlashAttribute("message", "추천 완료!");
@@ -160,9 +180,15 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
     public String editForm(@PathVariable Long id,
                            @AuthenticationPrincipal AppUserInfo user,
-                           @RequestParam int boardCode,
+                           @RequestParam(required = false) Integer boardCode,
                            Model model) {
         BoardDTO post = boardService.findById(id);
+        
+        // boardCode가 null일 경우 게시글 정보에서 가져오기
+        if (boardCode == null) {
+            boardCode = post.getBoardCode();
+        }
+        
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
         List<BoardAttachment> attachments = boardAttachmentService.getFiles(id);
         if (!post.getUserId().equals(user.getId())) {

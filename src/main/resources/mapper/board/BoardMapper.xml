@@ -88,6 +88,7 @@
         JOIN users u ON b.user_id = u.id
         LEFT OUTER JOIN category c ON b.category_id = c.category_id
         WHERE b.post_id = #{postId}
+         AND b.is_deleted = false
     </select>
 
 
