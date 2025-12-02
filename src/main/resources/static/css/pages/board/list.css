@@ -227,6 +227,31 @@
         overflow: hidden;
         padding: 0px 10px;
     }
+
+    /* 빈 게시판 메시지 - 데스크탑 */
+    .empty-board-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+        gap: 12px;
+        flex: 1;
+        width: 100%;
+    }
+
+    .empty-board-message i {
+        font-size: 48px;
+        color: #c0c0c0;
+    }
+
+    .empty-text {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
 }
 
 
