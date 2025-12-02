@@ -51,19 +51,20 @@ public class SecurityConfig {
                         .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                            "/admin/**",
+                            "/api/search/*/index", "/api/search/*/index-all", "/api/search/*/delete", "/api/search/*/delete-all", "/api/search/*/reindex-all"
+                            ).hasRole("ADMIN")
                         //누구나 접근
                         .requestMatchers(
                                 "/", "/signup", "/signup/form", "/signup/social", "/login","/find-password","/withdrawal-complete", "signup-success",
                                 "/recover/**"
                                 ,  "/error", "/verify/**","/board/list/**",
                                 "/contest/list/**", "/contest/detail/**",
-                                "/api/search", "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**"
+                                "/api/search/**", "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**","/api/search/board/**","/api/search/contest/**"
                         ).permitAll()
                         //관리자만 접근
-                        .requestMatchers(
-                                "/admin/**",
-                                "/api/search/*/index", "/api/search/*/index-all", "/api/search/*/delete", "/api/search/*/delete-all", "/api/search/*/reindex-all"
-                        ).hasRole("ADMIN")
+
                         //로그인한 사용자만 접근
                         .requestMatchers("/api/reviews/**").authenticated()
                         //정적 리소스
