@@ -76,6 +76,7 @@ public class BoardSearchController {
         System.out.println("카테고리 아이디" + categoryIds);
         System.out.println("검색 유형 :" + searchType);
         model.addAttribute("posts", results.getContent());
+        model.addAttribute("boardCode", boardCode);
         model.addAttribute("action", "board");
 
 
