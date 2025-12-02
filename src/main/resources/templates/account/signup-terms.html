@@ -14,12 +14,12 @@
 <div layout:fragment="content">
   <div class="card p-20">
     <!-- 이용약관 내용 fragment 포함 -->
-    <th:block th:include="account/_terms-content :: terms-content"></th:block>
+    <th:block th:insert="account/_terms-content :: terms-content"></th:block>
     
 
 
     <!-- 개인정보 처리방침 내용 fragment 포함 -->
-    <th:block th:include="account/_terms-content :: privacy-content"></th:block>
+    <th:block th:insert="account/_terms-content :: privacy-content"></th:block>
 
     <form action="/signup/form" method="get">
       <label>

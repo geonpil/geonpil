@@ -14,11 +14,11 @@
 <div layout:fragment="content">
   <div class="card p-20">
         <!-- 이용약관 내용 fragment 포함 -->
-    <th:block th:include="account/_terms-content :: terms-content"></th:block>
+    <th:block th:insert="account/_terms-content :: terms-content"></th:block>
     
 
     <!-- 개인정보 처리방침 내용 fragment 포함 -->
-    <th:block th:include="account/_terms-content :: privacy-content"></th:block>
+    <th:block th:insert="account/_terms-content :: privacy-content"></th:block>
 
     <div style="text-align: center; margin-top: 20px;">
       <button type="button" class="basic-btn" onclick="window.close()">닫기</button>

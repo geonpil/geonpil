@@ -44,7 +44,7 @@
                     <span>조회</span>
                     <span>추천</span>
                 </div>
-                <div id = "post-list" th:include="~{board/_search-result-fragment :: searchResultFragment}">
+                <div id = "post-list" th:insert="~{board/_search-result-fragment :: searchResultFragment}">
                 </div>
             </div>
 
