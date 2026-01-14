@@ -404,3 +404,25 @@
     }
     /* END : 빈 게시판 메시지 */
 }
+
+/* 공지 게시글 영역 스타일 - 배경색만 연하게 구분 */
+.notice-section {
+    margin-bottom: 0;
+}
+
+.notice-posts {
+    background-color: transparent;
+}
+
+.notice-row {
+    background-color: #fffbea;
+}
+
+.notice-row:hover {
+    background-color: #fffbea;
+}
+
+.notice-category {
+    color: #e53935 !important;
+    font-weight: 500 !important;
+}

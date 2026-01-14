@@ -10,8 +10,12 @@
 </th:block>
 
 <th:block layout:fragment="css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/css/pages/contest/contest.css"/>
     <link rel="stylesheet" href="/css/pages/admin.css"/>
+    <link rel="stylesheet" href="/css/pages/board/list.css"/>
+    <link rel="stylesheet" href="/css/pages/board/board.css"/>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 </th:block>
 
 <body data-mode = "admin">
@@ -42,6 +46,17 @@
                 </div>
 
                 <div>
+                    <h3>전체 공지 작성 및 관리</h3>
+                    <ul class="dot-list">
+                        <li><a href="#" data-action="list" data-section="notice" class="admin-menu">공지 목록</a></li>
+                        <li><a href="#" data-action="add" data-section="notice" class="admin-menu">공지 작성</a></li>   
+                        <li><a href="#" data-action="edit" data-section="notice" class="admin-menu">공지 수정</a></li>
+                        <li><a href="#" data-action="delete" data-section="notice" class="admin-menu">공지 삭제</a></li>  
+                    </ul>
+                </div>
+
+
+                <div>
                     <h3>검색 색인 관리</h3>
                     <ul class="dot-list">
                         <li><a href="/api/search/board/index-all" target="_blank">게시글 전체 색인</a></li>
@@ -63,6 +78,7 @@
     </div>
 
     <th:block layout:fragment="script">
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
         <script src="/js/admin/admin.js"></script>
         <script src="/js/admin/bookPickAdd.js"></script>
         <script src="/js/book/bookSearch.js"></script>

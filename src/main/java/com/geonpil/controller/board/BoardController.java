@@ -65,9 +65,12 @@ public class BoardController {
 
         List<Category> categories = categoryService.getCategoriesByBoardCode(boardCode);
 
+        // 공지 게시글 조회
+        List<BoardDTO> noticePosts = boardService.findNoticePosts(boardCode);
 
         model.addAttribute("categories", categories);
         model.addAttribute("posts", pageResult.getPosts());
+        model.addAttribute("noticePosts", noticePosts);
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("page", pageResult.getPage());
         model.addAttribute("totalPages", pageResult.getTotalPages());

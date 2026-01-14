@@ -1,0 +1,35 @@
+<!-- 공지 게시글 목록 -->
+<th:block th:fragment="noticeListFragment">
+    <th:block th:if="${!#lists.isEmpty(noticePosts)}">
+        <div class="notice-section">
+            <div class="notice-posts">
+                <div class="post-row notice-row" th:each="post : ${noticePosts}">
+                    <span class="category notice-category" th:text="${post.categoryName}">공지</span>
+                    <span class="title with-author">
+                        <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
+                           th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
+                           th:title="${post.title}">제목</a>
+                        <div class="by-author" th:text="|by ${post.nickname}|">글쓴이: 홍길동</div>
+                    </span>
+                    <span class="date" th:text="${#dates.format(post.createdAt, 'MM-dd')}">25-05-01</span>
+                    <span class="views" th:text="${post.viewCount}">147</span>
+                    <span class="likes" th:text="${post.likeCount}">1</span>
+
+                    <span class="title mobile-title mobile">
+                        <a th:href="@{/board/list/detail/{id}(id=${post.postId}, boardCode=${boardCode})}"
+                           th:text="${post.title} + ' [' + ${post.commentCount} + ']'"
+                           th:title="${post.title}">제목</a>
+                    </span>
+
+                    <div class="meta mobile">
+                        <span class="author" th:text="${post.nickname}">작성자</span>
+                        <span class="date" th:text="${#dates.format(post.createdAt, 'MM-dd')}">25-05-01</span>
+                        <span class="views" th:text="${post.viewCount}">147</span>
+                        <span class="likes" th:text="${post.likeCount}">1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</th:block>
+

@@ -8,6 +8,8 @@ document.querySelectorAll('.admin-menu').forEach(menu => {
         let apiUrl;
         if (section === 'categories') {
             apiUrl = `/admin/categories/fragment/${action}`;
+        } else if (section === 'notice') {
+            apiUrl = `/admin/notice/fragment/${action}`;
         } else {
             apiUrl = `/admin/book-picks/fragment/${action}`;
         }
@@ -32,6 +34,15 @@ document.querySelectorAll('.admin-menu').forEach(menu => {
                         initCategoryAdd();
                     }else if(action === 'delete'){
                         initCategoryDelete();
+                    }
+                } else if (section === 'notice') {
+                    if(action === 'add'){
+                        // 공지 작성 페이지 초기화
+                        setTimeout(() => {
+                            initNoticeAdd();
+                        }, 100);
+                    }else if(action === 'list'){
+                        initNoticeList();
                     }
                 }
             })
@@ -245,4 +256,279 @@ function handleCategoryAddSubmit(e) {
         console.error('카테고리 추가 실패:', error);
         window.showMessage(error.message || '카테고리 추가에 실패했습니다.', 'error');
     });
+}
+
+// 공지 작성 초기화 함수
+let noticeEditor = null;
+
+function initNoticeAdd() {
+    // Toast UI Editor 라이브러리 로드 확인
+    if (typeof toastui === 'undefined' || !toastui.Editor) {
+        console.error('Toast UI Editor 라이브러리가 로드되지 않았습니다.');
+        alert('에디터 라이브러리를 불러오는 중 오류가 발생했습니다. 페이지를 새로고침해주세요.');
+        return;
+    }
+    
+    // 기존 에디터가 있으면 제거
+    if (noticeEditor) {
+        try {
+            noticeEditor.destroy();
+        } catch (e) {
+            console.warn('기존 에디터 제거 중 오류:', e);
+        }
+        noticeEditor = null;
+    }
+    
+    // Toast UI Editor 초기화
+    const editorEl = document.getElementById('noticeEditor');
+    if (!editorEl) {
+        console.error('noticeEditor 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 에디터가 이미 초기화되어 있는지 확인
+    if (editorEl.querySelector('.toastui-editor')) {
+        console.log('에디터가 이미 초기화되어 있습니다.');
+        // 기존 에디터 제거 후 재초기화
+        editorEl.innerHTML = '';
+    }
+    
+    try {
+        noticeEditor = new toastui.Editor({
+            el: editorEl,
+            height: '500px',
+            initialEditType: 'wysiwyg',
+            previewStyle: 'vertical',
+            placeholder: '공지 내용을 입력하세요...',
+            toolbarItems: [
+                ['heading', 'bold', 'italic', 'strike'],
+                ['hr', 'quote'],
+                ['ul', 'ol', 'task', 'indent', 'outdent'],
+                ['table', 'image', 'link'],
+                ['code', 'codeblock'],
+                ['scrollSync']
+            ],
+            hooks: {
+                addImageBlobHook: async (blob, callback) => {
+                    const formData = new FormData();
+                    formData.append('image', blob);
+                    try {
+                        const res = await csrfFetch('/upload-image', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const result = await res.json();
+                        callback(result.url, '업로드 이미지');
+                    } catch (e) {
+                        alert("이미지 업로드 실패");
+                    }
+                }
+            }
+        });
+        
+        // 폼 제출 처리 - 이벤트 위임 사용 (중복 방지)
+        // 초기화 버튼 처리
+        const resetBtn = document.getElementById('noticeResetBtn');
+        if (resetBtn) {
+            resetBtn.onclick = function() {
+                const form = document.getElementById('noticeForm');
+                if (form) form.reset();
+                if (noticeEditor) {
+                    noticeEditor.reset();
+                }
+            };
+        }
+        
+        console.log('공지 작성 페이지가 초기화되었습니다.');
+    } catch (error) {
+        console.error('Toast Editor 초기화 실패:', error);
+        alert('에디터 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+    }
+}
+
+// 공지 폼 제출 처리 (이벤트 위임)
+document.addEventListener('submit', function(e) {
+    if (e.target && e.target.id === 'noticeForm') {
+        e.preventDefault();
+        handleNoticeSubmit(e.target);
+    }
+});
+
+function handleNoticeSubmit(form) {
+    const formData = new FormData(form);
+    const title = formData.get('title')?.trim();
+    
+    // 유효성 검사
+    if (!title) {
+        showNoticeMessage('제목을 입력해주세요.', 'error');
+        return;
+    }
+    
+    // 에디터 내용 가져오기
+    if (!noticeEditor) {
+        showNoticeMessage('에디터를 초기화하는 중 오류가 발생했습니다.', 'error');
+        return;
+    }
+    
+    const content = noticeEditor.getMarkdown();
+    if (!content || content.trim().length === 0) {
+        showNoticeMessage('내용을 입력해주세요.', 'error');
+        return;
+    }
+    
+    formData.set('content', content);
+    
+    // API 호출
+    csrfFetch('/admin/notice/save', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.text();
+        } else {
+            return response.text().then(errorText => {
+                throw new Error(errorText || '공지 저장에 실패했습니다.');
+            });
+        }
+    })
+    .then(message => {
+        showNoticeMessage(message || '공지가 성공적으로 등록되었습니다.', 'success');
+        // 폼 초기화
+        document.getElementById('noticeForm').reset();
+        noticeEditor.reset();
+    })
+    .catch(error => {
+        console.error('공지 저장 실패:', error);
+        showNoticeMessage(error.message || '공지 저장에 실패했습니다.', 'error');
+    });
+}
+
+// 공지 메시지 표시 함수
+function showNoticeMessage(message, type = 'info') {
+    const messageDiv = document.getElementById('noticeAddMessage');
+    if (!messageDiv) {
+        console.warn('noticeAddMessage 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    messageDiv.textContent = message;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
+    
+    const hideTime = type === 'success' ? 5000 : 3000;
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, hideTime);
+}
+
+
+// 공지 리스트 표시 함수
+function initNoticeList() {
+    const noticeList = document.getElementById('noticeList');
+    const noNoticeMessage = document.getElementById('noNoticeMessage');
+    
+    if (!noticeList) {
+        console.error('noticeList 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 로딩 상태 표시
+    noticeList.innerHTML = '<div class="loading">공지 목록을 불러오는 중...</div>';
+    if (noNoticeMessage) noNoticeMessage.style.display = 'none';
+    
+    // API 호출하여 공지 목록 가져오기
+    csrfFetch('/admin/notice/list')
+        .then(response => response.json())
+        .then(noticePosts => {
+            if (!noticePosts || noticePosts.length === 0) {
+                noticeList.innerHTML = '';
+                if (noNoticeMessage) noNoticeMessage.style.display = 'block';
+            } else {
+                renderNoticeList(noticePosts);
+                if (noNoticeMessage) noNoticeMessage.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('공지 리스트 로드 실패:', error);
+            noticeList.innerHTML = '<div class="error">공지 목록을 불러오는데 실패했습니다.</div>';
+        });
+}
+
+// 공지 목록 렌더링 함수
+function renderNoticeList(noticePosts) {
+    const noticeList = document.getElementById('noticeList');
+    if (!noticeList) return;
+    
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${month}-${day}`;
+    };
+    
+    // 게시판 목록과 동일한 구조로 렌더링
+    noticeList.innerHTML = noticePosts.map(post => {
+        const title = (post.title || '제목 없음').replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        const nickname = (post.nickname || '작성자 없음').replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        const categoryName = (post.categoryName || '공지').replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        const commentCount = post.commentCount || 0;
+        const viewCount = post.viewCount || 0;
+        const likeCount = post.likeCount || 0;
+        const createdAt = formatDate(post.createdAt);
+        const postId = post.postId;
+        
+        return `
+            <div class="post-row notice-row">
+                <span class="category notice-category">${categoryName}</span>
+                <span class="title with-author">
+                    <a href="/board/list/detail/${postId}?boardCode=99" target="_blank" title="${title}">
+                        ${title} [${commentCount}]
+                    </a>
+                    <div class="by-author">by ${nickname}</div>
+                </span>
+                <span class="date">${createdAt}</span>
+                <span class="views">${viewCount}</span>
+                <span class="likes">${likeCount}</span>
+                <span class="admin-actions">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="editNotice(${postId})" style="margin-right: 5px;">수정</button>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteNotice(${postId}, '${title.replace(/'/g, "\\'")}')">삭제</button>
+                </span>
+                
+                <span class="title mobile-title mobile">
+                    <a href="/board/list/detail/${postId}?boardCode=99" target="_blank" title="${title}">
+                        ${title} [${commentCount}]
+                    </a>
+                </span>
+                
+                <div class="meta mobile">
+                    <span class="author">${nickname}</span>
+                    <span class="date">${createdAt}</span>
+                    <span class="views">${viewCount}</span>
+                    <span class="likes">${likeCount}</span>
+                    <span class="admin-actions-mobile">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="editNotice(${postId})" style="margin-right: 5px;">수정</button>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteNotice(${postId}, '${title.replace(/'/g, "\\'")}')">삭제</button>
+                    </span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 공지 수정 함수
+function editNotice(postId) {
+    // TODO: 공지 수정 기능 구현
+    alert('공지 수정 기능은 아직 구현되지 않았습니다.');
+}
+
+// 공지 삭제 함수
+function deleteNotice(postId, title) {
+    if (!confirm(`"${title}" 공지를 정말 삭제하시겠습니까?\n\n삭제된 공지는 복구할 수 없습니다.`)) {
+        return;
+    }
+    
+    // TODO: 공지 삭제 API 호출 구현
+    alert('공지 삭제 기능은 아직 구현되지 않았습니다.');
 }

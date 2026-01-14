@@ -36,6 +36,8 @@
                 </button>
             </div>
             
+            <!-- 공지 게시글 영역 -->
+            
             <div class="posts-wrapper card">
                 <div class="posts-header">
                     <span>카테고리</span>
@@ -44,6 +46,7 @@
                     <span>조회</span>
                     <span>추천</span>
                 </div>
+                <div th:insert="~{board/_notice-list-fragment :: noticeListFragment}"></div>
                 <div id = "post-list" th:insert="~{board/_search-result-fragment :: searchResultFragment}">
                 </div>
             </div>

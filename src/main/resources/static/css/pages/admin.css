@@ -250,3 +250,46 @@
     margin-bottom: 10px;
 }
 /* END : 카테고리 관리 스타일 */
+
+/* START : 공지 목록 관리 스타일 */
+/* 관리자 페이지의 공지 목록은 관리 컬럼이 추가되어 6개 컬럼 */
+.admin-form-wrapper .posts-header,
+.admin-form-wrapper .post-row {
+    grid-template-columns: 120px 1fr 60px 40px 40px 120px;
+}
+
+.admin-form-wrapper .admin-actions {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-form-wrapper .admin-actions-mobile {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    justify-content: flex-start;
+}
+
+.admin-form-wrapper .admin-actions button,
+.admin-form-wrapper .admin-actions-mobile button {
+    white-space: nowrap;
+}
+
+/* 모바일에서 관리 버튼 스타일 */
+@media (max-width: 768px) {
+    .admin-form-wrapper .posts-header {
+        grid-template-columns: 120px 1fr 60px 40px 40px 100px;
+    }
+    
+    .admin-form-wrapper .admin-actions {
+        font-size: 0.85rem;
+    }
+    
+    .admin-form-wrapper .admin-actions button {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+/* END : 공지 목록 관리 스타일 */

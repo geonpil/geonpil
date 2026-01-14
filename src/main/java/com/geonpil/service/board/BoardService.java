@@ -135,4 +135,8 @@ public class BoardService {
         return boardMapper.findByUserIdCount(userId);
     }
 
+    public List<BoardDTO> findNoticePosts(int boardCode) {
+        return boardMapper.findNoticePosts(boardCode);
+    }
+
 }

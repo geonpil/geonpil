@@ -41,4 +41,6 @@ public interface BoardMapper {
     List<BoardDTO> findByUserId(@Param("userId") Long userId, @Param("offset") int offset, @Param("size") int size);
 
     int findByUserIdCount(@Param("userId") Long userId);
+
+    List<BoardDTO> findNoticePosts(@Param("boardCode") int boardCode);
 }

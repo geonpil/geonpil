@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="noticeListFormFragment">
+    <div class="admin-form-wrapper">
+        <h2 class="form-title">📢 전체 공지 목록</h2>
+        
+        <div class="posts-wrapper card">
+            <div class="posts-header">
+                <span>카테고리</span>
+                <span>제목 및 작성자</span>
+                <span>작성일</span>
+                <span>조회</span>
+                <span>추천</span>
+                <span>관리</span>
+            </div>
+            <div id="noticeList" class="notice-section">
+                <!-- 공지 목록이 동적으로 로드됩니다 -->
+                <div class="loading">공지 목록을 불러오는 중...</div>
+            </div>
+            
+            <div id="noNoticeMessage" class="empty-board-message" style="display: none;">
+                <i class="fa-solid fa-message"></i>
+                <p class="empty-text">등록된 공지가 없습니다.</p>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>
