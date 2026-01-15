@@ -37,6 +37,10 @@ nginx/**
 nginx/nginx.exe
 !nginx/conf/nginx.conf
 
+
+#kibana 설정
+kibana/**
+
 *.crt
 *.key
 
@@ -62,3 +66,5 @@ elasticsearch-*/
 *.pdf
 
 .vscode/*
+
+
