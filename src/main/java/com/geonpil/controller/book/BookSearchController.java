@@ -4,9 +4,14 @@ import com.geonpil.dto.bookSearch.BookSearchResponse;
 import com.geonpil.dto.bookSearch.BookSearchViewResponse;
 import com.geonpil.dto.bookSearch.Meta;
 import com.geonpil.dto.commons.PageInfo;
+import com.geonpil.security.AppUserInfo;
+import com.geonpil.service.book.BookSearchLogService;
 import com.geonpil.service.book.BookSearchService;
 import com.geonpil.util.PaginationUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +26,7 @@ import static com.geonpil.util.PaginationUtil.buildPageInfo;
 public class BookSearchController {
 
     private final BookSearchService bookSearchService;
+    private final BookSearchLogService bookSearchLogService;
 
     int pageSize = 15;
 
@@ -28,9 +34,13 @@ public class BookSearchController {
     public String searchBooks(
             @RequestParam String query,
             @RequestParam(defaultValue = "1") int page,
-            Model model) {
+            Model model,
+            HttpServletRequest request,
+            @AuthenticationPrincipal AppUserInfo user) {
         prepareModel(query, page, pageSize, model, true, true);
 
+        logSearch(query, request, user);
+        
         return "book/search/search-result";
     }
 
@@ -41,10 +51,15 @@ public class BookSearchController {
             @RequestParam String query,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam String mode,
-            Model model) {
+            Model model,
+            HttpServletRequest request,
+            @AuthenticationPrincipal AppUserInfo user) {
 
         model.addAttribute("mode", mode);
         prepareModel(query, page, pageSize, model, true, false);
+
+        logSearch(query, request, user);
+
         return "book/search/_result-fragment :: resultFragment";
 
     }
@@ -87,5 +102,27 @@ public class BookSearchController {
         model.addAttribute("query", query);
 
         return result;
+    }
+
+
+    private void logSearch(String query, 
+                          HttpServletRequest request,
+                          AppUserInfo user){
+        String ip = getClientIp(request);
+        String userAgent = request.getHeader("User-Agent");
+        Long userId = (user != null) ? user.getId() : null;
+        
+        bookSearchLogService.logSearch(query, userId, ip, userAgent);
+    }
+
+
+    private String getClientIp(HttpServletRequest request) {
+        // 프록시/로드밸런서 환경 고려
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            return xff.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
+
     }
 }

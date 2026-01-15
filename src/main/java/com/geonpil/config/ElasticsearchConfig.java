@@ -4,6 +4,9 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.http.Header;
 
 import org.apache.http.HttpHost;
@@ -37,7 +40,13 @@ public class ElasticsearchConfig {
                 .setPathPrefix("/es")
                 .build();
 
-        ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+        // ObjectMapper에 JavaTimeModule 등록하여 Instant 타입 지원
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        // 날짜를 타임스탬프가 아닌 ISO-8601 문자열로 직렬화 (Elasticsearch date 타입 호환)
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        
+        ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper(objectMapper));
 
         return new ElasticsearchClient(transport);
     }
