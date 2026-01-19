@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="popularKeywordsSidebar">
+    <aside class="popular-keywords-sidebar" th:if="${popularKeywords != null}">
+        <div class="sidebar-card">
+            <h3 class="sidebar-title">🔥 인기 검색어</h3>
+            <div class="popular-keywords-list" th:if="${!#lists.isEmpty(popularKeywords)}">
+                <ol class="keywords-list">
+                    <li th:each="keyword, iterStat : ${popularKeywords}">
+                        <a th:href="@{'/api/search?query=' + ${#strings.replace(keyword.keyword, ' ', '+')}}" 
+                           class="keyword-link"
+                           th:text="${iterStat.count} + '. ' + ${keyword.keyword}">
+                            1. 검색어
+                        </a>                    
+                    </li>
+                </ol>
+            </div>
+            <div class="no-keywords" th:if="${#lists.isEmpty(popularKeywords)}">
+                <p>아직 인기 검색어가 없습니다.</p>
+            </div>
+        </div>
+    </aside>
+</th:block>
+</body>
+</html>

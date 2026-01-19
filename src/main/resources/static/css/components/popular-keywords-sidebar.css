@@ -1,0 +1,143 @@
+/* 인기 검색어 사이드바 스타일 */
+.main-wrapper {
+    display: flex;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 20px;
+    align-items: flex-start;
+}
+
+.main-wrapper .main-container {
+    flex: 1;
+    min-width: 0; /* flexbox에서 overflow 방지 */
+}
+
+/* 게시판 페이지의 board-section이 있으면 레이아웃 조정 */
+.main-wrapper .board-section {
+    max-width: none;
+    margin: 0;
+    flex: 1;
+}
+
+/* 메인 페이지의 main-section 레이아웃 조정 */
+.main-wrapper .main-section {
+    max-width: none;
+    margin: 0;
+}
+
+/* 메인 페이지의 banner-section, books-section 레이아웃 조정 */
+.main-wrapper .banner-section,
+.main-wrapper .books-section {
+    max-width: 100%;
+}
+
+/* 게시판 페이지에서는 사이드바를 숨김 (이미 board-banner가 있음) */
+body[data-action="board"] .popular-keywords-sidebar {
+    display: none;
+}
+
+/* 관리자 페이지에서는 사이드바 숨김 */
+body[data-mode="admin"] .popular-keywords-sidebar {
+    display: none;
+}
+
+.popular-keywords-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    display: block !important; /* 강제로 표시 */
+}
+
+.sidebar-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: #1F4EB2;
+    border-bottom: 2px solid #1F4EB2;
+    padding-bottom: 8px;
+}
+
+.popular-keywords-list {
+    margin-top: 12px;
+}
+
+.keywords-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.keywords-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.keywords-list li:last-child {
+    border-bottom: none;
+}
+
+.keyword-link {
+    flex: 1;
+    text-decoration: none;
+    color: #333;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.keyword-link:hover {
+    color: #1F4EB2;
+    text-decoration: underline;
+}
+
+.keyword-count {
+    font-size: 0.85rem;
+    color: #666;
+    margin-left: 8px;
+}
+
+.no-keywords {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 1024px) {
+    .main-wrapper {
+        flex-direction: column;
+    }
+    
+    .popular-keywords-sidebar {
+        width: 100%;
+        order: -1; /* 모바일에서는 위에 표시 */
+    }
+    
+    .sidebar-card {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-wrapper {
+        padding: 0;
+        margin: 10px 0;
+    }
+    
+    .sidebar-card {
+        border-radius: 0;
+        margin: 0 10px;
+    }
+}

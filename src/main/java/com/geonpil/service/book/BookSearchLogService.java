@@ -2,15 +2,20 @@ package com.geonpil.service.book;
 
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.geonpil.dto.bookSearch.BookSearchLogDoc;
+import com.geonpil.dto.bookSearch.PopularKeyword;
 
 @Slf4j
 @Service
@@ -49,6 +54,49 @@ public class BookSearchLogService {
        
     }
 
+    /**
+     * 인기 검색어 Top 10 조회
+     * @return 인기 검색어 리스트 (검색 횟수 기준 내림차순)
+     */
+    public List<PopularKeyword> getPopularKeywords(int topN) {
+        try {
+            log.debug("인기 검색어 조회 시도: topN={}, index={}", topN, INDEX);
+            
+            // Terms aggregation을 사용하여 keyword 필드 집계
+            var response = esClient.search(s -> s
+                    .index(INDEX)
+                    .size(0)  // 문서는 반환하지 않고 aggregation 결과만 필요
+                    .query(Query.of(q -> q.matchAll(m -> m)))  // 모든 문서 대상
+                    .aggregations("popular_keywords", a -> a
+                            .terms(t -> t
+                                    .field("keyword")
+                                    .size(topN)  // 상위 N개만
+                            )
+                    ),
+                    BookSearchLogDoc.class
+            );
+
+            // Aggregation 결과 파싱
+            var termsAgg = response.aggregations().get("popular_keywords").sterms();
+            List<PopularKeyword> popularKeywords = new ArrayList<>();
+            
+            if (termsAgg != null && termsAgg.buckets() != null) {
+                for (StringTermsBucket bucket : termsAgg.buckets().array()) {
+                    popularKeywords.add(new PopularKeyword(
+                            bucket.key().stringValue(),  // FieldValue를 String으로 변환
+                            bucket.docCount()
+                    ));
+                }
+            }
+            
+            log.debug("인기 검색어 조회 성공: count={}", popularKeywords.size());
+            return popularKeywords;
+            
+        } catch (Exception e) {
+            log.error("인기 검색어 조회 실패: error={}", e.getMessage(), e);
+            return new ArrayList<>();  // 에러 발생 시 빈 리스트 반환
+        }
+    }
 
     private String normalizeKeyword(String keyword){
         if(keyword == null || keyword.isEmpty()){ return null; }

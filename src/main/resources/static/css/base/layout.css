@@ -2,10 +2,15 @@
 
 .main-container {
   max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
+  margin: 0;
+  padding: 0;
 }
 
+/* main-wrapper가 있으면 main-container의 margin/padding 제거 */
+.main-wrapper .main-container {
+  margin: 0;
+  padding: 0;
+}
 
     @media (max-width: 768px) {
       .main-container {

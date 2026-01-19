@@ -36,6 +36,7 @@
 
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/components/author-dropdown.css" />
+    <link rel="stylesheet" href="/css/components/popular-keywords-sidebar.css" />
 </head>
 
 
@@ -43,7 +44,10 @@
 <body>
     <div th:replace="~{fragments/header :: header(requestUri=${requestUri})}"></div>
 
+    <div class="main-wrapper">
     <main layout:fragment="content" class="main-container"></main>
+        <div th:replace="~{fragments/_popular-keywords-sidebar :: popularKeywordsSidebar}"></div>
+    </div>
 
     <div th:replace="~{fragments/footer :: footer(requestUri=${requestUri})}"></div>
 
