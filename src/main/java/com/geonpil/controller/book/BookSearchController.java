@@ -11,12 +11,16 @@ import com.geonpil.util.PaginationUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 import static com.geonpil.util.PaginationUtil.buildPageInfo;
 
@@ -76,6 +80,21 @@ public class BookSearchController {
         prepareModel(query, page, pageSize, model, false, true);
         return "commons/_pagination-fragment :: paginationFragment";
 
+    }
+
+    /**
+     * 검색어 자동완성 API
+     * @param q 검색어 접두사
+     * @return 자동완성 제안 리스트
+     */
+    @GetMapping("/suggestions")
+    @ResponseBody
+    public ResponseEntity<List<String>> getSearchSuggestions(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "10") int limit) {
+        
+        List<String> suggestions = bookSearchLogService.getSearchSuggestions(q, limit);
+        return ResponseEntity.ok(suggestions);
     }
 
 

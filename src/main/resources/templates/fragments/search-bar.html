@@ -1,11 +1,15 @@
 <div th:fragment="searchBar(query)">
     <section class="searchBar-section">
         <div class="searchBar-wrapper">
-            <input type="text"
-                   id="searchInput"
-                   class="search-input"
-                   placeholder="책 제목을 입력하세요"
-                   th:value="${query}"/>
+            <div class="search-input-wrapper">
+                <input type="text"
+                       id="searchInput"
+                       class="search-input"
+                       placeholder="책 제목을 입력하세요"
+                       autocomplete="off"
+                       th:value="${query}"/>
+                <div id="autocompleteDropdown" class="autocomplete-dropdown" style="display: none;"></div>
+            </div>
             <button id="searchButton" type= "button" class="btn btn-primary">검색</button>
         </div>
     </section>

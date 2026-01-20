@@ -106,6 +106,67 @@ public class BookSearchLogService {
         return k;
     }
 
+    /**
+     * 검색어 자동완성 제안 조회
+     * @param prefix 검색어 접두사
+     * @param limit 최대 제안 개수
+     * @return 자동완성 제안 리스트
+     */
+    public List<String> getSearchSuggestions(String prefix, int limit) {
+        try {
+            if (prefix == null || prefix.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String normalizedPrefix = normalizeKeyword(prefix);
+            if (normalizedPrefix == null) {
+                return new ArrayList<>();
+            }
+
+            log.debug("검색어 자동완성 조회 시도: prefix={}, limit={}, index={}", normalizedPrefix, limit, INDEX);
+
+            // Prefix query를 사용하여 keyword 필드에서 자동완성 검색
+            var response = esClient.search(s -> s
+                    .index(INDEX)
+                    .size(0)  // 문서는 반환하지 않고 aggregation 결과만 필요
+                    .query(Query.of(q -> q
+                            .prefix(p -> p
+                                    .field("keyword")
+                                    .value(normalizedPrefix)
+                            )
+                    ))
+                    .aggregations("suggestions", a -> a
+                            .terms(t -> t
+                                    .field("keyword")
+                                    .size(limit * 2)  // 필터링을 위해 더 많이 가져옴
+                            )
+                    ),
+                    BookSearchLogDoc.class
+            );
+
+            // Aggregation 결과 파싱
+            var termsAgg = response.aggregations().get("suggestions").sterms();
+            List<String> suggestions = new ArrayList<>();
+
+            if (termsAgg != null && termsAgg.buckets() != null) {
+                for (StringTermsBucket bucket : termsAgg.buckets().array()) {
+                    String keyword = bucket.key().stringValue();
+                    // 정확히 prefix로 시작하는 것만 필터링 (대소문자 무시)
+                    if (keyword.toLowerCase().startsWith(normalizedPrefix.toLowerCase())) {
+                        suggestions.add(keyword);
+                    }
+                }
+            }
+
+            log.debug("검색어 자동완성 조회 성공: count={}", suggestions.size());
+            return suggestions;
+
+        } catch (Exception e) {
+            log.error("검색어 자동완성 조회 실패: prefix={}, error={}", prefix, e.getMessage(), e);
+            return new ArrayList<>();  // 에러 발생 시 빈 리스트 반환
+        }
+    }
+
     private String trimUserAgent(String ua){
         if (ua == null) return null;
         ua = ua.trim();
