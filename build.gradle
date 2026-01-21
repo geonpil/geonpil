@@ -48,3 +48,13 @@ bootJar {
     archiveVersion.set('0.0.19')           // 버전 제거  
     archiveClassifier.set('')           // `-plain` 같은 접미사 제거
 }
+
+// 한글 로그 인코딩 설정
+tasks.named('bootRun') {
+    jvmArgs = ['-Dfile.encoding=UTF-8', '-Dconsole.encoding=UTF-8']
+}
+
+// 컴파일 인코딩 설정
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
