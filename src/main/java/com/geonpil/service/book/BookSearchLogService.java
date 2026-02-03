@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.geonpil.dto.bookSearch.BookSearchLogDoc;
+import com.geonpil.dto.bookSearch.BookSearchViewResponse;
 import com.geonpil.dto.bookSearch.PopularKeyword;
 
 @Slf4j
@@ -108,11 +109,13 @@ public class BookSearchLogService {
 
     /**
      * 검색어 자동완성 제안 조회
+     * 실제 존재하는 책 이름만 반환합니다.
      * @param prefix 검색어 접두사
      * @param limit 최대 제안 개수
-     * @return 자동완성 제안 리스트
+     * @param bookSearchService Kakao API를 호출하기 위한 서비스
+     * @return 자동완성 제안 리스트 (실제 존재하는 책 이름만)
      */
-    public List<String> getSearchSuggestions(String prefix, int limit) {
+    public List<String> getSearchSuggestions(String prefix, int limit, BookSearchService bookSearchService) {
         try {
             if (prefix == null || prefix.trim().isEmpty()) {
                 return new ArrayList<>();
@@ -123,40 +126,25 @@ public class BookSearchLogService {
                 return new ArrayList<>();
             }
 
-            log.debug("검색어 자동완성 조회 시도: prefix={}, limit={}, index={}", normalizedPrefix, limit, INDEX);
+            log.debug("검색어 자동완성 조회 시도: prefix={}, limit={}", normalizedPrefix, limit);
 
-            // Prefix query를 사용하여 keyword 필드에서 자동완성 검색
-            var response = esClient.search(s -> s
-                    .index(INDEX)
-                    .size(0)  // 문서는 반환하지 않고 aggregation 결과만 필요
-                    .query(Query.of(q -> q
-                            .prefix(p -> p
-                                    .field("keyword")
-                                    .value(normalizedPrefix)
-                            )
-                    ))
-                    .aggregations("suggestions", a -> a
-                            .terms(t -> t
-                                    .field("keyword")
-                                    .size(limit * 2)  // 필터링을 위해 더 많이 가져옴
-                            )
-                    ),
-                    BookSearchLogDoc.class
-            );
-
-            // Aggregation 결과 파싱
-            var termsAgg = response.aggregations().get("suggestions").sterms();
-            List<String> suggestions = new ArrayList<>();
-
-            if (termsAgg != null && termsAgg.buckets() != null) {
-                for (StringTermsBucket bucket : termsAgg.buckets().array()) {
-                    String keyword = bucket.key().stringValue();
-                    // 정확히 prefix로 시작하는 것만 필터링 (대소문자 무시)
-                    if (keyword.toLowerCase().startsWith(normalizedPrefix.toLowerCase())) {
-                        suggestions.add(keyword);
-                    }
-                }
+            // Kakao API를 호출하여 실제 존재하는 책 이름만 가져오기
+            // limit * 2로 더 많이 가져온 후 중복 제거 및 정렬
+            BookSearchViewResponse searchResponse = bookSearchService.searchBooks(normalizedPrefix, 1, limit * 2);
+            
+            if (searchResponse == null || searchResponse.getBooks() == null || searchResponse.getBooks().isEmpty()) {
+                log.debug("검색어 자동완성 조회 결과 없음: prefix={}", normalizedPrefix);
+                return new ArrayList<>();
             }
+
+            // 책 제목 추출 및 중복 제거
+            List<String> suggestions = searchResponse.getBooks().stream()
+                    .map(book -> book.getTitle())
+                    .filter(title -> title != null && !title.isEmpty())
+                    .filter(title -> title.toLowerCase().startsWith(normalizedPrefix.toLowerCase()))
+                    .distinct()
+                    .limit(limit)
+                    .collect(java.util.stream.Collectors.toList());
 
             log.debug("검색어 자동완성 조회 성공: count={}", suggestions.size());
             return suggestions;

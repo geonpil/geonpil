@@ -1,6 +1,5 @@
 package com.geonpil.controller.book;
 
-import com.geonpil.dto.bookSearch.BookSearchResponse;
 import com.geonpil.dto.bookSearch.BookSearchViewResponse;
 import com.geonpil.dto.bookSearch.Meta;
 import com.geonpil.dto.commons.PageInfo;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-import static com.geonpil.util.PaginationUtil.buildPageInfo;
-
 @Controller
 @RequestMapping("/api/search")
 @RequiredArgsConstructor
@@ -41,9 +38,12 @@ public class BookSearchController {
             Model model,
             HttpServletRequest request,
             @AuthenticationPrincipal AppUserInfo user) {
-        prepareModel(query, page, pageSize, model, true, true);
+        BookSearchViewResponse result = prepareModel(query, page, pageSize, model, true, true);
 
-        logSearch(query, request, user);
+        // 검색 결과가 있을 때만 로그 저장
+        if (result != null && result.getMeta() != null && result.getMeta().getPageable_count() > 0) {
+            logSearch(query, request, user);
+        }
         
         return "book/search/search-result";
     }
@@ -60,9 +60,12 @@ public class BookSearchController {
             @AuthenticationPrincipal AppUserInfo user) {
 
         model.addAttribute("mode", mode);
-        prepareModel(query, page, pageSize, model, true, false);
+        BookSearchViewResponse result = prepareModel(query, page, pageSize, model, true, false);
 
-        logSearch(query, request, user);
+        // 검색 결과가 있을 때만 로그 저장
+        if (result != null && result.getMeta() != null && result.getMeta().getPageable_count() > 0) {
+            logSearch(query, request, user);
+        }
 
         return "book/search/_result-fragment :: resultFragment";
 
@@ -85,7 +88,7 @@ public class BookSearchController {
     /**
      * 검색어 자동완성 API
      * @param q 검색어 접두사
-     * @return 자동완성 제안 리스트
+     * @return 자동완성 제안 리스트 (실제 존재하는 책 이름만 반환)
      */
     @GetMapping("/suggestions")
     @ResponseBody
@@ -93,7 +96,7 @@ public class BookSearchController {
             @RequestParam String q,
             @RequestParam(defaultValue = "10") int limit) {
         
-        List<String> suggestions = bookSearchLogService.getSearchSuggestions(q, limit);
+        List<String> suggestions = bookSearchLogService.getSearchSuggestions(q, limit, bookSearchService);
         return ResponseEntity.ok(suggestions);
     }
 
