@@ -45,12 +45,26 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         if (registrationId.equals("kakao")) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+            if (kakaoAccount == null) {
+                throw new OAuth2AuthenticationException("Kakao 계정 정보를 가져올 수 없습니다.");
+            }
             Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+            if (profile == null) {
+                throw new OAuth2AuthenticationException("Kakao 프로필 정보를 가져올 수 없습니다.");
+            }
             email = (String) kakaoAccount.get("email");
             nickname = (String) profile.get("nickname");
             providerId = String.valueOf(attributes.get("id"));
+            
+            // Kakao도 flatAttributes 설정
+            flatAttributes.put("email", email);
+            flatAttributes.put("nickname", nickname);
+            flatAttributes.put("id", providerId);
         } else if (registrationId.equals("naver")) {
             Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+            if (response == null) {
+                throw new OAuth2AuthenticationException("Naver 응답 정보를 가져올 수 없습니다.");
+            }
             email = (String) response.get("email");
             nickname = (String) response.get("nickname");
             providerId = (String) response.get("id");
@@ -58,7 +72,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             flatAttributes.put("email", email);
             flatAttributes.put("nickname", nickname);
             flatAttributes.put("id", providerId);
-
+        } else {
+            throw new OAuth2AuthenticationException("지원하지 않는 소셜 로그인 제공자입니다: " + registrationId);
         }
 
         // 회원 조회
@@ -100,7 +115,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                     flatAttributes,
                     "id",
                     nickname, // 임시 닉네임
-                    null // 아직 DB에 저장되지 않음
+                    null // 아직 DB에 저장되지 않음 
             );
         }
     }
