@@ -60,7 +60,8 @@ public class SecurityConfig {
                                 "/", "/signup", "/signup/form", "/signup/social", "/login","/find-password","/withdrawal-complete", "signup-success",
                                 "/recover/**"
                                 ,  "/error", "/verify/**","/board/list/**",
-                                "/contest/list/**", "/contest/detail/**",
+                                "/contest/list/**", "/contest/detail/**","/contest/write/**",
+                                "/contest/edit/**", "/contest/delete/**",
                                 "/api/search/**", "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**","/api/search/board/**","/api/search/contest/**"
                         ).permitAll()
                         //관리자만 접근
@@ -133,9 +134,7 @@ public class SecurityConfig {
 
                 HttpSession session = request.getSession(false);
 
-                System.out.println("널인가? :" + request.getSession(false));
                 if (session != null) {
-                    System.out.println("이게뭐지 : " + (String) session.getAttribute("redirectAfterLogin"));
                     String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
                     if (redirectUrl != null) {
                         session.removeAttribute("redirectAfterLogin");

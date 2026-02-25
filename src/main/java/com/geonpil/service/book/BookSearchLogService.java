@@ -3,7 +3,12 @@ package com.geonpil.service.book;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
+import co.elastic.clients.elasticsearch._types.mapping.Property;
+import co.elastic.clients.elasticsearch._types.mapping.TypeMapping;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
+import co.elastic.clients.elasticsearch.indices.DeleteIndexRequest;
+import co.elastic.clients.elasticsearch.indices.ExistsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +16,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +32,92 @@ public class BookSearchLogService {
     private static final String INDEX = "book_search_log";
 
     private final ElasticsearchClient esClient;
+
+    /**
+     * 애플리케이션 시작 시 인덱스가 없으면 생성
+     * 기존 인덱스가 잘못된 매핑으로 생성되어 있으면 삭제 후 재생성
+     */
+    @PostConstruct
+    public void ensureIndexExists() {
+        try {
+            // 인덱스 존재 여부 확인
+            boolean exists = esClient.indices().exists(ExistsRequest.of(e -> e.index(INDEX))).value();
+            
+            if (!exists) {
+                log.info("book_search_log 인덱스가 없어 생성합니다.");
+                createIndex();
+            } else {
+                // 인덱스가 존재하지만 매핑이 잘못되었을 수 있으므로 확인
+                // keyword 필드가 text 타입이면 aggregation이 불가능하므로 재생성
+                try {
+                    var mapping = esClient.indices().getMapping(m -> m.index(INDEX));
+                    var indexMapping = mapping.get(INDEX);
+                    
+                    if (indexMapping == null || indexMapping.mappings() == null) {
+                        log.debug("book_search_log 인덱스 매핑 정보를 확인할 수 없습니다.");
+                        return;
+                    }
+                    
+                    var properties = indexMapping.mappings().properties();
+                    if (properties == null || !properties.containsKey("keyword")) {
+                        log.debug("book_search_log 인덱스가 이미 존재합니다.");
+                        return;
+                    }
+                    
+                    var keywordProp = properties.get("keyword");
+                    if (keywordProp == null) {
+                        log.debug("book_search_log 인덱스가 이미 존재합니다.");
+                        return;
+                    }
+                    
+                    // keyword 필드가 text 타입이면 재생성 필요
+                    if (keywordProp._kind() == co.elastic.clients.elasticsearch._types.mapping.Property.Kind.Text) {
+                        log.warn("book_search_log 인덱스의 keyword 필드가 text 타입입니다. aggregation을 위해 재생성합니다.");
+                        esClient.indices().delete(DeleteIndexRequest.of(d -> d.index(INDEX)));
+                        createIndex();
+                    } else {
+                        log.debug("book_search_log 인덱스가 이미 존재하고 올바른 매핑을 가지고 있습니다.");
+                    }
+                } catch (Exception e) {
+                    log.warn("인덱스 매핑 확인 실패, 인덱스를 재생성합니다: {}", e.getMessage());
+                    try {
+                        esClient.indices().delete(DeleteIndexRequest.of(d -> d.index(INDEX)));
+                    } catch (Exception deleteEx) {
+                        log.warn("인덱스 삭제 실패 (무시): {}", deleteEx.getMessage());
+                    }
+                    createIndex();
+                }
+            }
+        } catch (Exception e) {
+            log.error("book_search_log 인덱스 생성 실패: {}", e.getMessage(), e);
+            // 인덱스 생성 실패해도 애플리케이션은 계속 실행되도록 함
+        }
+    }
+    
+    /**
+     * 인덱스 생성 (올바른 매핑으로)
+     */
+    private void createIndex() {
+        try {
+            // 인덱스 생성 및 매핑 설정
+            // keyword 필드는 aggregation을 위해 keyword 타입으로 설정
+            esClient.indices().create(CreateIndexRequest.of(c -> c
+                .index(INDEX)
+                .mappings(TypeMapping.of(m -> m
+                    .properties("keyword", Property.of(p -> p.keyword(k -> k)))
+                    .properties("userId", Property.of(p -> p.long_(l -> l)))
+                    .properties("ip", Property.of(p -> p.keyword(k -> k)))
+                    .properties("userAgent", Property.of(p -> p.keyword(k -> k)))
+                    .properties("searchedAt", Property.of(p -> p.date(d -> d.format("strict_date_optional_time||epoch_millis"))))
+                ))
+            ));
+            
+            log.info("book_search_log 인덱스 생성 완료");
+        } catch (Exception e) {
+            log.error("인덱스 생성 중 오류 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("인덱스 생성 실패", e);
+        }
+    }
 
     @Async
     public void logSearch(String keyword, Long userId, String ip, String userAgent){
@@ -63,6 +155,13 @@ public class BookSearchLogService {
         try {
             log.debug("인기 검색어 조회 시도: topN={}, index={}", topN, INDEX);
             
+            // 인덱스 존재 여부 확인
+            boolean indexExists = esClient.indices().exists(ExistsRequest.of(e -> e.index(INDEX))).value();
+            if (!indexExists) {
+                log.debug("인덱스가 존재하지 않아 빈 리스트 반환: index={}", INDEX);
+                return new ArrayList<>();
+            }
+            
             // Terms aggregation을 사용하여 keyword 필드 집계
             var response = esClient.search(s -> s
                     .index(INDEX)
@@ -70,7 +169,7 @@ public class BookSearchLogService {
                     .query(Query.of(q -> q.matchAll(m -> m)))  // 모든 문서 대상
                     .aggregations("popular_keywords", a -> a
                             .terms(t -> t
-                                    .field("keyword")
+                                    .field("keyword")  // keyword 타입 필드 직접 사용
                                     .size(topN)  // 상위 N개만
                             )
                     ),
@@ -78,15 +177,20 @@ public class BookSearchLogService {
             );
 
             // Aggregation 결과 파싱
-            var termsAgg = response.aggregations().get("popular_keywords").sterms();
             List<PopularKeyword> popularKeywords = new ArrayList<>();
             
-            if (termsAgg != null && termsAgg.buckets() != null) {
-                for (StringTermsBucket bucket : termsAgg.buckets().array()) {
-                    popularKeywords.add(new PopularKeyword(
-                            bucket.key().stringValue(),  // FieldValue를 String으로 변환
-                            bucket.docCount()
-                    ));
+            if (response.aggregations() != null && response.aggregations().containsKey("popular_keywords")) {
+                var agg = response.aggregations().get("popular_keywords");
+                if (agg.isSterms()) {
+                    var termsAgg = agg.sterms();
+                    if (termsAgg != null && termsAgg.buckets() != null) {
+                        for (StringTermsBucket bucket : termsAgg.buckets().array()) {
+                            popularKeywords.add(new PopularKeyword(
+                                    bucket.key().stringValue(),  // FieldValue를 String으로 변환
+                                    bucket.docCount()
+                            ));
+                        }
+                    }
                 }
             }
             

@@ -1,0 +1,17 @@
+build/
+.gradle/
+
+# IDE
+.idea/
+.vscode/
+
+# 로그/업로드
+logs/
+upload/
+
+# Git
+.git
+.gitignore
+
+# OS
+.DS_Store

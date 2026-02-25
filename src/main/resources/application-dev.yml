@@ -3,13 +3,13 @@ server:
   port: 8080
 
 elasticsearch:
-  host: http://localhost
-  username: elastic
-  password: V4r7d5dd4pe_Xlms5uf0
+  host: ${ELASTICSEARCH_HOST:http://localhost:9200}
+  username: ${ELASTICSEARCH_USERNAME:}
+  password: ${ELASTICSEARCH_PASSWORD:}
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/geonpil?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/dbGeonpil?serverTimezone=Asia/Seoul
     username: root
     password: clzlsrnxk15
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -102,3 +102,9 @@ mybatis:
 kakao:
   api:
     key: 043ce262cb71f664e9ac1e46f4fb94a6
+
+# 검색: 로컬(기본) vs search-service 원격 호출
+search:
+  service:
+    use-remote: true
+    base-url: ${SEARCH_SERVICE_BASE_URL:http://localhost:8081}

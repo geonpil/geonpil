@@ -1,0 +1,4 @@
+﻿instances:
+  - name: es01
+    dns: [ "es-container", "localhost" ]
+    ip:  [ "127.0.0.1" ]

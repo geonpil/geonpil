@@ -3,9 +3,8 @@ package com.geonpil.controller.book;
 import com.geonpil.dto.bookSearch.BookSearchViewResponse;
 import com.geonpil.dto.bookSearch.Meta;
 import com.geonpil.dto.commons.PageInfo;
+import com.geonpil.search.BookSearchFacade;
 import com.geonpil.security.AppUserInfo;
-import com.geonpil.service.book.BookSearchLogService;
-import com.geonpil.service.book.BookSearchService;
 import com.geonpil.util.PaginationUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,8 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookSearchController {
 
-    private final BookSearchService bookSearchService;
-    private final BookSearchLogService bookSearchLogService;
+    private final BookSearchFacade bookSearchFacade;
 
     int pageSize = 15;
 
@@ -96,14 +94,14 @@ public class BookSearchController {
             @RequestParam String q,
             @RequestParam(defaultValue = "10") int limit) {
         
-        List<String> suggestions = bookSearchLogService.getSearchSuggestions(q, limit, bookSearchService);
+        List<String> suggestions = bookSearchFacade.getSuggestions(q, limit);
         return ResponseEntity.ok(suggestions);
     }
 
 
 
     private BookSearchViewResponse prepareModel(String query, int page, int pageSize, Model model, boolean includeBooks, boolean includePagination) {
-        BookSearchViewResponse result = bookSearchService.searchBooks(query, page, pageSize);
+        BookSearchViewResponse result = bookSearchFacade.searchBooks(query, page, pageSize);
         Meta meta = result.getMeta();
 
         int totalPages = (int) Math.ceil((double) meta.getPageable_count() / pageSize);
@@ -134,7 +132,7 @@ public class BookSearchController {
         String userAgent = request.getHeader("User-Agent");
         Long userId = (user != null) ? user.getId() : null;
         
-        bookSearchLogService.logSearch(query, userId, ip, userAgent);
+        bookSearchFacade.logSearch(query, userId, ip, userAgent);
     }
 
 

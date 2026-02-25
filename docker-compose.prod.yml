@@ -1,0 +1,80 @@
+# 운영(AWS)용 Compose: Docker Hub 이미지 pull 후 실행 (서버에 소스 불필요)
+# .env 에 DOCKERHUB_USERNAME=본인아이디 설정 후
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# 필수 env: DOCKERHUB_USERNAME, SPRING_DATASOURCE_*, ELASTICSEARCH_* (see DEPLOY-PROD.md)
+# Nginx: 80/443 → geonpil:8080. 인증서는 nginx/certs/ 에 두고 default.conf 에서 활성화.
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-container
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - geonpil
+    networks:
+      - geonpil-net
+    restart: unless-stopped
+
+  # search-service: geonpil만 내부에서 사용. 호스트에 8081 노출 안 함 (보안)
+  search-service:
+    image: ${DOCKERHUB_USERNAME}/search-service:latest
+    container_name: search-service-container
+    networks:
+      - geonpil-net
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+  geonpil:
+    image: ${DOCKERHUB_USERNAME}/geonpil:latest
+    container_name: geonpil-container
+    depends_on:
+      - search-service
+    # 포트는 Nginx가 프록시하므로 호스트에 노출하지 않음 (필요 시 "8080:8080" 복구)
+    # ports:
+    #   - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      # AWS 관리형 DB (필수)
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      #개인 PC Elasticsearch (필수: PC 공인 IP 또는 터널 URL)
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      # SPRING_ELASTICSEARCH_URIS: ${ELASTICSEARCH_HOST}
+      # SPRING_ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
+      # SPRING_ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      # 검색 API (같은 compose 내부)
+      SEARCH_SERVICE_BASE_URL: http://search-service:8081
+      # 메일/OAuth 등 (선택)
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-465}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      OAUTH_NAVER_CLIENT_ID: ${OAUTH_NAVER_CLIENT_ID:-}
+      OAUTH_NAVER_CLIENT_SECRET: ${OAUTH_NAVER_CLIENT_SECRET:-}
+      OAUTH_KAKAO_CLIENT_ID: ${OAUTH_KAKAO_CLIENT_ID:-}
+      # 카카오 도서 API (ExternalBookApiClient 등에서 사용, 필수)
+      KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+    networks:
+      - geonpil-net
+    # ES가 개인 PC에서 HTTPS+인증서 사용 시에만 truststore 마운트
+    # volumes:
+    #   - ./certs:/certs:ro
+    # JAVA_TOOL_OPTIONS: "-Djavax.net.ssl.trustStore=/certs/truststore.jks ..."
+
+networks:
+  geonpil-net:
+    name: geonpil-net
+    driver: bridge
