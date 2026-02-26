@@ -44,7 +44,9 @@ jobs:
     steps:
       - name: Deploy (same server)
         run: |
-          cd /opt/geonpil
-          sudo docker compose -f docker-compose.prod.yml pull
-          sudo docker compose -f docker-compose.prod.yml up -d
-          sudo docker compose -f docker-compose.prod.yml ps
+          COMPOSE_DIR=/opt/geonpil
+          cd "$COMPOSE_DIR"
+          # sudo 사용 시 작업 디렉터리가 바뀌어 .env를 못 찾는 문제 방지: --project-directory + --env-file 로 명시
+          sudo docker compose --project-directory "$COMPOSE_DIR" --env-file "$COMPOSE_DIR/.env" -f "$COMPOSE_DIR/docker-compose.prod.yml" pull
+          sudo docker compose --project-directory "$COMPOSE_DIR" --env-file "$COMPOSE_DIR/.env" -f "$COMPOSE_DIR/docker-compose.prod.yml" up -d
+          sudo docker compose --project-directory "$COMPOSE_DIR" -f "$COMPOSE_DIR/docker-compose.prod.yml" ps
