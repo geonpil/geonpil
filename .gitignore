@@ -49,7 +49,6 @@ kibana/**
 
 # Others
 node_modules/
-application-prod.yml
 
 elasticsearch-*/
 
