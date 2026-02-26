@@ -6,6 +6,7 @@ import com.geonpil.service.user.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,9 @@ import java.util.Optional;
 public class VerificationController {
 
     private final UserService userService;
-    private final MailService mailService;
+
+    @Autowired(required = false)
+    private MailService mailService;
 
     @GetMapping("/find-password")
     public String showFindPasswordForm() {
@@ -46,6 +49,9 @@ public class VerificationController {
     @PostMapping("/send-code")
     @ResponseBody
     public String sendVerificationEmail(@RequestParam String email, HttpSession session) {
+        if (mailService == null) {
+            return "mail_unavailable";
+        }
         String code = mailService.sendSignupVerificationCode(email);
         session.setAttribute("emailVerificationCode", code);
         return "success";
@@ -67,6 +73,9 @@ public class VerificationController {
     @PostMapping("/find/send-code")
     @ResponseBody
     public String sendResetCode(@RequestParam String email, HttpSession session) throws MessagingException {
+        if (mailService == null) {
+            return "mail_unavailable";
+        }
         Optional<User> user = userService.findByEmail(email);
         if (user.isEmpty()) {
             return "not_found";
