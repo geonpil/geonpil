@@ -36,6 +36,7 @@ nginx/ssl/**
 nginx/**
 nginx/nginx.exe
 !nginx/conf/nginx.conf
+!nginx/conf.d/default.conf
 
 # 설정 파일
 *.env
