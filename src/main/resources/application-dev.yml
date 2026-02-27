@@ -1,43 +1,37 @@
+# 개발 환경 설정 (로컬)
+# DB, ES, 메일, OAuth 등은 환경변수로 주입 (docker-compose.yml / .env / Run Configuration)
+
 server:
   address: 0.0.0.0
   port: 8080
 
-elasticsearch:
-  host: ${ELASTICSEARCH_HOST:http://localhost:9200}
-  username: ${ELASTICSEARCH_USERNAME:}
-  password: ${ELASTICSEARCH_PASSWORD:}
-
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/dbGeonpil?serverTimezone=Asia/Seoul
-    username: root
-    password: clzlsrnxk15
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/dbGeonpil?serverTimezone=Asia/Seoul}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   devtools:
     restart:
-      enabled: true  # 서버 코드 변경 시 자동 재시작
-      trigger-file: .trigger
+      enabled: true
+    trigger-file: .trigger
     livereload:
-      enabled: true  # HTML/CSS/JS 실시간 반영
-
+      enabled: true
   web:
     resources:
       cache:
-        period: 0  # 정적 리소스 캐시 무효화
-
+        period: 0
   thymeleaf:
-    cache: false  # 템플릿 캐시 무효화
+    cache: false
     prefix: classpath:/templates/
     suffix: .html
     mode: HTML
     enable-spring-el-compiler: true
-
   mail:
-    host: smtp.naver.com
-    port: 465
-    username: lwd33021@naver.com
-    password: "CY2WGGLJ8LNH"
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:465}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -50,17 +44,13 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
-  # Elasticsearch 설정 업데이트
-
-
   security:
     oauth2:
       client:
         registration:
           naver:
-            client-id: I0WrJMG5gDW_r6xmr3iR
-            client-secret: 2QS_e5KTu5
+            client-id: ${OAUTH_NAVER_CLIENT_ID:}
+            client-secret: ${OAUTH_NAVER_CLIENT_SECRET:}
             redirect-uri: "{baseUrl}/login/oauth2/code/naver"
             authorization-grant-type: authorization_code
             scope:
@@ -68,7 +58,7 @@ spring:
               - email
             client-name: Naver
           kakao:
-            client-id: 043ce262cb71f664e9ac1e46f4fb94a6
+            client-id: ${OAUTH_KAKAO_CLIENT_ID:}
             redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
             authorization-grant-type: authorization_code
             client-name: Kakao
@@ -87,24 +77,21 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
-  type-aliases-package: com.geonpil
-  map-underscore-to-camel-case: true
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST:https://localhost:9201}
+  username: ${ELASTICSEARCH_USERNAME:}
+  password: ${ELASTICSEARCH_PASSWORD:}
 
-
-# 로그 설정은 logback-spring.xml에서 관리
-# logging:
-#   level:
-#     org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter: INFO
-#     com.geonpil: debug
-
-kakao:
-  api:
-    key: 043ce262cb71f664e9ac1e46f4fb94a6
-
-# 검색: 로컬(기본) vs search-service 원격 호출
 search:
   service:
     use-remote: true
     base-url: ${SEARCH_SERVICE_BASE_URL:http://localhost:8081}
+
+kakao:
+  api:
+    key: ${KAKAO_API_KEY:}
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.geonpil
+  map-underscore-to-camel-case: true

@@ -14,16 +14,36 @@ spring:
   devtools:
     restart:
       enabled: false
-
+    trigger-file: .trigger
+    livereload:
+      enabled: false
+  web:
+    resources:
+      cache:
+        period: 3600
   thymeleaf:
     cache: true
-
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    enable-spring-el-compiler: true
   mail:
     host: ${MAIL_HOST:}
     port: ${MAIL_PORT:465}
     username: ${MAIL_USERNAME:}
     password: ${MAIL_PASSWORD:}
- 
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            enable: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   security:
     oauth2:
       client:
@@ -33,14 +53,18 @@ spring:
             client-secret: ${OAUTH_NAVER_CLIENT_SECRET:}
             redirect-uri: "{baseUrl}/login/oauth2/code/naver"
             authorization-grant-type: authorization_code
-            scope: [name, email]
+            scope:
+              - name
+              - email
             client-name: Naver
           kakao:
             client-id: ${OAUTH_KAKAO_CLIENT_ID:}
             redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
             authorization-grant-type: authorization_code
             client-name: Kakao
-            scope: [profile_nickname, account_email]
+            scope:
+              - profile_nickname
+              - account_email
         provider:
           naver:
             authorization-uri: https://nid.naver.com/oauth2.0/authorize

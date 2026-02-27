@@ -1,0 +1,72 @@
+# 개발용 Compose: 운영과 동일하게 nginx + search-service + geonpil만 구성. MySQL은 docker-compose.mysql.yml, ES는 docker-compose.es.yml 로 분리.
+# .env 에 DOCKERHUB_USERNAME=본인아이디 설정 (search-service 이미지용)
+# 전체 기동 예: docker compose -f docker-compose.yml -f docker-compose.mysql.yml -f docker-compose.es.yml up -d
+# 앱만: docker compose up -d (DB/ES는 .env의 SPRING_DATASOURCE_*, ELASTICSEARCH_HOST로 외부 지정)
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-container
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - geonpil
+    networks:
+      - geonpil-net
+    restart: unless-stopped
+
+  search-service:
+    image: ${DOCKERHUB_USERNAME}/search-service:latest
+    container_name: search-service-container
+    networks:
+      - geonpil-net
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-https://localhost:9201}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD:-}
+      KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+
+  geonpil:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: geonpil-container-dev
+    depends_on:
+      - search-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      # 로컬 관리형 DB
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:mysql://mysql:3306/dbGeonpil?serverTimezone=Asia/Seoul}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-geonpil_user}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-dev}
+      # 개인 PC Elasticsearch 개발서버
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-https://elasticsearch:9200}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD:-}
+      # 검색 API (같은 compose 내부 통신)
+      SEARCH_SERVICE_BASE_URL: http://search-service:8081
+      # 메일/Oauth 등
+      MAIL_HOST: ${MAIL_HOST:-} 
+      MAIL_PORT: ${MAIL_PORT:-465}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      OAUTH_NAVER_CLIENT_ID: ${OAUTH_NAVER_CLIENT_ID:-}
+      OAUTH_NAVER_CLIENT_SECRET: ${OAUTH_NAVER_CLIENT_SECRET:-}
+      OAUTH_KAKAO_CLIENT_ID: ${OAUTH_KAKAO_CLIENT_ID:-}
+      KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+      # ES(docker-compose.es.yml) HTTPS 사용 시 인증서 신뢰용
+      JAVA_TOOL_OPTIONS: "-Djavax.net.ssl.trustStore=/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=changeit"
+    networks:
+      - geonpil-net
+    volumes:
+      - ./certs:/certs:ro
+
+networks:
+  geonpil-net:
+    name: geonpil-net
+    driver: bridge

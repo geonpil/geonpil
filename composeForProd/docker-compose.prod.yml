@@ -22,7 +22,6 @@ services:
       - geonpil-net
     restart: unless-stopped
 
-  # search-service: geonpil만 내부에서 사용. 호스트에 8081 노출 안 함 (보안)
   search-service:
     image: ${DOCKERHUB_USERNAME}/search-service:latest
     container_name: search-service-container
@@ -34,14 +33,12 @@ services:
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
       KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+
   geonpil:
     image: ${DOCKERHUB_USERNAME}/geonpil:latest
     container_name: geonpil-container
     depends_on:
       - search-service
-    # 포트는 Nginx가 프록시하므로 호스트에 노출하지 않음 (필요 시 "8080:8080" 복구)
-    # ports:
-    #   - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
       # AWS 관리형 DB (필수)
@@ -52,9 +49,6 @@ services:
       ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
-      # SPRING_ELASTICSEARCH_URIS: ${ELASTICSEARCH_HOST}
-      # SPRING_ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
-      # SPRING_ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
       # 검색 API (같은 compose 내부)
       SEARCH_SERVICE_BASE_URL: http://search-service:8081
       # 메일/OAuth 등 (선택)
