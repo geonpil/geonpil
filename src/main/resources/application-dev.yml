@@ -7,7 +7,7 @@ server:
 
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/dbGeonpil?serverTimezone=Asia/Seoul}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/geonpil?serverTimezone=Asia/Seoul}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -81,6 +81,9 @@ elasticsearch:
   host: ${ELASTICSEARCH_HOST:https://localhost:9201}
   username: ${ELASTICSEARCH_USERNAME:}
   password: ${ELASTICSEARCH_PASSWORD:}
+  ssl:
+    # 개발용: .env 미로드 시에도 self-signed 인증서 허용 (기본 true)
+    insecure: ${ELASTICSEARCH_SSL_INSECURE:true}
 
 search:
   service:

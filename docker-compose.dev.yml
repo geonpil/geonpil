@@ -26,10 +26,15 @@ services:
       - geonpil-net
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-https://localhost:9201}
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-https://host.docker.internal:9201}
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD:-}
+      ELASTICSEARCH_SSL_INSECURE: ${ELASTICSEARCH_SSL_INSECURE:-true}
       KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+      # ES HTTPS self-signed / host.docker.internal 호스트명 불일치 대응
+      JAVA_TOOL_OPTIONS: "-Djavax.net.ssl.trustStore=/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=changeit"
+    volumes:
+      - ./certs:/certs:ro
 
   geonpil:
     build:
@@ -44,10 +49,11 @@ services:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:mysql://mysql:3306/dbGeonpil?serverTimezone=Asia/Seoul}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-geonpil_user}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-dev}
-      # 개인 PC Elasticsearch 개발서버
-      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-https://elasticsearch:9200}
+      # 개인 PC Elasticsearch 개발서버 (호스트에서 ES 띄울 땐 host.docker.internal:9201)
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-https://host.docker.internal:9201}
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD:-}
+      ELASTICSEARCH_SSL_INSECURE: ${ELASTICSEARCH_SSL_INSECURE:-true}
       # 검색 API (같은 compose 내부 통신)
       SEARCH_SERVICE_BASE_URL: http://search-service:8081
       # 메일/Oauth 등
