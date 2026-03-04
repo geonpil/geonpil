@@ -30,12 +30,13 @@ Thumbs.db
 *.bak
 *.swp
 
-# nginx 설정
+# nginx 설정 (nginx/ 하위 대부분 무시, conf.d/만 추적)
 nginx/ssl/**
 !nginx/ssl/.keep
 nginx/**
 nginx/nginx.exe
 !nginx/conf/nginx.conf
+!nginx/conf.d/
 !nginx/conf.d/default.conf
 
 # 설정 파일
