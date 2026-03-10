@@ -1,7 +1,7 @@
 # 개발용 Compose: 운영과 동일하게 nginx + search-service + geonpil만 구성. MySQL은 docker-compose.mysql.yml, ES는 docker-compose.es.yml 로 분리.
 # .env 에 DOCKERHUB_USERNAME=본인아이디 설정 (search-service 이미지용)
-# 전체 기동 예: docker compose -f docker-compose.yml -f docker-compose.mysql.yml -f docker-compose.es.yml up -d
-# 앱만: docker compose up -d (DB/ES는 .env의 SPRING_DATASOURCE_*, ELASTICSEARCH_HOST로 외부 지정)
+# 전체 기동: docker compose -f docker-compose.dev.yml -f docker-compose.mysql.yml -f docker-compose.es.yml up -d
+# 앱만: docker compose -f docker-compose.dev.yml up -d (DB/ES는 .env의 SPRING_DATASOURCE_*, ELASTICSEARCH_HOST로 외부 지정)
 
 services:
   nginx:

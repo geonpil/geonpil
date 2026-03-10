@@ -81,6 +81,9 @@ elasticsearch:
   host: ${ELASTICSEARCH_HOST}
   username: ${ELASTICSEARCH_USERNAME:}
   password: ${ELASTICSEARCH_PASSWORD:}
+  ssl:
+    # 운영에서도 self-signed 인증서 사용 가능하도록 옵션 제공 (기본 false)
+    insecure: ${ELASTICSEARCH_SSL_INSECURE:false}
 
 search:
   service:

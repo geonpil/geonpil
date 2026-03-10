@@ -32,7 +32,12 @@ services:
       ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      ELASTICSEARCH_SSL_INSECURE: ${ELASTICSEARCH_SSL_INSECURE:-false}
       KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+      # truststore 사용 시 JVM이 CA를 신뢰 (ELASTICSEARCH_TRUSTSTORE_PASSWORD는 .env에 설정)
+      JAVA_TOOL_OPTIONS: "-Djavax.net.ssl.trustStore=/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=${ELASTICSEARCH_TRUSTSTORE_PASSWORD:-changeit}"
+    volumes:
+      - ./certs:/certs:ro
 
   geonpil:
     image: ${DOCKERHUB_USERNAME}/geonpil:latest
@@ -49,6 +54,7 @@ services:
       ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME:-elastic}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      ELASTICSEARCH_SSL_INSECURE: ${ELASTICSEARCH_SSL_INSECURE:-false}
       # 검색 API (같은 compose 내부)
       SEARCH_SERVICE_BASE_URL: http://search-service:8081
       # 메일/OAuth 등 (선택)
@@ -61,12 +67,12 @@ services:
       OAUTH_KAKAO_CLIENT_ID: ${OAUTH_KAKAO_CLIENT_ID:-}
       # 카카오 도서 API (ExternalBookApiClient 등에서 사용, 필수)
       KAKAO_API_KEY: ${KAKAO_API_KEY:-}
+      # truststore 사용 시 JVM이 ES CA를 신뢰 (geonpil도 ELASTICSEARCH_HOST로 ES 직접 연결)
+      JAVA_TOOL_OPTIONS: "-Djavax.net.ssl.trustStore=/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=${ELASTICSEARCH_TRUSTSTORE_PASSWORD:-changeit}"
     networks:
       - geonpil-net
-    # ES가 개인 PC에서 HTTPS+인증서 사용 시에만 truststore 마운트
-    # volumes:
-    #   - ./certs:/certs:ro
-    # JAVA_TOOL_OPTIONS: "-Djavax.net.ssl.trustStore=/certs/truststore.jks ..."
+    volumes:
+      - ./certs:/certs:ro
 
 networks:
   geonpil-net:
