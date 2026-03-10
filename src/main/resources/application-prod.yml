@@ -84,6 +84,9 @@ elasticsearch:
   ssl:
     # 운영에서도 self-signed 인증서 사용 가능하도록 옵션 제공 (기본 false)
     insecure: ${ELASTICSEARCH_SSL_INSECURE:false}
+    # truststore 경로가 있으면 이 경로의 CA로 ES 인증서 검증 (JAVA_TOOL_OPTIONS 대신 앱에서 직접 로드)
+    truststore-path: ${ELASTICSEARCH_TRUSTSTORE_PATH:}
+    truststore-password: ${ELASTICSEARCH_TRUSTSTORE_PASSWORD:changeit}
 
 search:
   service:

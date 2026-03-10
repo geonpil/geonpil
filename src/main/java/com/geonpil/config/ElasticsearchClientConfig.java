@@ -24,6 +24,11 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyStore;
 
 @Configuration
 public class ElasticsearchClientConfig {
@@ -42,11 +47,19 @@ public class ElasticsearchClientConfig {
     @Value("${elasticsearch.ssl.insecure:false}")
     private boolean sslInsecure;
 
+    /** 운영: self-signed CA를 넣은 truststore 경로 (예: /certs/truststore.jks). 비어 있으면 JVM 기본 truststore 사용 */
+    @Value("${elasticsearch.ssl.truststore-path:}")
+    private String truststorePath;
+
+    @Value("${elasticsearch.ssl.truststore-password:changeit}")
+    private String truststorePassword;
+
     @Bean
     public RestClient restClient() throws Exception {
         HttpHost httpHost = HttpHost.create(host);
-        log.info("Elasticsearch 연결: host={}, sslInsecure={}, auth={}",
-                host, sslInsecure, (username != null && !username.isEmpty()) ? "설정됨" : "없음");
+        log.info("Elasticsearch 연결: host={}, sslInsecure={}, truststorePath={}, auth={}",
+                host, sslInsecure, truststorePath != null && !truststorePath.isEmpty() ? truststorePath : "미설정",
+                (username != null && !username.isEmpty()) ? "설정됨" : "없음");
 
         RestClientBuilder builder = RestClient.builder(httpHost);
 
@@ -64,6 +77,23 @@ public class ElasticsearchClientConfig {
                     httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
                 } catch (Exception e) {
                     throw new RuntimeException("Elasticsearch SSL insecure 설정 실패", e);
+                }
+            } else if ("https".equalsIgnoreCase(httpHost.getSchemeName())
+                    && truststorePath != null && !truststorePath.trim().isEmpty()
+                    && Files.exists(Paths.get(truststorePath.trim()))) {
+                // HTTPS + truststore 경로가 있으면 해당 truststore로 SSL 검증 (운영 self-signed CA 대응)
+                try {
+                    KeyStore ks = KeyStore.getInstance("JKS");
+                    try (InputStream is = Files.newInputStream(Paths.get(truststorePath.trim()))) {
+                        ks.load(is, truststorePassword != null ? truststorePassword.toCharArray() : "changeit".toCharArray());
+                    }
+                    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                    tmf.init(ks);
+                    SSLContext sslContext = SSLContext.getInstance("TLS");
+                    sslContext.init(null, tmf.getTrustManagers(), null);
+                    httpClientBuilder.setSSLContext(sslContext);
+                } catch (Exception e) {
+                    throw new RuntimeException("Elasticsearch truststore 로드 실패: path=" + truststorePath, e);
                 }
             }
             // username과 password가 비어있지 않을 때만 인증 추가
