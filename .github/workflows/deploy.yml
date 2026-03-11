@@ -39,7 +39,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_GEONPIL }}:${{ github.sha }}
 
   deploy:
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, prod]
     needs: build-and-push
     steps:
       - name: Deploy (same server)
