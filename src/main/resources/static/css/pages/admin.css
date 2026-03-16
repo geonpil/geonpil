@@ -293,3 +293,46 @@
     }
 }
 /* END : 공지 목록 관리 스타일 */
+
+/* START : 배너 수정 모달 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+}
+.modal-overlay .modal-content {
+    margin: auto;
+    width: 100%;
+    padding: 24px;
+}
+.modal-overlay .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.modal-overlay .modal-header .form-title {
+    margin: 0;
+}
+.modal-overlay .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0 4px;
+}
+.modal-overlay .modal-close:hover {
+    color: #333;
+}
+/* END : 배너 수정 모달 */

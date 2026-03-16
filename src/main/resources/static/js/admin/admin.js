@@ -10,6 +10,8 @@ document.querySelectorAll('.admin-menu').forEach(menu => {
             apiUrl = `/admin/categories/fragment/${action}`;
         } else if (section === 'notice') {
             apiUrl = `/admin/notice/fragment/${action}`;
+        } else if (section === 'banner') {
+            apiUrl = `/admin/banner/fragment/${action}`;
         } else {
             apiUrl = `/admin/book-picks/fragment/${action}`;
         }
@@ -43,6 +45,12 @@ document.querySelectorAll('.admin-menu').forEach(menu => {
                         }, 100);
                     }else if(action === 'list'){
                         initNoticeList();
+                    }
+                } else if (section === 'banner') {
+                    if (action === 'add') {
+                        initBannerAdd();
+                    } else if (action === 'list') {
+                        initBannerList();
                     }
                 }
             })
@@ -531,4 +539,251 @@ function deleteNotice(postId, title) {
     
     // TODO: 공지 삭제 API 호출 구현
     alert('공지 삭제 기능은 아직 구현되지 않았습니다.');
+}
+
+// ----- 배너 관리 -----
+
+function initBannerAdd() {
+    const form = document.getElementById('bannerAddForm');
+    const fileInput = document.getElementById('bannerImage');
+    const previewDiv = document.getElementById('bannerImagePreview');
+    const previewImg = document.getElementById('bannerImagePreviewImg');
+    const urlInput = document.getElementById('bannerImageUrl');
+    const resetBtn = document.getElementById('bannerFormResetBtn');
+
+    if (!form) return;
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) {
+                previewDiv.style.display = 'none';
+                urlInput.value = '';
+                return;
+            }
+            const formData = new FormData();
+            formData.append('image', file);
+            csrfFetch('/upload-banner-image', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    urlInput.value = data.url || '';
+                    previewImg.src = data.url || '';
+                    previewDiv.style.display = 'block';
+                })
+                .catch(() => showBannerMessage('이미지 업로드에 실패했습니다.', 'error'));
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.onclick = function() {
+            form.reset();
+            urlInput.value = '';
+            previewDiv.style.display = 'none';
+        };
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const type = document.getElementById('bannerType').value;
+        const imageUrl = urlInput.value.trim();
+        if (!type) {
+            showBannerMessage('구분을 선택해주세요.', 'error');
+            return;
+        }
+        if (!imageUrl) {
+            showBannerMessage('이미지를 업로드해주세요.', 'error');
+            return;
+        }
+        const payload = {
+            type: type,
+            imageUrl: imageUrl,
+            linkUrl: document.getElementById('bannerLinkUrl').value.trim() || null,
+            altText: document.getElementById('bannerAltText').value.trim() || null,
+            displayOrder: parseInt(document.getElementById('bannerDisplayOrder').value, 10) || 0,
+            visible: document.getElementById('bannerVisible').checked
+        };
+        csrfFetch('/api/admin/banners', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.ok ? res.text() : res.text().then(t => { throw new Error(t); }))
+            .then(() => {
+                showBannerMessage('배너가 등록되었습니다.', 'success');
+                form.reset();
+                urlInput.value = '';
+                previewDiv.style.display = 'none';
+            })
+            .catch(err => showBannerMessage(err.message || '배너 등록에 실패했습니다.', 'error'));
+    });
+}
+
+function showBannerMessage(message, type) {
+    const el = document.getElementById('bannerAddMessage');
+    if (!el) return;
+    el.textContent = message;
+    el.className = 'message ' + (type || 'info');
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, type === 'success' ? 5000 : 3000);
+}
+
+function initBannerList() {
+    const listEl = document.getElementById('bannerList');
+    const noMsg = document.getElementById('noBannerMessage');
+    if (!listEl) return;
+
+    listEl.innerHTML = '<div class="loading">배너 목록을 불러오는 중...</div>';
+    if (noMsg) noMsg.style.display = 'none';
+
+    csrfFetch('/admin/banner/list')
+        .then(res => res.json())
+        .then(banners => {
+            if (!banners || banners.length === 0) {
+                listEl.innerHTML = '';
+                if (noMsg) noMsg.style.display = 'block';
+            } else {
+                listEl.innerHTML = banners.map(b => {
+                    const typeLabel = b.type === 'main' ? '메인' : '서브';
+                    const imgSrc = (b.imageUrl && b.imageUrl.startsWith('/')) ? b.imageUrl : ('/' + (b.imageUrl || '').replace(/^\//, ''));
+                    return `
+                        <div class="post-row banner-row">
+                            <span class="category">${typeLabel}</span>
+                            <span class="banner-thumb"><img src="${imgSrc}" alt="${(b.altText || '').replace(/"/g, '&quot;')}" style="max-width:120px;max-height:60px;object-fit:contain;"/></span>
+                            <span class="title">${(b.linkUrl || '-').substring(0, 40)}${(b.linkUrl && b.linkUrl.length > 40) ? '…' : ''}<br/><small>${(b.altText || '-').replace(/</g, '&lt;')}</small></span>
+                            <span>${b.displayOrder}</span>
+                            <span>${b.visible ? 'Y' : 'N'}</span>
+                            <span class="admin-actions">
+                                <button type="button" class="btn btn-sm btn-primary" onclick="openBannerEditModal(${b.id})">수정</button>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="deleteBanner(${b.id}, '${typeLabel}')">삭제</button>
+                            </span>
+                        </div>`;
+                }).join('');
+                initBannerEditModal();
+                if (noMsg) noMsg.style.display = 'none';
+            }
+        })
+        .catch(() => {
+            listEl.innerHTML = '<div class="error">배너 목록을 불러오는데 실패했습니다.</div>';
+        });
+}
+
+function deleteBanner(id, label) {
+    if (!confirm(`"${label}" 배너를 정말 삭제하시겠습니까?`)) return;
+    csrfFetch('/api/admin/banners/' + id, { method: 'DELETE' })
+        .then(res => res.ok ? res.text() : res.text().then(t => { throw new Error(t); }))
+        .then(() => { initBannerList(); })
+        .catch(err => alert(err.message || '삭제에 실패했습니다.'));
+}
+
+function openBannerEditModal(id) {
+    const modal = document.getElementById('bannerEditModal');
+    if (!modal) return;
+    csrfFetch('/api/admin/banners/' + id)
+        .then(res => res.ok ? res.json() : res.json().then(() => { throw new Error('배너를 불러올 수 없습니다.'); }))
+        .then(banner => {
+            document.getElementById('bannerEditId').value = banner.id;
+            document.getElementById('bannerEditType').value = banner.type || '';
+            document.getElementById('bannerEditImageUrl').value = banner.imageUrl || '';
+            document.getElementById('bannerEditLinkUrl').value = banner.linkUrl || '';
+            document.getElementById('bannerEditAltText').value = banner.altText || '';
+            document.getElementById('bannerEditDisplayOrder').value = banner.displayOrder ?? 0;
+            document.getElementById('bannerEditVisible').checked = !!banner.visible;
+            const previewDiv = document.getElementById('bannerEditImagePreview');
+            const previewImg = document.getElementById('bannerEditImagePreviewImg');
+            if (banner.imageUrl) {
+                const src = (banner.imageUrl.startsWith('/') ? banner.imageUrl : '/' + banner.imageUrl.replace(/^\//, ''));
+                previewImg.src = src;
+                previewDiv.style.display = 'block';
+            } else {
+                previewDiv.style.display = 'none';
+            }
+            document.getElementById('bannerEditImage').value = '';
+            modal.style.display = 'flex';
+        })
+        .catch(err => alert(err.message || '배너 정보를 불러오는데 실패했습니다.'));
+}
+
+function initBannerEditModal() {
+    const modal = document.getElementById('bannerEditModal');
+    if (!modal || modal.dataset.inited === '1') return;
+    modal.dataset.inited = '1';
+
+    const closeBtn = document.getElementById('bannerEditModalClose');
+    const cancelBtn = document.getElementById('bannerEditCancelBtn');
+    const form = document.getElementById('bannerEditForm');
+    const fileInput = document.getElementById('bannerEditImage');
+    const previewDiv = document.getElementById('bannerEditImagePreview');
+    const previewImg = document.getElementById('bannerEditImagePreviewImg');
+    const urlInput = document.getElementById('bannerEditImageUrl');
+    const msgEl = document.getElementById('bannerEditMessage');
+
+    if (!form) return;
+
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) {
+                if (!urlInput.value) previewDiv.style.display = 'none';
+                return;
+            }
+            const formData = new FormData();
+            formData.append('image', file);
+            csrfFetch('/upload-banner-image', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    urlInput.value = data.url || '';
+                    previewImg.src = data.url || '';
+                    previewDiv.style.display = 'block';
+                })
+                .catch(() => {
+                    if (msgEl) { msgEl.textContent = '이미지 업로드에 실패했습니다.'; msgEl.className = 'message error'; msgEl.style.display = 'block'; }
+                });
+        });
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('bannerEditId').value;
+        const type = document.getElementById('bannerEditType').value;
+        const imageUrl = urlInput.value.trim();
+        if (!type) {
+            if (msgEl) { msgEl.textContent = '구분을 선택해주세요.'; msgEl.className = 'message error'; msgEl.style.display = 'block'; }
+            return;
+        }
+        if (!imageUrl) {
+            if (msgEl) { msgEl.textContent = '이미지 URL이 없습니다. 기존 이미지를 유지하거나 새 이미지를 선택해주세요.'; msgEl.className = 'message error'; msgEl.style.display = 'block'; }
+            return;
+        }
+        const payload = {
+            type: type,
+            imageUrl: imageUrl,
+            linkUrl: document.getElementById('bannerEditLinkUrl').value.trim() || null,
+            altText: document.getElementById('bannerEditAltText').value.trim() || null,
+            displayOrder: parseInt(document.getElementById('bannerEditDisplayOrder').value, 10) || 0,
+            visible: document.getElementById('bannerEditVisible').checked
+        };
+        csrfFetch('/api/admin/banners/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.ok ? res.text() : res.text().then(t => { throw new Error(t); }))
+            .then(() => {
+                if (msgEl) { msgEl.textContent = '배너가 수정되었습니다.'; msgEl.className = 'message success'; msgEl.style.display = 'block'; }
+                setTimeout(() => { closeModal(); initBannerList(); }, 800);
+            })
+            .catch(err => {
+                if (msgEl) { msgEl.textContent = err.message || '배너 수정에 실패했습니다.'; msgEl.className = 'message error'; msgEl.style.display = 'block'; }
+            });
+    });
 }

@@ -48,11 +48,16 @@ a:focus-visible {
 
 .main-banner {
   width: 100%;
-  height: auto;
-  background-size: cover;
-  background-position: center;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 메인 배너 이미지 크기 조절 */
+.main-banner img {
+  width: 100%;
+  max-height: 300px;       /* 필요에 따라 높이 조절 */
+  object-fit: cover;
+  border-radius: 12px;
 }
 
 .sub-banners {
@@ -69,8 +74,41 @@ a:focus-visible {
   border-radius: 8px;
 }
 
+/* 배너 없을 때 기본 안내 */
+.banner-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border: 1px dashed #ddd;
+  border-radius: 12px;
+}
+.banner-empty-message {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+/* 메인 배너 없을 때 높이 (실제 메인 배너와 유사) */
+.main-banner.banner-empty {
+  min-height: 300px;
+}
+
+/* 서브 배너 없을 때 높이 (실제 서브 배너와 유사) */
+.sub-banners .banner-empty {
+  height: 180px;
+}
+
+/* 체크박스 위치 조절 */
+.form-group input[type="checkbox"] {
+  margin-top: 6px;  /* 필요하면 숫자 조정 */
+}
+
 /* PC에서는 원래 그리드 유지 */
 @media (min-width: 769px) {
+  .mobile-sub-banner {
+    display: none !important;
+  }
+
   .mobile-sub-banner .swiper-wrapper {
     display: none;
   }

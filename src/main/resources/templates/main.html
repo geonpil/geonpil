@@ -24,34 +24,41 @@
     <div th:replace = "~{fragments/search-bar :: searchBar(${query})}"></div>
     <section class="banner-section">
         <div class="banner-container">
-            <div class="main-banner">
-                <a href="https://www.daesan.or.kr/daesan-award/2025/creative-fund.html" target="_blank" rel="noopener noreferrer">
-                    <img src="/images/banner/banner-main1.jpg" alt="대산문화재단 창작기금 안내 배너">
+            <div class="main-banner" th:if="${mainBanner != null}">
+                <a th:if="${mainBanner.linkUrl != null and !mainBanner.linkUrl.isEmpty()}" th:href="${mainBanner.linkUrl}" target="_blank" rel="noopener noreferrer">
+                    <img th:src="${mainBanner.imageUrl}" th:alt="${mainBanner.altText}" />
                 </a>
+                <img th:if="${mainBanner.linkUrl == null or mainBanner.linkUrl.isEmpty()}" th:src="${mainBanner.imageUrl}" th:alt="${mainBanner.altText}" />
             </div>
-            <div class="sub-banners desktop-sub-banner">
-                <div><a href="http://ahnchangho.or.kr/_memorial_hall/sub/sub03_03.php" target="_blank" rel="noopener noreferrer"><img
-                        src="/images/banner/banner-sub1.jpg" alt="도산기념관 행사 배너"></a></div>
-                <div><a href="http://hscf.co.kr/kor/sub6_01.php?wr_id=14802" target="_blank" rel="noopener noreferrer"><img
-                        src="/images/banner/banner-sub2.jpg" alt="행사 배너"></a></div>
-                <div><a href="https://storynew.kyobobook.co.kr/story/cont/initStoryContStoryPros.ink"
-                        target="_blank" rel="noopener noreferrer"><img
-                        src="/images/banner/banner-sub3.jpg" alt="교보문고 스토리 공모 배너"></a></div>
-                <div><a href="https://www.youtube.com/watch?v=zhk-8EanZbM&t=1516s" target="_blank" rel="noopener noreferrer"><img
-                        src="/images/banner/banner-sub4.jpg" alt="유튜브 영상 배너"></a></div>
+            <div class="main-banner banner-empty" th:if="${mainBanner == null}">
+                <div class="banner-empty-message">등록된 배너가 없습니다.</div>
+            </div>
+            <div class="sub-banners desktop-sub-banner" th:if="${!#lists.isEmpty(subBanners)}">
+                <div th:each="banner : ${subBanners}">
+                    <a th:if="${banner.linkUrl != null and !banner.linkUrl.isEmpty()}" th:href="${banner.linkUrl}" target="_blank" rel="noopener noreferrer">
+                        <img th:src="${banner.imageUrl}" th:alt="${banner.altText}" />
+                    </a>
+                    <img th:if="${banner.linkUrl == null or banner.linkUrl.isEmpty()}" th:src="${banner.imageUrl}" th:alt="${banner.altText}" />
+                </div>
+            </div>
+            <div class="sub-banners desktop-sub-banner" th:if="${#lists.isEmpty(subBanners)}">
+                <div class="banner-empty" th:each="i : ${#numbers.sequence(1,4)}">
+                    <div class="banner-empty-message">등록된 배너가 없습니다.</div>
+                </div>
             </div>
         </div>
 
         <!-- 모바일 전용 Swiper -->
-        <div class="sub-banners swiper-container mobile-sub-banner">
+        <div class="sub-banners swiper-container mobile-sub-banner" th:if="${!#lists.isEmpty(subBanners)}">
             <div class="swiper-wrapper">
-                <div class="swiper-slide"><img src="/images/banner/banner-sub1.jpg" alt="도산기념관 행사 배너" /></div>
-                <div class="swiper-slide"><img src="/images/banner/banner-sub2.jpg" alt="행사 배너" /></div>
-                <div class="swiper-slide"><img src="/images/banner/banner-sub3.jpg" alt="교보문고 스토리 공모 배너" /></div>
-                <div class="swiper-slide"><img src="/images/banner/banner-sub4.jpg" alt="유튜브 영상 배너" /></div>
+                <div class="swiper-slide" th:each="banner : ${subBanners}">
+                    <img th:src="${banner.imageUrl}" th:alt="${banner.altText}" />
+                </div>
             </div>
-            <!-- Optional: 페이지네이션 -->
             <div class="swiper-pagination"></div>
+        </div>
+        <div class="sub-banners mobile-sub-banner banner-empty" th:if="${#lists.isEmpty(subBanners)}">
+            <div class="banner-empty-message">등록된 배너가 없습니다.</div>
         </div>
 
     </section>

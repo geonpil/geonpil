@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.geonpil.mapper.admin.BannerMapper">
+
+    <resultMap id="BannerResultMap" type="com.geonpil.domain.admin.Banners">
+        <id property="id" column="banners_id"/>
+        <result property="type" column="type"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="linkUrl" column="link_url"/>
+        <result property="altText" column="alt_text"/>
+        <result property="displayOrder" column="display_order"/>
+        <result property="visible" column="is_visible"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insertBanner" parameterType="com.geonpil.domain.admin.Banners"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="banners_id">
+        INSERT INTO banners (type, image_url, link_url, alt_text, display_order, is_visible)
+        VALUES (#{type}, #{imageUrl}, #{linkUrl}, #{altText}, #{displayOrder}, #{visible})
+    </insert>
+
+    <select id="findAllBanners" resultMap="BannerResultMap">
+        SELECT banners_id
+             , type
+             , image_url
+             , link_url
+             , alt_text
+             , display_order
+             , is_visible
+             , created_at
+             , updated_at
+        FROM banners
+        ORDER BY type, display_order
+    </select>
+
+    <select id="findBannerById" resultMap="BannerResultMap">
+        SELECT banners_id
+             , type
+             , image_url
+             , link_url
+             , alt_text
+             , display_order
+             , is_visible
+             , created_at
+             , updated_at
+        FROM banners
+        WHERE banners_id = #{id}
+    </select>
+
+    <update id="updateBanner" parameterType="com.geonpil.domain.admin.Banners">
+        UPDATE banners
+        SET type = #{type}, image_url = #{imageUrl}, link_url = #{linkUrl}, alt_text = #{altText}, display_order = #{displayOrder}, is_visible = #{visible}
+        WHERE banners_id = #{id}
+    </update>
+
+    <delete id="deleteBanner">
+        DELETE FROM banners
+        WHERE banners_id = #{bannerId}
+    </delete>
+
+
+    <select id="countVisibleByType" resultType="int">
+        SELECT COUNT(*) FROM banners
+        WHERE type = #{type} AND is_visible = true
+    </select>
+
+</mapper>

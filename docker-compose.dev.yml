@@ -71,6 +71,7 @@ services:
       - geonpil-net
     volumes:
       - ./certs:/certs:ro
+      - ./upload:/app/upload
 
 networks:
   geonpil-net:

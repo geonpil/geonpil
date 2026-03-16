@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="bannerListFormFragment">
+    <div class="admin-form-wrapper">
+        <h2 class="form-title">🖼️ 배너 목록</h2>
+
+        <div class="posts-wrapper card">
+            <div class="posts-header">
+                <span>구분</span>
+                <span>미리보기</span>
+                <span>링크 / alt</span>
+                <span>순서</span>
+                <span>노출</span>
+                <span>관리</span>
+            </div>
+            <div id="bannerList" class="banner-section">
+                <div class="loading">배너 목록을 불러오는 중...</div>
+            </div>
+
+            <div id="noBannerMessage" class="empty-board-message" style="display: none;">
+                <i class="fa-solid fa-image"></i>
+                <p class="empty-text">등록된 배너가 없습니다.</p>
+            </div>
+        </div>
+
+        <!-- 배너 수정 모달 -->
+        <div id="bannerEditModal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true">
+            <div class="modal-content card" style="max-width: 520px;">
+                <div class="modal-header">
+                    <h2 class="form-title">🖼️ 배너 수정</h2>
+                    <button type="button" class="modal-close" id="bannerEditModalClose" aria-label="닫기">&times;</button>
+                </div>
+                <form id="bannerEditForm" class="form-container">
+                    <input type="hidden" id="bannerEditId" name="id" value=""/>
+                    <div class="form-group">
+                        <label for="bannerEditType">구분 <span class="required">*</span></label>
+                        <select id="bannerEditType" name="type" required>
+                            <option value="">선택</option>
+                            <option value="main">메인 배너</option>
+                            <option value="sub">서브 배너</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bannerEditImage">이미지 <span class="required">*</span></label>
+                        <input type="file" id="bannerEditImage" name="image" accept="image/*" class="form-input"/>
+                        <small class="form-text">변경 시에만 선택하세요. 선택하지 않으면 기존 이미지를 유지합니다.</small>
+                        <div id="bannerEditImagePreview" class="banner-preview" style="display: none; margin-top: 8px;">
+                            <img id="bannerEditImagePreviewImg" src="" alt="미리보기" style="max-width: 200px; max-height: 120px; object-fit: contain; border: 1px solid #ddd;"/>
+                        </div>
+                        <input type="hidden" id="bannerEditImageUrl" name="imageUrl" value=""/>
+                    </div>
+                    <div class="form-group">
+                        <label for="bannerEditLinkUrl">링크 URL</label>
+                        <input type="url" id="bannerEditLinkUrl" name="linkUrl" class="form-input" placeholder="https://"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="bannerEditAltText">대체 텍스트 (alt)</label>
+                        <input type="text" id="bannerEditAltText" name="altText" class="form-input" placeholder="접근성용 설명" maxlength="200"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="bannerEditDisplayOrder">노출 순서</label>
+                        <input type="number" id="bannerEditDisplayOrder" name="displayOrder" class="form-input" min="0" value="0"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="bannerEditVisible">노출</label>
+                        <input type="checkbox" id="bannerEditVisible" name="isVisible"/>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="basic-btn">저장</button>
+                        <button type="button" class="cancel-btn" id="bannerEditCancelBtn">취소</button>
+                    </div>
+                </form>
+                <div id="bannerEditMessage" class="message" style="display: none; margin-top: 12px;"></div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>

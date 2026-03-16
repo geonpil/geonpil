@@ -2,11 +2,12 @@ package com.geonpil.controller.admin;
 
 import com.geonpil.domain.BoardDTO;
 import com.geonpil.domain.Category;
-import com.geonpil.domain.admin.BookPick;
 import com.geonpil.domain.board.BoardType;
 import com.geonpil.dto.bookPick.BookPickWithBookInfo;
 import com.geonpil.security.AppUserInfo;
 import com.geonpil.service.CategoryService;
+import com.geonpil.domain.admin.Banners;
+import com.geonpil.service.admin.BannerService;
 import com.geonpil.service.admin.BookPickService;
 import com.geonpil.service.board.BoardAttachmentService;
 import com.geonpil.service.board.BoardService;
@@ -24,7 +25,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
@@ -35,6 +35,8 @@ public class AdminController {
     private final BoardService boardService;
     private final BoardTypeService boardTypeService;
     private final BoardAttachmentService boardAttachmentService;
+    private final BannerService bannerService;
+
     // 관리자 메인 페이지
     @GetMapping("/main")    
     public String list(Model model) {
@@ -183,4 +185,22 @@ public class AdminController {
         return ResponseEntity.ok(noticePosts);
     } 
 
+
+
+    // 배너 관련 fragment
+    @GetMapping("/banner/fragment/add")
+    public String getBannerAddFragment(Model model) {
+        return "admin/_banner-add-fragment :: bannerAddFormFragment";
+    }
+
+    @GetMapping("/banner/fragment/list")
+    public String getBannerListFragment(Model model) {
+        return "admin/_banner-list-fragment :: bannerListFormFragment";
+    }
+
+    @GetMapping("/banner/list")
+    @ResponseBody
+    public ResponseEntity<List<Banners>> listBanners() {
+        return ResponseEntity.ok(bannerService.getAllBanners());
+    }
 }

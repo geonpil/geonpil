@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="bannerAddFormFragment">
+    <div class="admin-form-wrapper">
+        <h2 class="form-title">🖼️ 배너 추가</h2>
+
+        <form id="bannerAddForm" class="form-container">
+            <div class="form-group">
+                <label for="bannerType">구분 <span class="required">*</span></label>
+                <select id="bannerType" name="type" required>
+                    <option value="">선택</option>
+                    <option value="main">메인 배너</option>
+                    <option value="sub">서브 배너</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bannerImage">이미지 <span class="required">*</span></label>
+                <input type="file" id="bannerImage" name="image" accept="image/*" class="form-input"/>
+                <small class="form-text">배너 이미지 파일을 선택하세요. 선택 후 업로드됩니다.</small>
+                <div id="bannerImagePreview" class="banner-preview" style="display: none; margin-top: 8px;">
+                    <img id="bannerImagePreviewImg" src="" alt="미리보기" style="max-width: 200px; max-height: 120px; object-fit: contain; border: 1px solid #ddd;"/>
+                </div>
+                <input type="hidden" id="bannerImageUrl" name="imageUrl" value=""/>
+            </div>
+
+            <div class="form-group">
+                <label for="bannerLinkUrl">링크 URL</label>
+                <input type="url" id="bannerLinkUrl" name="linkUrl" class="form-input" placeholder="https://"/>
+                <small class="form-text">클릭 시 이동할 주소 (비워두면 링크 없음)</small>
+            </div>
+
+            <div class="form-group">
+                <label for="bannerAltText">대체 텍스트 (alt)</label>
+                <input type="text" id="bannerAltText" name="altText" class="form-input" placeholder="접근성용 설명" maxlength="200"/>
+            </div>
+
+            <div class="form-group">
+                <label for="bannerDisplayOrder">노출 순서</label>
+                <input type="number" id="bannerDisplayOrder" name="displayOrder" class="form-input" min="0" value="0"/>
+                <small class="form-text">작을수록 앞에 노출됩니다.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="bannerVisible">노출</label>
+                <input type="checkbox" id="bannerVisible" name="isVisible" checked/>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="basic-btn">등록</button>
+                <button type="button" class="cancel-btn" id="bannerFormResetBtn">초기화</button>
+            </div>
+        </form>
+
+        <div id="bannerAddMessage" class="message" style="display: none; margin-top: 20px;"></div>
+    </div>
+</th:block>
+
+</html>
