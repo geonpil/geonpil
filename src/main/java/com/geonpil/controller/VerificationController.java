@@ -20,8 +20,8 @@ public class VerificationController {
 
     private final UserService userService;
 
-    @Autowired(required = false)
-    private MailService mailService;
+    @Autowired
+    private final MailService mailService;
 
     @GetMapping("/find-password")
     public String showFindPasswordForm() {

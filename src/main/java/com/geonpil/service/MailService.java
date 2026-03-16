@@ -1,20 +1,22 @@
 package com.geonpil.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
-@ConditionalOnBean(JavaMailSender.class)
-@RequiredArgsConstructor
 public class MailService {
 
     private final JavaMailSender mailSender;
+    private final String mailFrom;
+
+    public MailService(JavaMailSender mailSender, @Value("${spring.mail.username:}") String mailFrom) {
+        this.mailSender = mailSender;
+        this.mailFrom = mailFrom;
+    }
 
     public void sendEmail(String to, String subject, String text) {
         MimeMessage message = mailSender.createMimeMessage();
@@ -22,13 +24,14 @@ public class MailService {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
-            helper.setFrom("lwd33021@naver.com");
+            helper.setFrom((mailFrom != null && !mailFrom.isBlank()) ? mailFrom : "no-reply@geonpil.local");
             helper.setSubject(subject);
             helper.setText(text, true); // true -> HTML 가능
 
             mailSender.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            // SMTP 인증/연결 오류 등은 컨트롤러에서 메시지로 내려줄 수 있게 런타임 예외로 래핑
+            throw new com.geonpil.web.MailSendFailedException("메일 전송에 실패했습니다. 메일 계정/SMTP 설정을 확인해주세요.", e);
         }
     }
 

@@ -36,10 +36,12 @@ spring:
       mail:
         smtp:
           auth: true
+          # Naver SMTP: 465는 SSL, 587은 STARTTLS가 일반적
           starttls:
-            enable: true
+            enable: false
           ssl:
             enable: true
+            trust: ${MAIL_HOST:}
   servlet:
     multipart:
       max-file-size: 10MB
