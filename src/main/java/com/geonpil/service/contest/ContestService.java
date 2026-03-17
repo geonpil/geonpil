@@ -34,12 +34,15 @@ public class ContestService {
     public void saveContest(ContestPost contest, List<Long> categoryIds) {
         boardMapper.insertBoard(contest);           // BoardDTO 필드 처리
         contestMapper.insertContestPost(contest);   // contest_post 필드 처리
-        contestSearchService.index(contest);
         long postId = contest.getPostId();
 
         for (Long categoryId : categoryIds) {
             contestMapper.insertContestCategory(postId, categoryId); // 카테고리 필드 처리
         }
+
+        // ES 색인: 카테고리 저장이 끝난 뒤에 categoryIds를 포함해서 색인해야 필터가 정상 동작함
+        contest.setCategoryIds(categoryIds);
+        contestSearchService.updateIndex(contest);
     }
 
     /** 공모전 포스터 URL만 갱신 (글쓰기 시 포스터를 postId 생성 후 저장할 때 사용) */
