@@ -63,9 +63,8 @@ public class SecurityConfig {
                                 "/contest/list/**", "/contest/detail/**",
                                 "/api/search/**", "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**","/api/search/board/**","/api/search/contest/**"
                         ).permitAll()
-                        // 공모전 게시/수정/삭제는 로그인 필요 (anyRequest().authenticated()로 처리)
-                        //관리자만 접근
-
+                        // 공모전 게시/수정/삭제: '공모전 게시' 권한(ROLE_CONTEST_WRITER) 또는 관리자(ADMIN)
+                        .requestMatchers("/contest/write/**", "/contest/edit/**", "/contest/delete/**").hasAnyRole("CONTEST_WRITER", "ADMIN")
                         //로그인한 사용자만 접근
                         .requestMatchers("/api/reviews/**").authenticated()
                         //정적 리소스

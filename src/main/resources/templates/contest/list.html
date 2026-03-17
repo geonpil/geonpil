@@ -59,7 +59,7 @@
         <!-- board와 동일한 UI로 변경 - 검색바와 글쓰기 버튼 (로그인 시에만 게시 버튼 표시) -->
         <div class="board-control-bar">
             <div th:replace="~{commons/_search-fragment :: searchFragment(${boardCode})}"></div>
-            <th:block sec:authorize="isAuthenticated()">
+            <th:block sec:authorize="hasAnyRole('CONTEST_WRITER', 'ADMIN')">
                 <a th:href="@{/contest/write(boardCode=${boardCode})}" class="write-btn basic-btn">✍ 공모전 게시</a>
             </th:block>
         </div>
