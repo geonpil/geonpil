@@ -69,6 +69,18 @@ elasticsearch-*/
 
 *.pdf
 
+*.hwp
+*.hwpx
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.zip
+*.rar
+*.7z
+
 .vscode/*
 
 
