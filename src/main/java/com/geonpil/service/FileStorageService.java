@@ -28,9 +28,16 @@ public class FileStorageService {
             "image/png",
             "image/gif",
             "application/pdf",
-            "application/x-hwp",
             "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    );
+
+    // Some browsers/clients report HWP as vendor-specific or even octet-stream
+    private static final Set<String> ALLOWED_HWP_MIME = Set.of(
+            "application/x-hwp",
+            "application/haansoft-hwp",
+            "application/vnd.hancom.hwp",
+            "application/octet-stream"
     );
 
     // Some browsers/clients report HWPX as vendor-specific, owpml, or even zip/octet-stream
@@ -90,6 +97,13 @@ public class FileStorageService {
         String mime = Optional.ofNullable(file.getContentType()).orElse("").toLowerCase();
 
         // Special-case for HWPX: different agents often send varying content-types
+        if ("hwp".equals(ext)) {
+            if (!ALLOWED_HWP_MIME.contains(mime)) {
+                throw new IllegalStateException("허용되지 않는 HWP 파일 형식입니다.");
+            }
+            return;
+        }
+
         if ("hwpx".equals(ext)) {
             if (!ALLOWED_HWpx_MIME.contains(mime)) {
                 throw new IllegalStateException("허용되지 않는 HWPX 파일 형식입니다.");
