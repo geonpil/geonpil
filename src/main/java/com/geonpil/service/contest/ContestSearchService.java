@@ -171,7 +171,7 @@ public class ContestSearchService {
             String keyword, int page, int size, Integer boardCode,
             String categoryIds, boolean isClosedIncluded, String sort, String searchType) {
 
-        log.info("공모전 검색: 키워드={}, 페이지={}, ��시판={}, 카테고리={}, 마감포함={}, 정렬={}, 검색유형={}",
+        log.info("공모전 검색: 키워드={}, 페이지={}, 게시판={}, 카테고리={}, 마감포함={}, 정렬={}, 검색유형={}",
                 keyword, page, boardCode, categoryIds, isClosedIncluded, sort, searchType);
 
         try {
@@ -247,8 +247,11 @@ public class ContestSearchService {
             // 마감 여부 필터 적용 (isClosedIncluded가 false면 마감되지 않은 공모전만)
             if (!isClosedIncluded) {
                 LocalDate today = LocalDate.now();
-                // 마감일이 오늘 이후인 공모전만 필터링
-                criteria = criteria.and(new Criteria("endDate").greaterThanEqual(today));
+                // 마감일이 오늘 이후이거나(진행중), endDate 필드가 없는(마감일 미정) 공모전은 진행중으로 취급
+                Criteria notClosed = new Criteria()
+                        .or(new Criteria("endDate").greaterThanEqual(today))
+                        .or(new Criteria("endDate").exists().not());
+                criteria = criteria.and(notClosed);
                 log.debug("마감되지 않은 공모전만 필터링 적용 (날짜: {})", today);
             }
 
