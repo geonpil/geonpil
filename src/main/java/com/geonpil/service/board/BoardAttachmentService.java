@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,14 +28,19 @@ public class BoardAttachmentService {
     }
 
     /**
-     * 게시글 작성/수정 시 첨부파일 저장.
+     * 게시글 작성/수정 시 첨부파일 저장. (일반 게시판: upload/board/{postId}/)
      */
     @Transactional
     public void saveFiles(Long postId, List<MultipartFile> files) throws IOException {
-        if (files == null || files.isEmpty()) return;
+        saveFiles(postId, files, "board/" + postId);
+    }
 
-        String subDir = "board/" + postId; // upload/board/{postId}/
-        List<BoardAttachment> entities = new ArrayList<>();
+    /**
+     * 지정한 subDir에 첨부파일 저장. (공모전: upload/contest/{postId}/attachment 등)
+     */
+    @Transactional
+    public void saveFiles(Long postId, List<MultipartFile> files, String subDir) throws IOException {
+        if (files == null || files.isEmpty()) return;
 
         for (MultipartFile file : files) {
             if (file.isEmpty()) continue;
@@ -51,7 +55,6 @@ public class BoardAttachmentService {
                     .fileSize(file.getSize())
                     .build();
             attachmentMapper.insert(entity);
-            entities.add(entity);
         }
     }
 
@@ -75,9 +78,13 @@ public class BoardAttachmentService {
             throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
 
-        // 파일 삭제 & DB soft delete
-        String subDir = "board/" + postId;
-        fileStorageService.delete(subDir, target.getStoredName());
+        // 파일 삭제 & DB soft delete (filePath에서 subDir 추출: /upload/{subDir}/{storedName})
+        String filePath = target.getFilePath();
+        String storedName = target.getStoredName();
+        String subDir = filePath != null && filePath.startsWith("/upload/") && storedName != null
+                ? filePath.substring(8, filePath.length() - storedName.length() - 1)
+                : "board/" + postId;
+        fileStorageService.delete(subDir, storedName);
         attachmentMapper.softDeleteById(attachmentId);
     }
 

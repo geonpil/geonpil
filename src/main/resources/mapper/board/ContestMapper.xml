@@ -173,7 +173,9 @@
         WHERE contest_id = #{postId}
     </update>
 
-
+    <update id="updatePosterUrl">
+        UPDATE contest_post SET poster_url = #{posterUrl} WHERE contest_id = #{postId}
+    </update>
 
     <select id="findLatestContest" resultMap="contestPostResultMap">
         SELECT

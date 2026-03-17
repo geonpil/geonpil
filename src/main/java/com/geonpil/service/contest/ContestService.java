@@ -42,6 +42,10 @@ public class ContestService {
         }
     }
 
+    /** 공모전 포스터 URL만 갱신 (글쓰기 시 포스터를 postId 생성 후 저장할 때 사용) */
+    public void updatePosterUrl(Long postId, String posterUrl) {
+        contestMapper.updatePosterUrl(postId, posterUrl);
+    }
 
     public void updateContestPost(ContestPost contestPost,
                                   Long id) {

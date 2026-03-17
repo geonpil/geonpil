@@ -24,6 +24,7 @@ public interface ContestMapper {
 
     void updateContestPost(ContestPost contestPost);
 
+    void updatePosterUrl(@Param("postId") Long postId, @Param("posterUrl") String posterUrl);
 
     List<ContestPost> findLatestContest(int limit);
 

@@ -139,10 +139,11 @@ public class ContestController {
             contestPost.setCategoryIds(categoryIds);
         }
 
-        // 포스터 처리
+        // 포스터 처리 (upload/contest/{id}/poster)
         if (posterFile != null && !posterFile.isEmpty()) {
-            String storedName = fileStorageService.store(posterFile, "contest/poster");
-            String url = fileStorageService.buildFileUrl("contest/poster", storedName);
+            String subDir = "contest/" + id + "/poster";
+            String storedName = fileStorageService.store(posterFile, subDir);
+            String url = fileStorageService.buildFileUrl(subDir, storedName);
             contestPost.setPosterUrl(url);
         } else {
             contestPost.setPosterUrl(existingPosterUrl);
@@ -151,9 +152,9 @@ public class ContestController {
         // 업데이트 (board + contest)
         contestService.updateContestPost(contestPost, user.getId());
 
-        // 첨부파일 삭제 & 추가
+        // 첨부파일 삭제 & 추가 (upload/contest/{id}/attachment)
         boardAttachmentService.deleteFiles(deleteAttachmentIds, user.getId());
-        boardAttachmentService.saveFiles(id, files);
+        boardAttachmentService.saveFiles(id, files, "contest/" + id + "/attachment");
 
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
         return "redirect:/contest/detail/" + id + "?boardCode=" + contestPost.getBoardCode();
@@ -171,24 +172,25 @@ public class ContestController {
         // 작성자 세팅
         contestPost.setUserId(user.getId());
 
-        // 포스터 이미지 저장
-        if (posterFile != null && !posterFile.isEmpty()) {
-            String storedName = fileStorageService.store(posterFile, "contest/poster");
-            String posterUrl = fileStorageService.buildFileUrl("contest/poster", storedName);
-            contestPost.setPosterUrl(posterUrl);
-        }
-
         // 카테고리 파라미터 보정
         if (categoryIds == null) {
             categoryIds = List.of();
         }
 
-        // 게시글 + 공모전 정보 저장
+        // 게시글 + 공모전 정보 저장 (postId 생성됨)
         contestService.saveContest(contestPost, categoryIds);
 
-        // 첨부파일 저장
+        // 포스터 이미지 저장 (upload/contest/{postId}/poster)
+        if (posterFile != null && !posterFile.isEmpty()) {
+            String subDir = "contest/" + contestPost.getPostId() + "/poster";
+            String storedName = fileStorageService.store(posterFile, subDir);
+            String posterUrl = fileStorageService.buildFileUrl(subDir, storedName);
+            contestService.updatePosterUrl(contestPost.getPostId(), posterUrl);
+        }
+
+        // 첨부파일 저장 (upload/contest/{postId}/attachment)
         if (files != null && !files.isEmpty()) {
-            boardAttachmentService.saveFiles(contestPost.getPostId(), files);
+            boardAttachmentService.saveFiles(contestPost.getPostId(), files, "contest/" + contestPost.getPostId() + "/attachment");
         }
 
         redirectAttributes.addFlashAttribute("message", "글이 성공적으로 등록되었습니다.");
