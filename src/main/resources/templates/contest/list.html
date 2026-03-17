@@ -2,6 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:utils="http://www.thymeleaf.org/extras/java8time"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}"
       th:inline="text">
 
@@ -55,10 +56,12 @@
         <div th:replace="~{contest/_contest-combined-fragment :: combinedContestFragment(${contests}, ${pageInfo}, ${action})}"></div>
 
 
-        <!-- board와 동일한 UI로 변경 - 검색바와 글쓰기 버튼 -->
+        <!-- board와 동일한 UI로 변경 - 검색바와 글쓰기 버튼 (로그인 시에만 게시 버튼 표시) -->
         <div class="board-control-bar">
             <div th:replace="~{commons/_search-fragment :: searchFragment(${boardCode})}"></div>
-            <a th:href="@{/contest/write(boardCode=${boardCode})}" class="write-btn basic-btn">✍ 공모전 게시</a>
+            <th:block sec:authorize="isAuthenticated()">
+                <a th:href="@{/contest/write(boardCode=${boardCode})}" class="write-btn basic-btn">✍ 공모전 게시</a>
+            </th:block>
         </div>
     </div>
     <input type="hidden" id="boardCode" th:value="${boardCode}"/>

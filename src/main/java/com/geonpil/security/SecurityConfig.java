@@ -60,10 +60,10 @@ public class SecurityConfig {
                                 "/", "/signup", "/signup/form", "/signup/social", "/login","/find-password","/withdrawal-complete", "signup-success",
                                 "/recover/**"
                                 ,  "/error", "/verify/**","/board/list/**",
-                                "/contest/list/**", "/contest/detail/**","/contest/write/**",
-                                "/contest/edit/**", "/contest/delete/**",
+                                "/contest/list/**", "/contest/detail/**",
                                 "/api/search/**", "/api/search/*/search", "/books/**","/reviews/**","/bug-report/**","/api/search/board/**","/api/search/contest/**"
                         ).permitAll()
+                        // 공모전 게시/수정/삭제는 로그인 필요 (anyRequest().authenticated()로 처리)
                         //관리자만 접근
 
                         //로그인한 사용자만 접근
